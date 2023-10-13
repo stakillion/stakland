@@ -118,4 +118,5 @@ look_right={
 
 [physics]
 
+common/physics_jitter_fix=0.0
 3d/default_gravity=20.0
