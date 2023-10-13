@@ -20,8 +20,7 @@ var velocity = Vector3()
 var on_ground = false
 var jump_midair_count = 0
 
-var head:Node3D
-var ang_velocity = Vector3()
+var head = self
 
 
 func _ready():
@@ -30,24 +29,23 @@ func _ready():
 
 
 func _physics_process(delta):
-	# rotate view by angular velocity
-	if ang_velocity.length_squared() != 0.0:
-		head.rotation -= ang_velocity * delta
-		head.rotation.x = clamp(head.rotation.x, deg_to_rad(-89), deg_to_rad(89))
+	# look where the camera is looking
+	if control.get("camera"):
+		head.look_at(control.get_aim_target().position)
 
 	# get desired movement from controller
 	var movement = control.get_movement()
-	var move_speed = movement.length()
-	# rotate direction vector according to the direction we're looking
-	movement = head.global_transform.basis.get_rotation_quaternion() * movement
-	movement.y = 0
-	var move_dir = movement.normalized()
+
+	if movement.jump == 1:
+		jump() # normal jump press
+	elif movement.jump == 2:
+		jump(false) # autojump (no midair jumps)
 
 	# accelerate velocity based on desired movement and ground state
 	if on_ground:
-		ground_accelerate(move_dir, move_speed, delta)
+		ground_accelerate(movement.dir, movement.speed, delta)
 	else:
-		air_accelerate(move_dir, move_speed, delta)
+		air_accelerate(movement.dir, movement.speed, delta)
 	# do move based on our new velocity
 	move(delta)
 
@@ -143,4 +141,4 @@ func get_aim_target():
 
 func get_movement():
 	# we don't have an assigned controller, so do nothing
-	return Vector3()
+	return {"dir" = Vector3(), "speed" = 0.0, "jump" = 0}

@@ -1,20 +1,27 @@
-[gd_scene load_steps=9 format=3 uid="uid://o70p27l476fn"]
+[gd_scene load_steps=10 format=3 uid="uid://o70p27l476fn"]
 
 [ext_resource type="Texture2D" uid="uid://c7tnr6jxwpxpw" path="res://materials/grass1.tga" id="1_v3y4r"]
 
 [sub_resource type="Gradient" id="Gradient_r4md3"]
+interpolation_mode = 2
 interpolation_color_space = 2
-offsets = PackedFloat32Array(0.630252, 1)
+offsets = PackedFloat32Array(0.62987, 1)
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_qpsgd"]
 noise_type = 3
-seed = 226
+seed = 1031
+frequency = 0.002
+fractal_type = 3
+fractal_octaves = 10
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_gy5yw"]
+width = 1024
+height = 1024
 color_ramp = SubResource("Gradient_r4md3")
 noise = SubResource("FastNoiseLite_qpsgd")
 
 [sub_resource type="PhysicalSkyMaterial" id="PhysicalSkyMaterial_41g3y"]
+rayleigh_coefficient = 1.0
 mie_eccentricity = 0.95
 mie_color = Color(1, 0.729412, 0.466667, 1)
 ground_color = Color(1, 1, 1, 1)
@@ -33,7 +40,11 @@ glow_enabled = true
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_04url"]
 albedo_texture = ExtResource("1_v3y4r")
 metallic_specular = 0.0
-uv1_scale = Vector3(3, 3, 3)
+uv1_scale = Vector3(0.1, 0.1, 0.1)
+uv1_triplanar = true
+texture_filter = 5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qosgh"]
 
 [node name="TestLevel" type="Node3D"]
 
@@ -44,49 +55,71 @@ shadow_enabled = true
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_ifkfe")
 
-[node name="Floor" type="CSGCombiner3D" parent="."]
-snap = 0.1
+[node name="CSG" type="Node3D" parent="."]
+
+[node name="NorthEdge" type="CSGBox3D" parent="CSG"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25.25, -1.45, 0)
+use_collision = true
+size = Vector3(0.5, 3.1, 50)
+
+[node name="EastEdge" type="CSGBox3D" parent="CSG"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.45, 25.25)
+use_collision = true
+size = Vector3(50, 3.1, 0.5)
+
+[node name="SouthEdge" type="CSGBox3D" parent="CSG"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25.25, -1.45, 0)
+use_collision = true
+size = Vector3(0.5, 3.1, 50)
+
+[node name="WestEdge" type="CSGBox3D" parent="CSG"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.45, -25.25)
+use_collision = true
+size = Vector3(50, 3.1, 0.5)
+
+[node name="Floor" type="CSGCombiner3D" parent="CSG"]
 use_collision = true
 
-[node name="CSGBox3D" type="CSGBox3D" parent="Floor"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -5, 0)
-size = Vector3(50, 10, 50)
+[node name="Grass" type="CSGBox3D" parent="CSG/Floor"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.5, 0)
+size = Vector3(50, 3, 50)
 material = SubResource("StandardMaterial3D_04url")
 
-[node name="CSGSphere3D" type="CSGSphere3D" parent="Floor"]
+[node name="Bowl" type="CSGSphere3D" parent="CSG/Floor"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 5, 15)
 operation = 2
 radius = 7.5
 radial_segments = 24
 rings = 12
 
-[node name="Obstacles" type="CSGCombiner3D" parent="."]
+[node name="Obstacles" type="CSGCombiner3D" parent="CSG"]
 use_collision = true
 
-[node name="ShortWall" type="CSGBox3D" parent="Obstacles"]
+[node name="ShortWall" type="CSGBox3D" parent="CSG/Obstacles"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.5, 0.75, -3.5)
 size = Vector3(0.5, 1.5, 7.5)
 
-[node name="TallWall" type="CSGBox3D" parent="Obstacles"]
+[node name="TallWall" type="CSGBox3D" parent="CSG/Obstacles"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, -20)
+material_override = SubResource("StandardMaterial3D_qosgh")
 size = Vector3(20, 10, 0.5)
 
-[node name="Slope1" type="CSGPolygon3D" parent="Obstacles"]
+[node name="Slope1" type="CSGPolygon3D" parent="CSG/Obstacles"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.5, 0, -10)
 polygon = PackedVector2Array(0, 0, 0, 0, 10, 0, 10, 3)
 depth = 2.0
 
-[node name="Slope2" type="CSGPolygon3D" parent="Obstacles"]
+[node name="Slope2" type="CSGPolygon3D" parent="CSG/Obstacles"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.5, 0, -6.5)
 polygon = PackedVector2Array(0, 0, 0, 0, 10, 0, 10, 6)
 depth = 2.0
 
-[node name="Slope3" type="CSGPolygon3D" parent="Obstacles"]
+[node name="Slope3" type="CSGPolygon3D" parent="CSG/Obstacles"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.5, 0, -3)
 polygon = PackedVector2Array(0, 0, 0, 0, 10, 0, 10, 9)
 depth = 2.0
 
-[node name="Slope4" type="CSGPolygon3D" parent="Obstacles"]
+[node name="Slope4" type="CSGPolygon3D" parent="CSG/Obstacles"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.5, 0, 8.5)
 polygon = PackedVector2Array(0, 0, 0, 0, 10, 0, 10, 10.5)
 depth = 10.0

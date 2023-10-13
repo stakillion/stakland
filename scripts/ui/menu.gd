@@ -1,6 +1,10 @@
 extends Control
 
 
+func _ready():
+	visible = false
+
+
 func _process(_delta):
 	if visible:
 		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)

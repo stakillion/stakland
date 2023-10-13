@@ -20,6 +20,7 @@ night_sky = SubResource("NoiseTexture2D_gy5yw")
 
 [sub_resource type="Sky" id="Sky_advgi"]
 sky_material = SubResource("PhysicalSkyMaterial_41g3y")
+process_mode = 3
 
 [resource]
 background_mode = 2
