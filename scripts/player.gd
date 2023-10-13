@@ -84,12 +84,10 @@ func get_movement():
 	movement.x = Input.get_action_strength("move_right") - Input.get_action_strength("move_left")
 	movement.z = Input.get_action_strength("move_back") - Input.get_action_strength("move_forward")
 	var speed = movement.length()
-
 	# rotate direction vector according to the camera angle
-	movement = camera.global_transform.basis.get_rotation_quaternion() * movement
-	movement.y = 0
-	var dir = movement.normalized()
+	var dir = movement.rotated(Vector3.UP, camera.rotation.y).normalized()
 
+	# jumping
 	var jump = 0 # no jump
 	if Input.is_action_just_pressed("jump"):
 		jump = 1 # jump
