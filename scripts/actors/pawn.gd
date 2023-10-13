@@ -7,11 +7,11 @@ var control = self
 # -- physics --
 # ground speed should be > friction so we can go up slopes
 # higher air acceleration enables mid-air turns and slope surfing
-@export var ground_speed = 6.0
+@export var ground_speed = 6.5
 @export var ground_accel = 8.0
 @export var ground_friction = 5.5
 @export var air_speed = 1.0
-@export var air_accel = 30.0
+@export var air_accel = 20.0
 @export var air_friction = 0.0
 @export var jump_power = 8.0
 @export var jump_midair = 1
@@ -50,7 +50,7 @@ func _process(delta):
 func move_ground(move, delta):
 	# accelerate towards desired direction
 	var speed = min(ground_speed * move.speed, ground_speed)
-	accelerate(move.direction, speed, ground_accel, delta)
+	ground_accelerate(move.direction, speed, ground_accel, delta)
 
 	# apply friction
 	apply_friction(ground_friction, delta)
@@ -70,6 +70,21 @@ func move_air(move, delta):
 func accelerate(dir, target_speed, accel, delta):
 	# current speed towards desired direction
 	var dirspeed = velocity.dot(dir)
+	# speed we need to make up to reach our desired speed
+	var addspeed = target_speed - dirspeed
+	if addspeed <= 0:
+		return
+
+	var accelspeed = accel * target_speed * delta
+	if accelspeed > addspeed:
+		accelspeed = addspeed
+
+	velocity += accelspeed * dir
+
+# boring version of accelerate() without air strafing (but keeps our speed on the ground consistent)
+func ground_accelerate(dir, target_speed, accel, delta):
+	# current speed towards desired direction
+	var dirspeed = velocity.length()
 	# speed we need to make up to reach our desired speed
 	var addspeed = target_speed - dirspeed
 	if addspeed <= 0:

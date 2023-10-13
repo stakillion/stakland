@@ -95,7 +95,7 @@ skeleton = NodePath("../MeshInstance3D")
 shape = SubResource("ConcavePolygonShape3D_wm2bl")
 
 [node name="TallWall" type="MeshInstance3D" parent="Obstacles"]
-transform = Transform3D(20, 0, 0, 0, 10, 0, 0, 0, 0.34, 0, 5, -10)
+transform = Transform3D(20, 0, 0, 0, 10, 0, 0, 0, 0.34, 0, 5, -20)
 mesh = SubResource("BoxMesh_e41lq")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Obstacles/TallWall"]
