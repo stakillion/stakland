@@ -5,13 +5,12 @@ extends PhysicsBody3D
 var control = self
 
 # -- physics --
-# ground speed should be > friction so we can go up slopes
 # higher air acceleration enables mid-air turns and slope surfing
-@export var ground_speed = 5.5
-@export var ground_accel = 8.0
-@export var ground_friction = 5.0
+@export var ground_speed = 6.5
+@export var ground_accel = 5.0
+@export var ground_friction = 4.0
 @export var air_speed = 1.0
-@export var air_accel = 20.0
+@export var air_accel = 30.0
 @export var air_friction = 0.0
 @export var jump_power = 8.0
 @export var jump_midair = 1
@@ -25,85 +24,76 @@ var jump_midair_count = 0
 
 
 func _physics_process(delta):
+	# get desired movement from controller
+	var movement = control.get_movement()
 
+	# accelerate velocity based on desired movement and ground state
+	if on_ground:
+		ground_accelerate(movement, delta)
+	else:
+		air_accelerate(movement, delta)
+
+	# do move based on our current velocity
+	velocity = move(velocity, delta)
+
+
+func move(vel, delta, max_slides = 6):
 	on_ground = false
-
-	var motion = velocity * delta
-	var max_slides = 6
+	var motion = (vel * delta) / max_slides
 	while max_slides:
-		# do move based on our current velocity
-		var collision = move_and_collide(motion)
+		max_slides -= 1
+		# move and check for collision
+		var collision = move_and_collide(motion, false, 0.001, true)
 		if !collision:
-			break
+			continue
 		# if we hit something and it's not too steep then we consider it ground
 		if collision.get_angle() < 0.786:
 			on_ground = true
 			jump_midair_count = 0
-
+		# slide along the normal vector of the colliding body
 		var collision_norm = collision.get_normal()
 		motion = motion.slide(collision_norm)
-		velocity = velocity.slide(collision_norm)
+		vel = vel.slide(collision_norm)
 
-		max_slides -= 1
-
-	# get desired movement from controller
-	var move = control.get_movement()
-
-	# on groud/in air/etc. state machine
-	if on_ground:
-		move_ground(move, delta)
-	else:
-		move_air(move, delta)
+	return vel
 
 
-func move_ground(move, delta):
-	# accelerate towards desired direction
-	var speed = min(ground_speed * move.speed, ground_speed)
-	accelerate(move.direction, speed, ground_accel, delta)
+func ground_accelerate(movement, delta):
+	# get current speed towards desired direction
+	var dirspeed = velocity.length()
+	# calculate speed we need to make up to reach our desired speed
+	var speed = min(ground_speed * movement.speed, ground_speed)
+	var addspeed = speed - dirspeed
+	if addspeed > 0:
+		# calculate acceleration and cap it to our desired speed
+		var accelspeed = ground_accel * speed * delta
+		if accelspeed > addspeed:
+			accelspeed = addspeed
+		# apply acceleration to velocity
+		velocity += accelspeed * movement.direction
 
 	# apply friction
 	apply_friction(ground_friction, delta)
 
 
-func move_air(move, delta):
-	# accelerate towards desired direction
-	var speed = min(air_speed * move.speed, air_speed)	
-	accelerate(move.direction, speed, air_accel, delta)
+func air_accelerate(movement, delta):
+	# get current speed towards desired direction
+	var dirspeed = velocity.dot(movement.direction)
+	# calcuate speed we need to make up to reach our desired speed
+	var speed = min(air_speed * movement.speed, air_speed)
+	var addspeed = speed - dirspeed
+	if addspeed > 0:
+		# calculate acceleration and cap it to our desired speed
+		var accelspeed = air_accel * speed * delta
+		if accelspeed > addspeed:
+			accelspeed = addspeed
+		# apply acceleration to velocity
+		velocity += accelspeed * movement.direction
 
 	# apply gravity
 	velocity.y -= gravity * delta
 	# apply friction
 	apply_friction(air_friction, delta)
-
-
-func accelerate(dir, target_speed, accel, delta):
-	# current speed towards desired direction
-	var dirspeed = velocity.dot(dir)
-	# speed we need to make up to reach our desired speed
-	var addspeed = target_speed - dirspeed
-	if addspeed <= 0:
-		return
-
-	var accelspeed = accel * target_speed * delta
-	if accelspeed > addspeed:
-		accelspeed = addspeed
-
-	velocity += accelspeed * dir
-
-# boring version of accelerate() without air strafing (but keeps our speed on the ground consistent)
-func ground_accelerate(dir, target_speed, accel, delta):
-	# current speed towards desired direction
-	var dirspeed = velocity.length()
-	# speed we need to make up to reach our desired speed
-	var addspeed = target_speed - dirspeed
-	if addspeed <= 0:
-		return
-
-	var accelspeed = accel * target_speed * delta
-	if accelspeed > addspeed:
-		accelspeed = addspeed
-
-	velocity += accelspeed * dir
 
 
 func apply_friction(friction, delta):
