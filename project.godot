@@ -21,6 +21,7 @@ Player="*res://scripts/player.gd"
 
 [display]
 
+window/vsync/vsync_mode=0
 window/size/width=1280
 window/size/height=720
 
@@ -118,6 +119,8 @@ look_right={
 
 [physics]
 
+common/physics_ticks_per_second=120
+common/max_physics_steps_per_frame=16
 common/physics_jitter_fix=0.0
 3d/default_gravity=20.0
 

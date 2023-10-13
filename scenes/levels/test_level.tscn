@@ -64,7 +64,7 @@ rings = 12
 use_collision = true
 
 [node name="ShortWall" type="CSGBox3D" parent="Obstacles"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.5, 0.75, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.5, 0.75, -3.5)
 size = Vector3(0.5, 1.5, 7.5)
 
 [node name="TallWall" type="CSGBox3D" parent="Obstacles"]

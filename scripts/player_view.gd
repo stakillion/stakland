@@ -19,7 +19,7 @@ func _ready():
 	add_child(camera)
 
 
-func _process(delta):
+func _physics_process(delta):
 
 	# rotate camera by velocity
 	if rot_velocity.length_squared() != 0.0:

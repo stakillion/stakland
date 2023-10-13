@@ -7,7 +7,7 @@ var control = self
 # -- physics --
 # ground speed should be > friction so we can go up slopes
 # higher air acceleration enables mid-air turns and slope surfing
-@export var ground_speed = 6.0
+@export var ground_speed = 5.5
 @export var ground_accel = 8.0
 @export var ground_friction = 5.0
 @export var air_speed = 1.0
@@ -24,7 +24,7 @@ var on_ground = false
 var jump_midair_count = 0
 
 
-func _process(delta):
+func _physics_process(delta):
 
 	on_ground = false
 
@@ -38,6 +38,7 @@ func _process(delta):
 		# if we hit something and it's not too steep then we consider it ground
 		if collision.get_angle() < 0.786:
 			on_ground = true
+			jump_midair_count = 0
 
 		var collision_norm = collision.get_normal()
 		motion = motion.slide(collision_norm)
@@ -58,7 +59,7 @@ func _process(delta):
 func move_ground(move, delta):
 	# accelerate towards desired direction
 	var speed = min(ground_speed * move.speed, ground_speed)
-	ground_accelerate(move.direction, speed, ground_accel, delta)
+	accelerate(move.direction, speed, ground_accel, delta)
 
 	# apply friction
 	apply_friction(ground_friction, delta)
