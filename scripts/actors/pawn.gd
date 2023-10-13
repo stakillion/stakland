@@ -1,44 +1,50 @@
-extends CharacterBody3D
+extends PhysicsBody3D
 
 
 # controls itself by default (aka does nothing)
 var control = self
 
-# physics
-@export var ground_speed = 6.0
-@export var ground_accel = 4.0
-@export var ground_friction = 3.0
+# -- physics --
+# ground speed should be > friction so we can go up slopes
+# higher air acceleration enables mid-air turns and slope surfing
+@export var ground_speed = 6.24
+@export var ground_accel = 8.0
+@export var ground_friction = 5.5
 @export var air_speed = 1.0
-@export var air_accel = 20.0
+@export var air_accel = 22.0
 @export var air_friction = 0.0
 @export var jump_power = 8.0
 @export var jump_midair = 1
+@onready var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
 @export var head = Vector3()
 
-@onready var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
-
+var velocity = Vector3()
+var on_ground = false
 var jump_midair_count = 0
 
 
 func _process(delta):
 
-	# get movement from controller
+	# do move based on our current velocity
+	var collision = move_and_collide(velocity * delta)
+
+	on_ground = false
+	if collision:
+		# if we hit something and it's not too steep then we consider it ground
+		if collision.get_angle() <= 0.786:
+			on_ground = true
+
+		velocity = velocity.slide(collision.get_normal())
+
+	# get desired movement from controller
 	var move = control.get_movement()
 
 	# on groud/in air/etc. state machine
-	if is_on_floor():
+	if on_ground:
 		move_ground(move, delta)
 	else:
 		move_air(move, delta)
-
-	# do move
-	floor_block_on_wall = false
-	floor_stop_on_slope = false
-	move_and_slide()
-
-	# retain velocity on slopes
-	velocity = get_real_velocity()
 
 
 func move_ground(move, delta):
@@ -87,7 +93,7 @@ func apply_friction(friction, delta):
 
 
 func jump(midair = true):
-	if is_on_floor():
+	if on_ground:
 		velocity.y = jump_power
 		jump_midair_count = 0
 		return true

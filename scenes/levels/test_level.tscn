@@ -1,4 +1,6 @@
-[gd_scene load_steps=20 format=3 uid="uid://o70p27l476fn"]
+[gd_scene load_steps=22 format=3 uid="uid://o70p27l476fn"]
+
+[ext_resource type="Texture2D" uid="uid://c7tnr6jxwpxpw" path="res://materials/grass1.tga" id="1_v3y4r"]
 
 [sub_resource type="Gradient" id="Gradient_r4md3"]
 interpolation_color_space = 2
@@ -40,7 +42,13 @@ data = PackedVector3Array(1, 1, 1, 1, -1, 1, -1, -1, 1, 1, 1, -1, -1, -1, -1, 1,
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_g3bb4"]
 data = PackedVector3Array(-0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, -0.5)
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6o0nf"]
+albedo_texture = ExtResource("1_v3y4r")
+metallic_specular = 0.0
+uv1_scale = Vector3(3, 3, 3)
+
 [sub_resource type="BoxMesh" id="BoxMesh_rvigy"]
+material = SubResource("StandardMaterial3D_6o0nf")
 
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_b02b8"]
 data = PackedVector3Array(-0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, -0.5)
