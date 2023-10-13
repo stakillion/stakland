@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://d01gqejkclqv3"]
+
+[ext_resource type="PackedScene" uid="uid://bicei8k7eppb3" path="res://scenes/actors/pawn.tscn" id="1_ctlt0"]
+[ext_resource type="PackedScene" uid="uid://o70p27l476fn" path="res://scenes/levels/test_level.tscn" id="2_thqa8"]
+
+[node name="World" type="Node3D"]
+
+[node name="Pawn" parent="." instance=ExtResource("1_ctlt0")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+
+[node name="TestLevel" parent="." instance=ExtResource("2_thqa8")]
