@@ -10,36 +10,51 @@ var control = self
 @export var ground_accel = 5.0
 @export var ground_friction = 4.0
 @export var air_speed = 1.0
-@export var air_accel = 30.0
+@export var air_accel = 25.0
 @export var air_friction = 0.0
 @export var jump_power = 8.0
 @export var jump_midair = 1
 @onready var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
-@export var head = Vector3()
-
 var velocity = Vector3()
 var on_ground = false
 var jump_midair_count = 0
 
+var head:Node3D
+var ang_velocity = Vector3()
+
+
+func _ready():
+	head = find_child("Head")
+	if !head: head = self
+
 
 func _physics_process(delta):
+	# rotate view by angular velocity
+	if ang_velocity.length_squared() != 0.0:
+		head.rotation -= ang_velocity * delta
+		head.rotation.x = clamp(head.rotation.x, deg_to_rad(-89), deg_to_rad(89))
+
 	# get desired movement from controller
 	var movement = control.get_movement()
+	var move_speed = movement.length()
+	# rotate direction vector according to the direction we're looking
+	movement = head.global_transform.basis.get_rotation_quaternion() * movement
+	movement.y = 0
+	var move_dir = movement.normalized()
 
 	# accelerate velocity based on desired movement and ground state
 	if on_ground:
-		ground_accelerate(movement, delta)
+		ground_accelerate(move_dir, move_speed, delta)
 	else:
-		air_accelerate(movement, delta)
+		air_accelerate(move_dir, move_speed, delta)
+	# do move based on our new velocity
+	move(delta)
 
-	# do move based on our current velocity
-	velocity = move(velocity, delta)
 
-
-func move(vel, delta, max_slides = 6):
+func move(delta, max_slides = 6):
 	on_ground = false
-	var motion = (vel * delta) / max_slides
+	var motion = (velocity * delta) / max_slides
 	while max_slides:
 		max_slides -= 1
 		# move and check for collision
@@ -53,42 +68,40 @@ func move(vel, delta, max_slides = 6):
 		# slide along the normal vector of the colliding body
 		var collision_norm = collision.get_normal()
 		motion = motion.slide(collision_norm)
-		vel = vel.slide(collision_norm)
-
-	return vel
+		velocity = velocity.slide(collision_norm)
 
 
-func ground_accelerate(movement, delta):
+func ground_accelerate(dir, speed, delta):
 	# get current speed towards desired direction
-	var dirspeed = velocity.length()
+	var current_speed = velocity.length()
 	# calculate speed we need to make up to reach our desired speed
-	var speed = min(ground_speed * movement.speed, ground_speed)
-	var addspeed = speed - dirspeed
-	if addspeed > 0:
+	var new_speed = min(ground_speed * speed, ground_speed)
+	var add_speed = new_speed - current_speed
+	if add_speed > 0:
 		# calculate acceleration and cap it to our desired speed
-		var accelspeed = ground_accel * speed * delta
-		if accelspeed > addspeed:
-			accelspeed = addspeed
-		# apply acceleration to velocity
-		velocity += accelspeed * movement.direction
+		var accel = ground_accel * new_speed * delta
+		if accel > add_speed:
+			accel = add_speed
+		# apply acceleration towards our desired direction
+		velocity += accel * dir
 
 	# apply friction
 	apply_friction(ground_friction, delta)
 
 
-func air_accelerate(movement, delta):
+func air_accelerate(dir, speed, delta):
 	# get current speed towards desired direction
-	var dirspeed = velocity.dot(movement.direction)
+	var current_speed = velocity.dot(dir)
 	# calcuate speed we need to make up to reach our desired speed
-	var speed = min(air_speed * movement.speed, air_speed)
-	var addspeed = speed - dirspeed
-	if addspeed > 0:
+	var new_speed = min(air_speed * speed, air_speed)
+	var add_speed = new_speed - current_speed
+	if add_speed > 0:
 		# calculate acceleration and cap it to our desired speed
-		var accelspeed = air_accel * speed * delta
-		if accelspeed > addspeed:
-			accelspeed = addspeed
-		# apply acceleration to velocity
-		velocity += accelspeed * movement.direction
+		var accel = air_accel * new_speed * delta
+		if accel > add_speed:
+			accel = add_speed
+		# apply acceleration towards our desired direction
+		velocity += accel * dir
 
 	# apply gravity
 	velocity.y -= gravity * delta
@@ -110,16 +123,24 @@ func jump(midair = true):
 	if on_ground:
 		velocity.y = jump_power
 		jump_midair_count = 0
-		return true
-
 	elif midair and jump_midair_count < jump_midair:
 		velocity.y = jump_power
 		jump_midair_count += 1
-		return false
 
-	return false
+
+func get_aim_target():
+	var ray_start = head.global_position
+	var ray_end = head.global_position - head.global_transform.basis.z * 32768
+	var query = PhysicsRayQueryParameters3D.create(ray_start, ray_end)
+	query.exclude = [self]
+
+	var collision = get_world_3d().direct_space_state.intersect_ray(query)
+	if !collision:
+		collision.position = ray_end
+
+	return collision
 
 
 func get_movement():
 	# we don't have an assigned controller, so do nothing
-	return {direction = Vector3(), speed = 0.0}
+	return Vector3()

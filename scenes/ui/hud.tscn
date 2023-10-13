@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://ga26bevnblxs"]
+
+[ext_resource type="Script" path="res://scripts/ui/hud.gd" id="2_yy86k"]
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_5yxvp"]
+size = Vector2(3, 3)
+
+[node name="Hud" type="Node2D"]
+script = ExtResource("2_yy86k")
+
+[node name="Info" type="Label" parent="."]
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="Crosshair" type="Sprite2D" parent="."]
+texture = SubResource("PlaceholderTexture2D_5yxvp")

@@ -16,7 +16,6 @@ height = 1.5
 
 [node name="Pawn" type="CharacterBody3D"]
 script = ExtResource("1_txe8y")
-head = Vector3(0, 1.755, 0)
 
 [node name="MeshInstance" type="MeshInstance3D" parent="."]
 mesh = SubResource("2")

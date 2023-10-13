@@ -2,7 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://bicei8k7eppb3" path="res://scenes/actors/pawn.tscn" id="1_ctlt0"]
 [ext_resource type="PackedScene" uid="uid://o70p27l476fn" path="res://scenes/levels/test_level.tscn" id="2_thqa8"]
-[ext_resource type="Script" path="res://scripts/ui/hud.gd" id="3_pme0y"]
+[ext_resource type="PackedScene" uid="uid://ga26bevnblxs" path="res://scenes/ui/hud.tscn" id="3_nugmo"]
 
 [node name="World" type="Node3D"]
 
@@ -11,7 +11,4 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
 
 [node name="TestLevel" parent="." instance=ExtResource("2_thqa8")]
 
-[node name="Hud" type="Label" parent="."]
-offset_right = 40.0
-offset_bottom = 23.0
-script = ExtResource("3_pme0y")
+[node name="Hud" parent="." instance=ExtResource("3_nugmo")]
