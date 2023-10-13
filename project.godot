@@ -120,3 +120,7 @@ look_right={
 
 common/physics_jitter_fix=0.0
 3d/default_gravity=20.0
+
+[rendering]
+
+occlusion_culling/use_occlusion_culling=true
