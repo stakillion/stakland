@@ -1,8 +1,8 @@
 extends PhysicsBody3D
 
 
-# controls itself by default (aka does nothing)
-var control = self
+# uses built-in controller until we give it one
+var controller = self
 
 # -- physics --
 # higher air acceleration enables mid-air turns and slope surfing
@@ -29,12 +29,12 @@ func _ready():
 
 
 func _physics_process(delta):
-	# look where the camera is looking
-	if control.get("camera"):
-		head.look_at(control.get_aim_target().position)
+	# look where our controller is looking
+	if controller != self && controller.has_method("get_aim_target"):
+		head.look_at(controller.get_aim_target().position)
 
 	# get desired movement from controller
-	var movement = control.get_movement()
+	var movement = controller.get_movement()
 
 	if movement.jump == 1:
 		jump() # normal jump press
@@ -121,7 +121,7 @@ func jump(midair = true):
 	if on_ground:
 		velocity.y = jump_power
 		jump_midair_count = 0
-	elif midair and jump_midair_count < jump_midair:
+	elif midair && jump_midair_count < jump_midair:
 		velocity.y = jump_power
 		jump_midair_count += 1
 

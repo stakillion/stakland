@@ -19,8 +19,8 @@ var zoom = 20.0
 
 func _ready():
 	# give player control of pawn
-	if pawn.get("control"):
-		pawn.control = self
+	if pawn.get("controller"):
+		pawn.controller = self
 
 	# spawn camera
 	camera = Camera3D.new()
@@ -30,18 +30,29 @@ func _ready():
 
 
 func _process(delta):
-	# lerp current camera zoom to desired zoom for smooth zoom effect
-	zoom = lerp(zoom, desired_zoom, 3 * delta)
-	# have camera follow pawn, or its head if it has one
-	if pawn.has_node("Head"):
-		camera.global_position = pawn.get_node("Head").global_position + camera.global_transform.basis.z * zoom
-	else:
-		camera.global_position = pawn.global_position + camera.global_transform.basis.z * zoom
-
 	# rotate camera by angular velocity (joystick)
 	if ang_velocity.length_squared() != 0.0:
 		camera.rotation -= ang_velocity * delta
 		camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-89), deg_to_rad(89))
+
+	# lerp current camera zoom to desired zoom for smooth zoom effect
+	zoom = lerp(zoom, desired_zoom, 3 * delta)
+
+	# have camera follow pawn, or its head if it has one
+	var follow_pos = pawn.global_position if !pawn.get("head") else pawn.head.global_position
+	var new_pos = follow_pos + camera.global_transform.basis.z * zoom
+	if zoom > 0.0:
+		# check for collisions behind the camera to prevent it from going through walls
+		var query = PhysicsShapeQueryParameters3D.new()
+		query.transform.origin = follow_pos
+		query.shape = SphereShape3D.new()
+		query.shape.radius = 0.1
+		query.motion = new_pos - follow_pos
+		var collision = camera.get_world_3d().direct_space_state.cast_motion(query)
+		new_pos = follow_pos + query.motion * collision[0]
+
+	# update camera position
+	camera.global_position = new_pos
 
 
 func _unhandled_input(event):
@@ -91,7 +102,7 @@ func get_movement():
 	var jump = 0 # no jump
 	if Input.is_action_just_pressed("jump"):
 		jump = 1 # jump
-	elif auto_jump and Input.is_action_pressed("jump"):
+	elif auto_jump && Input.is_action_pressed("jump"):
 		jump = 2 # auto jump (no midair)
 
 	return {"dir" = dir, "speed" = speed, "jump" = jump}
