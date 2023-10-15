@@ -39,5 +39,112 @@ theme_override_fonts/font = ExtResource("2_wmh1k")
 text = "Quit"
 flat = true
 
+[node name="PhysicsSettings" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 865.0
+offset_top = 3.0
+offset_right = 1243.0
+offset_bottom = 343.0
+scale = Vector2(0.75, 0.75)
+
+[node name="GroundSpeedLabel" type="Label" parent="PhysicsSettings"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_wmh1k")
+text = "Ground Speed:"
+
+[node name="GroundSpeedSlider" type="HSlider" parent="PhysicsSettings"]
+layout_mode = 2
+step = 0.5
+ticks_on_borders = true
+
+[node name="GroundAccelLabel" type="Label" parent="PhysicsSettings"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_wmh1k")
+text = "Ground Accel:"
+
+[node name="GroundAccelSlider" type="HSlider" parent="PhysicsSettings"]
+layout_mode = 2
+step = 0.5
+ticks_on_borders = true
+
+[node name="GroundFrictionLabel" type="Label" parent="PhysicsSettings"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_wmh1k")
+text = "Ground Friction:"
+
+[node name="GroundFrictionSlider" type="HSlider" parent="PhysicsSettings"]
+layout_mode = 2
+step = 0.5
+ticks_on_borders = true
+
+[node name="AirSpeedLabel" type="Label" parent="PhysicsSettings"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_wmh1k")
+text = "Air Speed:"
+
+[node name="AirSpeedSlider" type="HSlider" parent="PhysicsSettings"]
+layout_mode = 2
+step = 0.5
+ticks_on_borders = true
+
+[node name="AirAccelLabel" type="Label" parent="PhysicsSettings"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_wmh1k")
+text = "Air Accel:"
+
+[node name="AirAccelSlider" type="HSlider" parent="PhysicsSettings"]
+layout_mode = 2
+step = 0.5
+ticks_on_borders = true
+
+[node name="AirFrictionLabel" type="Label" parent="PhysicsSettings"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_wmh1k")
+text = "Air Friction:"
+
+[node name="AirFrictionSlider" type="HSlider" parent="PhysicsSettings"]
+layout_mode = 2
+step = 0.5
+ticks_on_borders = true
+
+[node name="JumpPowerLabel" type="Label" parent="PhysicsSettings"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_wmh1k")
+text = "Jump Power:"
+
+[node name="JumpPowerSlider" type="HSlider" parent="PhysicsSettings"]
+layout_mode = 2
+step = 0.5
+ticks_on_borders = true
+
+[node name="JumpMidairLabel" type="Label" parent="PhysicsSettings"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_wmh1k")
+text = "Mid Air Jumps:"
+
+[node name="JumpMidairSlider" type="HSlider" parent="PhysicsSettings"]
+layout_mode = 2
+step = 0.5
+ticks_on_borders = true
+
+[node name="GravityLabel" type="Label" parent="PhysicsSettings"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_wmh1k")
+text = "Gravity:"
+
+[node name="GravitySlider" type="HSlider" parent="PhysicsSettings"]
+layout_mode = 2
+step = 0.5
+ticks_on_borders = true
+
 [connection signal="pressed" from="Main/PlayButton" to="." method="_on_PlayButton_pressed"]
 [connection signal="pressed" from="Main/QuitButton" to="." method="_on_QuitButton_pressed"]
+[connection signal="value_changed" from="PhysicsSettings/GroundSpeedSlider" to="." method="_on_ground_speed_slider_value_changed"]
+[connection signal="value_changed" from="PhysicsSettings/GroundAccelSlider" to="." method="_on_ground_accel_slider_value_changed"]
+[connection signal="value_changed" from="PhysicsSettings/GroundFrictionSlider" to="." method="_on_ground_friction_slider_value_changed"]
+[connection signal="value_changed" from="PhysicsSettings/AirSpeedSlider" to="." method="_on_air_speed_slider_value_changed"]
+[connection signal="value_changed" from="PhysicsSettings/AirAccelSlider" to="." method="_on_air_accel_slider_value_changed"]
+[connection signal="value_changed" from="PhysicsSettings/AirFrictionSlider" to="." method="_on_air_friction_slider_value_changed"]
+[connection signal="value_changed" from="PhysicsSettings/JumpPowerSlider" to="." method="_on_jump_power_slider_value_changed"]
+[connection signal="value_changed" from="PhysicsSettings/JumpMidairSlider" to="." method="_on_jump_midair_slider_value_changed"]
+[connection signal="value_changed" from="PhysicsSettings/GravitySlider" to="." method="_on_gravity_slider_value_changed"]

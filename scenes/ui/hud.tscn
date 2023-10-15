@@ -13,4 +13,5 @@ offset_right = 40.0
 offset_bottom = 23.0
 
 [node name="Crosshair" type="Sprite2D" parent="."]
+visible = false
 texture = SubResource("PlaceholderTexture2D_5yxvp")
