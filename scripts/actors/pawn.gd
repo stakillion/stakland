@@ -29,7 +29,7 @@ func _ready():
 
 
 func _physics_process(delta):
-	# look where our controaller is looking
+	# look where our controller is looking
 	if controller != self && controller.has_method("get_aim_target"):
 		head.look_at(controller.get_aim_target().position)
 
@@ -124,6 +124,8 @@ func jump(midair = true):
 	elif midair && jump_midair_count < jump_midair:
 		velocity.y = jump_power
 		jump_midair_count += 1
+
+	on_ground = false # no longer on ground
 
 
 func get_aim_target():
