@@ -50,6 +50,13 @@ func _on_QuitButton_pressed():
 	get_tree().quit()
 
 
+func _on_fullscreen_button_pressed():
+	if DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_FULLSCREEN:
+		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
+	else:
+		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
+
+
 func _on_ground_speed_slider_value_changed(value):
 	Player.pawn.ground_speed = $PhysicsSettings/GroundSpeedSlider.value
 	$PhysicsSettings/GroundSpeedLabel.text = "Ground Speed: %f" % [Player.pawn.ground_speed]

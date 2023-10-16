@@ -173,6 +173,25 @@ allow_greater = true
 allow_lesser = true
 tick_count = 12
 
+[node name="FullscreenButton" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -140.0
+offset_top = -34.0
+offset_right = 140.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_pressed_color = Color(0, 1, 0.75, 1)
+theme_override_colors/font_hover_color = Color(0, 0.88, 0.66, 1)
+theme_override_fonts/font = ExtResource("2_wmh1k")
+text = "Toggle Fullscreen"
+flat = true
+
 [connection signal="pressed" from="Main/PlayButton" to="." method="_on_PlayButton_pressed"]
 [connection signal="pressed" from="Main/RespawnButton" to="." method="_on_respawn_button_pressed"]
 [connection signal="pressed" from="Main/QuitButton" to="." method="_on_QuitButton_pressed"]
@@ -185,3 +204,4 @@ tick_count = 12
 [connection signal="value_changed" from="PhysicsSettings/JumpPowerSlider" to="." method="_on_jump_power_slider_value_changed"]
 [connection signal="value_changed" from="PhysicsSettings/JumpMidairSlider" to="." method="_on_jump_midair_slider_value_changed"]
 [connection signal="value_changed" from="PhysicsSettings/GravitySlider" to="." method="_on_gravity_slider_value_changed"]
+[connection signal="pressed" from="FullscreenButton" to="." method="_on_fullscreen_button_pressed"]
