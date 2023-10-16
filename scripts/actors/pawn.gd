@@ -29,7 +29,7 @@ func _ready():
 
 
 func _physics_process(delta):
-	# look where our controller is looking
+	# look where our controaller is looking
 	if controller != self && controller.has_method("get_aim_target"):
 		head.look_at(controller.get_aim_target().position)
 
@@ -60,7 +60,7 @@ func move(delta, max_slides = 6):
 		if !collision:
 			continue
 		# if we hit something and it's not too steep then we consider it ground
-		if collision.get_angle() < 0.786:
+		if rad_to_deg(collision.get_angle()) <= 45:
 			on_ground = true
 			jump_midair_count = 0
 		# slide along the normal vector of the colliding body

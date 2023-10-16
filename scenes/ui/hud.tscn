@@ -1,5 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://ga26bevnblxs"]
+[gd_scene load_steps=4 format=3 uid="uid://ga26bevnblxs"]
 
+[ext_resource type="FontFile" uid="uid://cpb8liw262yah" path="res://resources/ui/fonts/PressStart2P-Regular.ttf" id="2_1gm66"]
 [ext_resource type="Script" path="res://scripts/ui/hud.gd" id="2_yy86k"]
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_5yxvp"]
@@ -11,6 +12,8 @@ script = ExtResource("2_yy86k")
 [node name="Info" type="Label" parent="."]
 offset_right = 40.0
 offset_bottom = 23.0
+theme_override_fonts/font = ExtResource("2_1gm66")
+theme_override_font_sizes/font_size = 12
 
 [node name="Crosshair" type="Sprite2D" parent="."]
 visible = false

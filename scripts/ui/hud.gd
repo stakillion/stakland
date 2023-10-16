@@ -6,7 +6,7 @@ func _physics_process(_delta):
 	var fps = Performance.get_monitor(Performance.TIME_FPS)
 	var speed = $/root/World/Pawn.velocity
 	speed.y = 0.0
-	$Info.text = "FPS: %d     H.Speed: %f" % [fps, speed.length()]
+	$Info.text = "FPS:%d\nH.Speed:%f" % [fps, speed.length()]
 
 	# crosshair
 	#var aim_pos = $/root/World/Pawn.get_aim_target().position

@@ -1,6 +1,6 @@
-[gd_scene load_steps=10 format=3 uid="uid://o70p27l476fn"]
+[gd_scene load_steps=17 format=3 uid="uid://o70p27l476fn"]
 
-[ext_resource type="Texture2D" uid="uid://c7tnr6jxwpxpw" path="res://materials/grass1.tga" id="1_v3y4r"]
+[ext_resource type="Texture2D" uid="uid://loxh1icksh70" path="res://materials/grass1.png" id="1_24n2b"]
 
 [sub_resource type="Gradient" id="Gradient_r4md3"]
 interpolation_mode = 2
@@ -38,113 +38,227 @@ ssao_enabled = true
 glow_enabled = true
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_04url"]
-albedo_texture = ExtResource("1_v3y4r")
+albedo_texture = ExtResource("1_24n2b")
 metallic_specular = 0.0
 uv1_scale = Vector3(0.1, 0.1, 0.1)
 uv1_triplanar = true
 texture_filter = 5
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qosgh"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kj4aw"]
+albedo_color = Color(0, 0, 0.501961, 1)
+metallic_specular = 1.0
+roughness = 0.75
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rqnt2"]
+transparency = 1
+albedo_color = Color(1, 0, 0, 0.607843)
+
+[sub_resource type="SphereMesh" id="SphereMesh_sqmsl"]
+material = SubResource("StandardMaterial3D_rqnt2")
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_8psvk"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5n0si"]
+transparency = 1
+albedo_color = Color(0, 1, 0, 0.607843)
+
+[sub_resource type="SphereMesh" id="SphereMesh_xdasw"]
+material = SubResource("StandardMaterial3D_5n0si")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6vir5"]
+transparency = 1
+albedo_color = Color(0, 0, 1, 0.607843)
+
+[sub_resource type="SphereMesh" id="SphereMesh_xhmdm"]
+material = SubResource("StandardMaterial3D_6vir5")
 
 [node name="TestLevel" type="Node3D"]
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(0.888392, -0.367414, 0.275257, 0.0955154, 0.734383, 0.671981, -0.44904, -0.570691, 0.687514, 0, 4.84781, 0)
+transform = Transform3D(0.642788, -0.383022, 0.663414, 0, 0.866025, 0.5, -0.766045, -0.321394, 0.55667, 0, 10, 0)
+light_bake_mode = 1
 shadow_enabled = true
+directional_shadow_blend_splits = true
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_ifkfe")
 
 [node name="CSG" type="Node3D" parent="."]
 
-[node name="SpawnPlatform" type="CSGCombiner3D" parent="CSG"]
+[node name="Grass" type="CSGCombiner3D" parent="CSG"]
 use_collision = true
 
-[node name="Grass" type="CSGBox3D" parent="CSG/SpawnPlatform"]
+[node name="Ground" type="CSGBox3D" parent="CSG/Grass"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.5, 0)
 size = Vector3(50, 3, 50)
 material = SubResource("StandardMaterial3D_04url")
 
-[node name="Bowl" type="CSGSphere3D" parent="CSG/SpawnPlatform"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 5, 15)
+[node name="PitCarve" type="CSGSphere3D" parent="CSG/Grass/Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 2, 18)
 operation = 2
-radius = 7.5
-radial_segments = 24
-rings = 12
+radius = 4.0
+radial_segments = 64
+rings = 2
+material = SubResource("StandardMaterial3D_kj4aw")
 
-[node name="Platform2" type="CSGBox3D" parent="CSG"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, -1.5, 0)
+[node name="Floor2" type="CSGCombiner3D" parent="CSG"]
 use_collision = true
-size = Vector3(50, 3, 50)
 
-[node name="NorthEdge" type="CSGBox3D" parent="CSG"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25.25, -1.45, 0)
+[node name="Ground" type="CSGBox3D" parent="CSG/Floor2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, -5, 0)
 use_collision = true
-size = Vector3(0.5, 3.1, 50)
+size = Vector3(50, 10, 50)
 
-[node name="EastEdge" type="CSGBox3D" parent="CSG"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, -1.45, 25.25)
-use_collision = true
-size = Vector3(100, 3.1, 0.5)
+[node name="Box" type="CSGBox3D" parent="CSG/Floor2/Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 7, 0)
+size = Vector3(33, 4, 44)
 
-[node name="SouthEdge" type="CSGBox3D" parent="CSG"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -75.25, -1.45, 0)
+[node name="SlopeCarve1" type="CSGPolygon3D" parent="CSG/Floor2/Ground/Box"]
+transform = Transform3D(4.37114e-08, -3.82137e-15, 1, -8.74228e-08, -1, 0, 1, -8.74228e-08, -4.37114e-08, 16.5, 3, 18)
+operation = 2
 use_collision = true
-size = Vector3(0.5, 3.1, 50)
+polygon = PackedVector2Array(0, 0, 0, 0, 8, 0, 4, 5)
+depth = 33.0
+material = SubResource("StandardMaterial3D_kj4aw")
 
-[node name="WestEdge" type="CSGBox3D" parent="CSG"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, -1.45, -25.25)
+[node name="SlopeCarve2" type="CSGPolygon3D" parent="CSG/Floor2/Ground/Box"]
+transform = Transform3D(4.37114e-08, -3.82137e-15, 1, -8.74228e-08, -1, 0, 1, -8.74228e-08, -4.37114e-08, 16.5, 3, -26)
+operation = 2
 use_collision = true
-size = Vector3(100, 3.1, 0.5)
+polygon = PackedVector2Array(0, 0, 0, 0, 8, 0, 4, 5)
+depth = 33.0
+material = SubResource("StandardMaterial3D_kj4aw")
+
+[node name="RoomCarve" type="CSGBox3D" parent="CSG/Floor2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -48.5, -1.5, 0)
+operation = 2
+size = Vector3(32, 10, 37)
+
+[node name="DoorCarve" type="CSGPolygon3D" parent="CSG/Floor2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -34, -6, 5)
+operation = 2
+polygon = PackedVector2Array(0, 0, 0, 6, 8, 6, 0, 0)
+depth = 10.0
+
+[node name="DoorCarve2" type="CSGPolygon3D" parent="CSG/Floor2"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, -63, -6, -5)
+operation = 2
+polygon = PackedVector2Array(0, 0, 0, 6, 8, 6, 0, 0)
+depth = 10.0
 
 [node name="Obstacles" type="CSGCombiner3D" parent="CSG"]
 use_collision = true
 
 [node name="ShortWall" type="CSGBox3D" parent="CSG/Obstacles"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.5, 0.75, -3.5)
-size = Vector3(0.5, 1.5, 7.5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.5, 0.75, 0)
+use_collision = true
+size = Vector3(0.5, 1.5, 10)
 
 [node name="TallWall" type="CSGBox3D" parent="CSG/Obstacles"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, -20)
-material_override = SubResource("StandardMaterial3D_qosgh")
+use_collision = true
 size = Vector3(20, 10, 0.5)
 
 [node name="Slope1" type="CSGPolygon3D" parent="CSG/Obstacles"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.5, 0, -10)
-polygon = PackedVector2Array(0, 0, 0, 0, 10, 0, 10, 3)
+use_collision = true
+polygon = PackedVector2Array(0, 0, 0, 0, 10, 0, 10, 3.333)
 depth = 2.0
 
 [node name="Slope2" type="CSGPolygon3D" parent="CSG/Obstacles"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.5, 0, -6.5)
-polygon = PackedVector2Array(0, 0, 0, 0, 10, 0, 10, 6)
+use_collision = true
+polygon = PackedVector2Array(0, 0, 0, 0, 10, 0, 10, 6.666)
 depth = 2.0
 
 [node name="Slope3" type="CSGPolygon3D" parent="CSG/Obstacles"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.5, 0, -3)
-polygon = PackedVector2Array(0, 0, 0, 0, 10, 0, 10, 9)
+use_collision = true
+polygon = PackedVector2Array(0, 0, 0, 0, 10, 0, 10, 9.999)
 depth = 2.0
 
 [node name="Slope4" type="CSGPolygon3D" parent="CSG/Obstacles"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.5, 0, 8.5)
-polygon = PackedVector2Array(0, 0, 0, 0, 10, 0, 10, 10.5)
+use_collision = true
+polygon = PackedVector2Array(0, 0, 0, 0, 10, 0, 10, 11)
 depth = 10.0
+material = SubResource("StandardMaterial3D_kj4aw")
 
 [node name="Slope5" type="CSGPolygon3D" parent="CSG/Obstacles"]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -30, 0, 20)
-polygon = PackedVector2Array(0, 0, 0, 0, 10, 0, 5, 6)
-depth = 30.0
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -60, 4, 18.8)
+use_collision = true
+polygon = PackedVector2Array(0, 0, 8, 0, 4, 5)
+depth = 37.6
+material = SubResource("StandardMaterial3D_kj4aw")
 
 [node name="Slope6" type="CSGPolygon3D" parent="CSG/Obstacles"]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -30, 0, 5)
-polygon = PackedVector2Array(0, 0, 0, 0, 10, 0, 5, 6)
-depth = 30.0
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -44.985, 4, 18.8)
+use_collision = true
+polygon = PackedVector2Array(0, 0, 8, 0, 4, 5)
+depth = 37.6
+material = SubResource("StandardMaterial3D_kj4aw")
 
-[node name="Slope7" type="CSGPolygon3D" parent="CSG/Obstacles"]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -30, 0, -10)
-polygon = PackedVector2Array(0, 0, 0, 0, 10, 0, 5, 6)
-depth = 30.0
+[node name="NorthEdge" type="CSGBox3D" parent="CSG/Obstacles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25.25, -1.45, 0)
+use_collision = true
+size = Vector3(0.5, 3.1, 50)
 
-[node name="Slope8" type="CSGPolygon3D" parent="CSG/Obstacles"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -72.22, 0, 20)
-polygon = PackedVector2Array(0, 0, 0, 0, 10, 0, 5, 6)
-depth = 40.0
+[node name="EastEdge" type="CSGBox3D" parent="CSG/Obstacles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, -1.45, 25.25)
+use_collision = true
+size = Vector3(100, 3.1, 0.5)
+
+[node name="SouthEdge" type="CSGBox3D" parent="CSG/Obstacles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -75.25, -1.45, 0)
+use_collision = true
+size = Vector3(0.5, 3.1, 50)
+
+[node name="WestEdge" type="CSGBox3D" parent="CSG/Obstacles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, -1.45, -25.25)
+use_collision = true
+size = Vector3(100, 3.1, 0.5)
+
+[node name="RedLamp" type="RigidBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, 0, 0)
+mass = 0.01
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="RedLamp"]
+mesh = SubResource("SphereMesh_sqmsl")
+skeleton = NodePath("../..")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RedLamp"]
+shape = SubResource("SphereShape3D_8psvk")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="RedLamp"]
+light_color = Color(1, 0, 0, 1)
+light_energy = 5.0
+
+[node name="GreenLamp" type="RigidBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, 0, 3)
+mass = 0.01
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="GreenLamp"]
+mesh = SubResource("SphereMesh_xdasw")
+skeleton = NodePath("../..")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="GreenLamp"]
+shape = SubResource("SphereShape3D_8psvk")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="GreenLamp"]
+light_color = Color(0, 1, 0, 1)
+light_energy = 5.0
+
+[node name="BlueLamp" type="RigidBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, 0, -3)
+mass = 0.01
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="BlueLamp"]
+mesh = SubResource("SphereMesh_xhmdm")
+skeleton = NodePath("../..")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="BlueLamp"]
+shape = SubResource("SphereShape3D_8psvk")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="BlueLamp"]
+light_color = Color(0, 0, 1, 1)
+light_energy = 5.0

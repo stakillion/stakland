@@ -42,6 +42,10 @@ func _on_PlayButton_pressed():
 	visible = false
 
 
+func _on_respawn_button_pressed():
+	Player.pawn.position = Vector3(0, 2, 0)
+
+
 func _on_QuitButton_pressed():
 	get_tree().quit()
 
@@ -88,4 +92,4 @@ func _on_jump_midair_slider_value_changed(value):
 
 func _on_gravity_slider_value_changed(value):
 	Player.pawn.gravity = $PhysicsSettings/GravitySlider.value
-	$PhysicsSettings/GravityLabel.text = "Gravity: %d" % [Player.pawn.gravity]
+	$PhysicsSettings/GravityLabel.text = "Gravity: %f" % [Player.pawn.gravity]

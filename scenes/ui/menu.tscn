@@ -13,7 +13,8 @@ grow_vertical = 2
 script = ExtResource("1_x8rw8")
 
 [node name="Background" type="ColorRect" parent="."]
-layout_mode = 0
+layout_mode = 1
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 color = Color(0, 0, 0, 0.501961)
@@ -29,22 +30,39 @@ grow_vertical = 2
 
 [node name="PlayButton" type="Button" parent="Main"]
 layout_mode = 2
+theme_override_colors/font_pressed_color = Color(0, 1, 0.75, 1)
+theme_override_colors/font_hover_color = Color(0, 0.88, 0.66, 1)
 theme_override_fonts/font = ExtResource("2_wmh1k")
 text = "Resume"
 flat = true
 
+[node name="RespawnButton" type="Button" parent="Main"]
+layout_mode = 2
+theme_override_colors/font_pressed_color = Color(0, 1, 0.75, 1)
+theme_override_colors/font_hover_color = Color(0, 0.88, 0.66, 1)
+theme_override_fonts/font = ExtResource("2_wmh1k")
+text = "Respawn"
+flat = true
+
 [node name="QuitButton" type="Button" parent="Main"]
 layout_mode = 2
+theme_override_colors/font_pressed_color = Color(0, 1, 0.75, 1)
+theme_override_colors/font_hover_color = Color(0, 0.88, 0.66, 1)
 theme_override_fonts/font = ExtResource("2_wmh1k")
 text = "Quit"
 flat = true
 
 [node name="PhysicsSettings" type="VBoxContainer" parent="."]
-layout_mode = 0
-offset_left = 865.0
-offset_top = 3.0
-offset_right = 1243.0
-offset_bottom = 343.0
+custom_minimum_size = Vector2(420, 0)
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -325.0
+offset_top = 10.0
+offset_right = 95.0
+offset_bottom = 393.0
+grow_horizontal = 0
 scale = Vector2(0.75, 0.75)
 
 [node name="GroundSpeedLabel" type="Label" parent="PhysicsSettings"]
@@ -55,7 +73,9 @@ text = "Ground Speed:"
 [node name="GroundSpeedSlider" type="HSlider" parent="PhysicsSettings"]
 layout_mode = 2
 step = 0.5
-ticks_on_borders = true
+allow_greater = true
+allow_lesser = true
+tick_count = 12
 
 [node name="GroundAccelLabel" type="Label" parent="PhysicsSettings"]
 layout_mode = 2
@@ -65,7 +85,9 @@ text = "Ground Accel:"
 [node name="GroundAccelSlider" type="HSlider" parent="PhysicsSettings"]
 layout_mode = 2
 step = 0.5
-ticks_on_borders = true
+allow_greater = true
+allow_lesser = true
+tick_count = 12
 
 [node name="GroundFrictionLabel" type="Label" parent="PhysicsSettings"]
 layout_mode = 2
@@ -75,7 +97,9 @@ text = "Ground Friction:"
 [node name="GroundFrictionSlider" type="HSlider" parent="PhysicsSettings"]
 layout_mode = 2
 step = 0.5
-ticks_on_borders = true
+allow_greater = true
+allow_lesser = true
+tick_count = 12
 
 [node name="AirSpeedLabel" type="Label" parent="PhysicsSettings"]
 layout_mode = 2
@@ -85,7 +109,9 @@ text = "Air Speed:"
 [node name="AirSpeedSlider" type="HSlider" parent="PhysicsSettings"]
 layout_mode = 2
 step = 0.5
-ticks_on_borders = true
+allow_greater = true
+allow_lesser = true
+tick_count = 12
 
 [node name="AirAccelLabel" type="Label" parent="PhysicsSettings"]
 layout_mode = 2
@@ -95,7 +121,9 @@ text = "Air Accel:"
 [node name="AirAccelSlider" type="HSlider" parent="PhysicsSettings"]
 layout_mode = 2
 step = 0.5
-ticks_on_borders = true
+allow_greater = true
+allow_lesser = true
+tick_count = 12
 
 [node name="AirFrictionLabel" type="Label" parent="PhysicsSettings"]
 layout_mode = 2
@@ -105,7 +133,9 @@ text = "Air Friction:"
 [node name="AirFrictionSlider" type="HSlider" parent="PhysicsSettings"]
 layout_mode = 2
 step = 0.5
-ticks_on_borders = true
+allow_greater = true
+allow_lesser = true
+tick_count = 12
 
 [node name="JumpPowerLabel" type="Label" parent="PhysicsSettings"]
 layout_mode = 2
@@ -115,7 +145,9 @@ text = "Jump Power:"
 [node name="JumpPowerSlider" type="HSlider" parent="PhysicsSettings"]
 layout_mode = 2
 step = 0.5
-ticks_on_borders = true
+allow_greater = true
+allow_lesser = true
+tick_count = 12
 
 [node name="JumpMidairLabel" type="Label" parent="PhysicsSettings"]
 layout_mode = 2
@@ -125,7 +157,9 @@ text = "Mid Air Jumps:"
 [node name="JumpMidairSlider" type="HSlider" parent="PhysicsSettings"]
 layout_mode = 2
 step = 0.5
-ticks_on_borders = true
+allow_greater = true
+allow_lesser = true
+tick_count = 12
 
 [node name="GravityLabel" type="Label" parent="PhysicsSettings"]
 layout_mode = 2
@@ -135,9 +169,12 @@ text = "Gravity:"
 [node name="GravitySlider" type="HSlider" parent="PhysicsSettings"]
 layout_mode = 2
 step = 0.5
-ticks_on_borders = true
+allow_greater = true
+allow_lesser = true
+tick_count = 12
 
 [connection signal="pressed" from="Main/PlayButton" to="." method="_on_PlayButton_pressed"]
+[connection signal="pressed" from="Main/RespawnButton" to="." method="_on_respawn_button_pressed"]
 [connection signal="pressed" from="Main/QuitButton" to="." method="_on_QuitButton_pressed"]
 [connection signal="value_changed" from="PhysicsSettings/GroundSpeedSlider" to="." method="_on_ground_speed_slider_value_changed"]
 [connection signal="value_changed" from="PhysicsSettings/GroundAccelSlider" to="." method="_on_ground_accel_slider_value_changed"]
