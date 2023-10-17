@@ -17,6 +17,8 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 color = Color(0, 0, 0, 0.501961)
 
 [node name="Main" type="VBoxContainer" parent="."]
@@ -59,119 +61,172 @@ anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
 offset_left = -325.0
-offset_top = 10.0
+offset_top = 32.0
 offset_right = 95.0
-offset_bottom = 393.0
+offset_bottom = 399.0
 grow_horizontal = 0
 scale = Vector2(0.75, 0.75)
 
-[node name="GroundSpeedLabel" type="Label" parent="PhysicsSettings"]
+[node name="GroundSpeed" type="HSlider" parent="PhysicsSettings"]
 layout_mode = 2
+size_flags_vertical = 2
+step = 0.5
+allow_greater = true
+allow_lesser = true
+tick_count = 12
+metadata/property = "ground_speed"
+metadata/label = "Ground Speed"
+
+[node name="Label" type="Label" parent="PhysicsSettings/GroundSpeed"]
+layout_mode = 2
+offset_top = -23.0
+offset_right = 420.0
+offset_bottom = -4.0
 theme_override_fonts/font = ExtResource("2_wmh1k")
 text = "Ground Speed:"
 
-[node name="GroundSpeedSlider" type="HSlider" parent="PhysicsSettings"]
+[node name="GroundAccel" type="HSlider" parent="PhysicsSettings"]
 layout_mode = 2
+size_flags_vertical = 2
 step = 0.5
 allow_greater = true
 allow_lesser = true
 tick_count = 12
+metadata/property = "ground_accel"
+metadata/label = "Ground Accel"
 
-[node name="GroundAccelLabel" type="Label" parent="PhysicsSettings"]
+[node name="Label" type="Label" parent="PhysicsSettings/GroundAccel"]
 layout_mode = 2
+offset_top = -23.0
+offset_right = 420.0
+offset_bottom = -4.0
 theme_override_fonts/font = ExtResource("2_wmh1k")
 text = "Ground Accel:"
 
-[node name="GroundAccelSlider" type="HSlider" parent="PhysicsSettings"]
+[node name="GroundFriction" type="HSlider" parent="PhysicsSettings"]
 layout_mode = 2
+size_flags_vertical = 2
 step = 0.5
 allow_greater = true
 allow_lesser = true
 tick_count = 12
+metadata/property = "ground_friction"
+metadata/label = "Ground Friction"
 
-[node name="GroundFrictionLabel" type="Label" parent="PhysicsSettings"]
+[node name="Label" type="Label" parent="PhysicsSettings/GroundFriction"]
 layout_mode = 2
+offset_top = -23.0
+offset_right = 420.0
+offset_bottom = -4.0
 theme_override_fonts/font = ExtResource("2_wmh1k")
 text = "Ground Friction:"
 
-[node name="GroundFrictionSlider" type="HSlider" parent="PhysicsSettings"]
+[node name="AirSpeed" type="HSlider" parent="PhysicsSettings"]
 layout_mode = 2
+size_flags_vertical = 2
 step = 0.5
 allow_greater = true
 allow_lesser = true
 tick_count = 12
+metadata/property = "air_speed"
+metadata/label = "Air Speed"
 
-[node name="AirSpeedLabel" type="Label" parent="PhysicsSettings"]
+[node name="Label" type="Label" parent="PhysicsSettings/AirSpeed"]
 layout_mode = 2
+offset_top = -23.0
+offset_right = 420.0
+offset_bottom = -4.0
 theme_override_fonts/font = ExtResource("2_wmh1k")
 text = "Air Speed:"
 
-[node name="AirSpeedSlider" type="HSlider" parent="PhysicsSettings"]
+[node name="AirAccel" type="HSlider" parent="PhysicsSettings"]
 layout_mode = 2
+size_flags_vertical = 2
 step = 0.5
 allow_greater = true
 allow_lesser = true
 tick_count = 12
+metadata/property = "air_accel"
+metadata/label = "Air Accel"
 
-[node name="AirAccelLabel" type="Label" parent="PhysicsSettings"]
+[node name="Label" type="Label" parent="PhysicsSettings/AirAccel"]
 layout_mode = 2
+offset_top = -23.0
+offset_right = 420.0
+offset_bottom = -4.0
 theme_override_fonts/font = ExtResource("2_wmh1k")
 text = "Air Accel:"
 
-[node name="AirAccelSlider" type="HSlider" parent="PhysicsSettings"]
+[node name="AirFriction" type="HSlider" parent="PhysicsSettings"]
 layout_mode = 2
+size_flags_vertical = 2
 step = 0.5
 allow_greater = true
 allow_lesser = true
 tick_count = 12
+metadata/property = "air_friction"
+metadata/label = "Air Friction"
 
-[node name="AirFrictionLabel" type="Label" parent="PhysicsSettings"]
+[node name="Label" type="Label" parent="PhysicsSettings/AirFriction"]
 layout_mode = 2
+offset_top = -23.0
+offset_right = 420.0
+offset_bottom = -4.0
 theme_override_fonts/font = ExtResource("2_wmh1k")
 text = "Air Friction:"
 
-[node name="AirFrictionSlider" type="HSlider" parent="PhysicsSettings"]
+[node name="JumpPower" type="HSlider" parent="PhysicsSettings"]
 layout_mode = 2
+size_flags_vertical = 2
 step = 0.5
 allow_greater = true
 allow_lesser = true
 tick_count = 12
+metadata/property = "jump_power"
+metadata/label = "Jump Power"
 
-[node name="JumpPowerLabel" type="Label" parent="PhysicsSettings"]
+[node name="Label" type="Label" parent="PhysicsSettings/JumpPower"]
 layout_mode = 2
+offset_top = -23.0
+offset_right = 420.0
+offset_bottom = -4.0
 theme_override_fonts/font = ExtResource("2_wmh1k")
 text = "Jump Power:"
 
-[node name="JumpPowerSlider" type="HSlider" parent="PhysicsSettings"]
+[node name="JumpMidair" type="HSlider" parent="PhysicsSettings"]
 layout_mode = 2
-step = 0.5
+size_flags_vertical = 2
 allow_greater = true
 allow_lesser = true
 tick_count = 12
+metadata/property = "jump_midair"
+metadata/label = "Mid Air Jumps"
 
-[node name="JumpMidairLabel" type="Label" parent="PhysicsSettings"]
+[node name="Label" type="Label" parent="PhysicsSettings/JumpMidair"]
 layout_mode = 2
+offset_top = -23.0
+offset_right = 420.0
+offset_bottom = -4.0
 theme_override_fonts/font = ExtResource("2_wmh1k")
 text = "Mid Air Jumps:"
 
-[node name="JumpMidairSlider" type="HSlider" parent="PhysicsSettings"]
+[node name="Gravity" type="HSlider" parent="PhysicsSettings"]
 layout_mode = 2
+size_flags_vertical = 2
 step = 0.5
 allow_greater = true
 allow_lesser = true
 tick_count = 12
+metadata/property = "gravity"
+metadata/label = "Gravity"
 
-[node name="GravityLabel" type="Label" parent="PhysicsSettings"]
+[node name="Label" type="Label" parent="PhysicsSettings/Gravity"]
 layout_mode = 2
+offset_top = -23.0
+offset_right = 420.0
+offset_bottom = -4.0
 theme_override_fonts/font = ExtResource("2_wmh1k")
 text = "Gravity:"
-
-[node name="GravitySlider" type="HSlider" parent="PhysicsSettings"]
-layout_mode = 2
-step = 0.5
-allow_greater = true
-allow_lesser = true
-tick_count = 12
 
 [node name="FullscreenButton" type="Button" parent="."]
 layout_mode = 1
@@ -195,13 +250,4 @@ flat = true
 [connection signal="pressed" from="Main/PlayButton" to="." method="_on_PlayButton_pressed"]
 [connection signal="pressed" from="Main/RespawnButton" to="." method="_on_respawn_button_pressed"]
 [connection signal="pressed" from="Main/QuitButton" to="." method="_on_QuitButton_pressed"]
-[connection signal="value_changed" from="PhysicsSettings/GroundSpeedSlider" to="." method="_on_ground_speed_slider_value_changed"]
-[connection signal="value_changed" from="PhysicsSettings/GroundAccelSlider" to="." method="_on_ground_accel_slider_value_changed"]
-[connection signal="value_changed" from="PhysicsSettings/GroundFrictionSlider" to="." method="_on_ground_friction_slider_value_changed"]
-[connection signal="value_changed" from="PhysicsSettings/AirSpeedSlider" to="." method="_on_air_speed_slider_value_changed"]
-[connection signal="value_changed" from="PhysicsSettings/AirAccelSlider" to="." method="_on_air_accel_slider_value_changed"]
-[connection signal="value_changed" from="PhysicsSettings/AirFrictionSlider" to="." method="_on_air_friction_slider_value_changed"]
-[connection signal="value_changed" from="PhysicsSettings/JumpPowerSlider" to="." method="_on_jump_power_slider_value_changed"]
-[connection signal="value_changed" from="PhysicsSettings/JumpMidairSlider" to="." method="_on_jump_midair_slider_value_changed"]
-[connection signal="value_changed" from="PhysicsSettings/GravitySlider" to="." method="_on_gravity_slider_value_changed"]
 [connection signal="pressed" from="FullscreenButton" to="." method="_on_fullscreen_button_pressed"]

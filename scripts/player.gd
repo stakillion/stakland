@@ -26,6 +26,7 @@ func _ready():
 	camera = Camera3D.new()
 	add_child(camera)
 	camera.name = "Camera"
+	camera.fov = 90
 	camera.make_current()
 
 

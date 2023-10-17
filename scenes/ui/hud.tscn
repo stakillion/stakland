@@ -3,7 +3,7 @@
 [ext_resource type="FontFile" uid="uid://cpb8liw262yah" path="res://resources/ui/fonts/PressStart2P-Regular.ttf" id="2_1gm66"]
 [ext_resource type="Script" path="res://scripts/ui/hud.gd" id="2_yy86k"]
 
-[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_5yxvp"]
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_mhe8r"]
 size = Vector2(3, 3)
 
 [node name="Hud" type="Node2D"]
@@ -17,4 +17,6 @@ theme_override_font_sizes/font_size = 12
 
 [node name="Crosshair" type="Sprite2D" parent="."]
 visible = false
-texture = SubResource("PlaceholderTexture2D_5yxvp")
+modulate = Color(1, 0, 0, 1)
+rotation = 0.785398
+texture = SubResource("PlaceholderTexture2D_mhe8r")
