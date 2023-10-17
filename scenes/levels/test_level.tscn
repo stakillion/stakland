@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://o70p27l476fn"]
+[gd_scene load_steps=20 format=3 uid="uid://o70p27l476fn"]
 
 [ext_resource type="Texture2D" uid="uid://loxh1icksh70" path="res://materials/grass1.png" id="1_24n2b"]
 
@@ -88,13 +88,8 @@ rim = 0.1
 [sub_resource type="SphereMesh" id="SphereMesh_bdxpx"]
 material = SubResource("StandardMaterial3D_cpuil")
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_jwuh7"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_1136q"]
 viewport_path = NodePath("SubViewport")
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wjixc"]
-resource_local_to_scene = true
-albedo_texture = SubResource("ViewportTexture_jwuh7")
-metallic_specular = 0.0
 
 [node name="TestLevel" type="Node3D"]
 
@@ -299,13 +294,14 @@ shape = SubResource("SphereShape3D_8psvk")
 [node name="OmniLight3D" type="OmniLight3D" parent="WhiteLamp"]
 light_energy = 5.0
 
-[node name="Monitor" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, -19.7)
-size = Vector3(15, 7.5, 0.002)
-material = SubResource("StandardMaterial3D_wjixc")
-
 [node name="SubViewport" type="SubViewport" parent="."]
 size = Vector2i(1024, 512)
+render_target_update_mode = 4
+
+[node name="Monitor" type="Sprite3D" parent="SubViewport"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, -19.7)
+pixel_size = 0.015
+texture = SubResource("ViewportTexture_1136q")
 
 [node name="Camera3D" type="Camera3D" parent="SubViewport"]
 transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -55, -5, 0)
