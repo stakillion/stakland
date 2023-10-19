@@ -56,6 +56,21 @@ func _process(delta):
 	camera.global_position = new_pos
 
 
+	# jumping
+	if Input.is_action_just_pressed("jump"):
+		pawn.jump()
+	elif auto_jump && Input.is_action_pressed("jump"):
+		pawn.jump(false) # auto jump (no midair)
+
+	# interaction
+	if Input.is_action_just_pressed("interact"):
+		if pawn.has_method("interact"):
+			pawn.interact()
+	if Input.is_action_just_pressed("action"):
+		if pawn.has_method("action"):
+			pawn.action()
+
+
 func _unhandled_input(event):
 	if event is InputEventMouseMotion:
 		# get mouse coordinates for camera rotation
@@ -75,21 +90,6 @@ func _unhandled_input(event):
 		desired_zoom = clamp(desired_zoom - 0.5, 0.0, zoom_max) if desired_zoom - 0.5 >= zoom_min else 0.0
 	if event.is_action_released("zoom_out"):
 		desired_zoom = zoom_min if desired_zoom + 0.5 <= zoom_min else clamp(desired_zoom + 0.5, 0.0, zoom_max)
-
-	# jumping
-	if Input.is_action_just_pressed("jump"):
-		pawn.jump()
-	elif auto_jump && Input.is_action_pressed("jump"):
-		pawn.jump(false) # auto jump (no midair)
-
-	# interaction
-	if Input.is_action_just_pressed("interact"):
-		if pawn.has_method("interact"):
-			pawn.interact()
-
-	if Input.is_action_just_pressed("action"):
-		if pawn.has_method("action"):
-			pawn.action()
 
 
 func get_aim_target(distance = 32768):
