@@ -1,6 +1,7 @@
-[gd_scene load_steps=20 format=3 uid="uid://o70p27l476fn"]
+[gd_scene load_steps=21 format=3 uid="uid://o70p27l476fn"]
 
 [ext_resource type="Texture2D" uid="uid://loxh1icksh70" path="res://materials/grass1.png" id="1_24n2b"]
+[ext_resource type="Script" path="res://scripts/objects/item.gd" id="2_kd064"]
 
 [sub_resource type="Gradient" id="Gradient_r4md3"]
 interpolation_mode = 2
@@ -50,6 +51,17 @@ albedo_color = Color(0, 0, 0.501961, 1)
 metallic_specular = 1.0
 roughness = 0.75
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6vir5"]
+transparency = 1
+albedo_color = Color(0, 0, 1, 0.607843)
+rim_enabled = true
+rim = 0.1
+
+[sub_resource type="SphereMesh" id="SphereMesh_xhmdm"]
+material = SubResource("StandardMaterial3D_6vir5")
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_8psvk"]
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rqnt2"]
 transparency = 1
 albedo_color = Color(1, 0, 0, 0.607843)
@@ -59,8 +71,6 @@ rim = 0.1
 [sub_resource type="SphereMesh" id="SphereMesh_sqmsl"]
 material = SubResource("StandardMaterial3D_rqnt2")
 
-[sub_resource type="SphereShape3D" id="SphereShape3D_8psvk"]
-
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5n0si"]
 transparency = 1
 albedo_color = Color(0, 1, 0, 0.607843)
@@ -69,15 +79,6 @@ rim = 0.1
 
 [sub_resource type="SphereMesh" id="SphereMesh_xdasw"]
 material = SubResource("StandardMaterial3D_5n0si")
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6vir5"]
-transparency = 1
-albedo_color = Color(0, 0, 1, 0.607843)
-rim_enabled = true
-rim = 0.1
-
-[sub_resource type="SphereMesh" id="SphereMesh_xhmdm"]
-material = SubResource("StandardMaterial3D_6vir5")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cpuil"]
 transparency = 1
@@ -89,7 +90,7 @@ rim = 0.1
 material = SubResource("StandardMaterial3D_cpuil")
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_1136q"]
-viewport_path = NodePath("SubViewport")
+viewport_path = NodePath("Viewport")
 
 [node name="TestLevel" type="Node3D"]
 
@@ -104,6 +105,7 @@ environment = SubResource("Environment_ifkfe")
 
 [node name="Floor1" type="CSGCombiner3D" parent="."]
 use_collision = true
+collision_layer = 3
 
 [node name="Grass" type="CSGBox3D" parent="Floor1"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.5, 0)
@@ -120,6 +122,7 @@ material = SubResource("StandardMaterial3D_kj4aw")
 
 [node name="Floor2" type="CSGCombiner3D" parent="."]
 use_collision = true
+collision_layer = 3
 
 [node name="Ground" type="CSGBox3D" parent="Floor2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, -5, 0)
@@ -165,6 +168,7 @@ depth = 10.0
 
 [node name="Obstacles" type="CSGCombiner3D" parent="."]
 use_collision = true
+collision_layer = 3
 
 [node name="ShortWall" type="CSGBox3D" parent="Obstacles"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.5, 0.75, 0)
@@ -235,9 +239,26 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, -1.45, -25.25)
 use_collision = true
 size = Vector3(100, 3.1, 0.5)
 
+[node name="BlueLamp" type="RigidBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, 0, -3)
+mass = 0.01
+script = ExtResource("2_kd064")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="BlueLamp"]
+mesh = SubResource("SphereMesh_xhmdm")
+skeleton = NodePath("../..")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="BlueLamp"]
+shape = SubResource("SphereShape3D_8psvk")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="BlueLamp"]
+light_color = Color(0, 0, 1, 1)
+light_energy = 5.0
+
 [node name="RedLamp" type="RigidBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, 0, 0)
 mass = 0.01
+script = ExtResource("2_kd064")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="RedLamp"]
 mesh = SubResource("SphereMesh_sqmsl")
@@ -253,6 +274,7 @@ light_energy = 5.0
 [node name="GreenLamp" type="RigidBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, 0, 3)
 mass = 0.01
+script = ExtResource("2_kd064")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="GreenLamp"]
 mesh = SubResource("SphereMesh_xdasw")
@@ -265,24 +287,10 @@ shape = SubResource("SphereShape3D_8psvk")
 light_color = Color(0, 1, 0, 1)
 light_energy = 5.0
 
-[node name="BlueLamp" type="RigidBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, 0, -3)
-mass = 0.01
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="BlueLamp"]
-mesh = SubResource("SphereMesh_xhmdm")
-skeleton = NodePath("../..")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="BlueLamp"]
-shape = SubResource("SphereShape3D_8psvk")
-
-[node name="OmniLight3D" type="OmniLight3D" parent="BlueLamp"]
-light_color = Color(0, 0, 1, 1)
-light_energy = 5.0
-
 [node name="WhiteLamp" type="RigidBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.0748, 0.640447, 14.6147)
 mass = 0.01
+script = ExtResource("2_kd064")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="WhiteLamp"]
 mesh = SubResource("SphereMesh_bdxpx")
@@ -294,15 +302,15 @@ shape = SubResource("SphereShape3D_8psvk")
 [node name="OmniLight3D" type="OmniLight3D" parent="WhiteLamp"]
 light_energy = 5.0
 
-[node name="SubViewport" type="SubViewport" parent="."]
+[node name="Viewport" type="SubViewport" parent="."]
 size = Vector2i(1024, 512)
 render_target_update_mode = 4
 
-[node name="Monitor" type="Sprite3D" parent="SubViewport"]
+[node name="Monitor" type="Sprite3D" parent="Viewport"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, -19.7)
 pixel_size = 0.015
 texture = SubResource("ViewportTexture_1136q")
 
-[node name="Camera3D" type="Camera3D" parent="SubViewport"]
+[node name="Camera" type="Camera3D" parent="Viewport"]
 transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -55, -5, 0)
 current = true

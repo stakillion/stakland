@@ -71,21 +71,37 @@ func _unhandled_input(event):
 		ang_velocity.x = (Input.get_action_strength("look_down") - Input.get_action_strength("look_up")) * (joy_sensitivity.y / 5)
 
 	# *zoom*
-	if event.is_action_released("ui_page_up"):
+	if event.is_action_released("zoom_in"):
 		desired_zoom = clamp(desired_zoom - 0.5, 0.0, zoom_max) if desired_zoom - 0.5 >= zoom_min else 0.0
-	if event.is_action_released("ui_page_down"):
+	if event.is_action_released("zoom_out"):
 		desired_zoom = zoom_min if desired_zoom + 0.5 <= zoom_min else clamp(desired_zoom + 0.5, 0.0, zoom_max)
 
+	# jumping
+	if Input.is_action_just_pressed("jump"):
+		pawn.jump()
+	elif auto_jump && Input.is_action_pressed("jump"):
+		pawn.jump(false) # auto jump (no midair)
 
-func get_aim_target():
+	# interaction
+	if Input.is_action_just_pressed("interact"):
+		if pawn.has_method("interact"):
+			pawn.interact()
+
+	if Input.is_action_just_pressed("action"):
+		if pawn.has_method("action"):
+			pawn.action()
+
+
+func get_aim_target(distance = 32768):
 	var ray_start = camera.global_position
-	var ray_end = camera.global_position - camera.global_transform.basis.z * 32768
+	var ray_end = camera.global_position - camera.global_transform.basis.z * distance
 	var query = PhysicsRayQueryParameters3D.create(ray_start, ray_end)
 	query.exclude = [pawn]
 
 	var collision = camera.get_world_3d().direct_space_state.intersect_ray(query)
 	if !collision:
 		collision.position = ray_end
+		collision.collider = null
 
 	return collision
 
@@ -99,11 +115,4 @@ func get_movement():
 	# rotate direction vector according to the camera angle
 	var dir = movement.rotated(Vector3.UP, camera.rotation.y).normalized()
 
-	# jumping
-	var jump = 0 # no jump
-	if Input.is_action_just_pressed("jump"):
-		jump = 1 # jump
-	elif auto_jump && Input.is_action_pressed("jump"):
-		jump = 2 # auto jump (no midair)
-
-	return {"dir" = dir, "speed" = speed, "jump" = jump}
+	return {"dir" = dir, "speed" = speed}

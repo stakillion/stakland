@@ -20,12 +20,20 @@ var velocity = Vector3()
 var on_ground = false
 var jump_midair_count = 0
 
-var head = self
+var head:Node3D = self
+var inventory:Node3D
+var held_item:Node3D
 
 
 func _ready():
 	head = find_child("Head")
 	if !head: head = self
+	inventory = find_child("Inventory")
+	if !inventory:
+		inventory = Node3D.new()
+		inventory.name = "Inventory"
+		add_child(inventory)
+		inventory.position = head.position
 
 
 func _physics_process(delta):
@@ -36,11 +44,6 @@ func _physics_process(delta):
 	# get desired movement from controller
 	var movement = controller.get_movement()
 
-	if movement.jump == 1:
-		jump() # normal jump press
-	elif movement.jump == 2:
-		jump(false) # autojump (no midair jumps)
-
 	# accelerate velocity based on desired movement and ground state
 	if on_ground:
 		ground_accelerate(movement.dir, movement.speed, delta)
@@ -48,6 +51,12 @@ func _physics_process(delta):
 		air_accelerate(movement.dir, movement.speed, delta)
 	# do move based on our new velocity
 	move(delta)
+
+	# update position of held item
+	if held_item:
+		#var new_pos = get_aim_target(2.0).position
+		var new_pos = inventory.global_position - head.global_transform.basis.z * 2
+		held_item.linear_velocity = (new_pos - held_item.position) * (4096 * delta)
 
 
 func move(delta, max_slides = 6):
@@ -119,28 +128,46 @@ func apply_friction(friction, delta):
 
 func jump(midair = true):
 	if on_ground:
+		on_ground = false # no longer on ground
 		velocity.y = jump_power
 		jump_midair_count = 0
 	elif midair && jump_midair_count < jump_midair:
 		velocity.y = jump_power
 		jump_midair_count += 1
 
-	on_ground = false # no longer on ground
 
-
-func get_aim_target():
+func get_aim_target(distance = 32768.0):
 	var ray_start = head.global_position
-	var ray_end = head.global_position - head.global_transform.basis.z * 32768
+	var ray_end = head.global_position - head.global_transform.basis.z * distance
 	var query = PhysicsRayQueryParameters3D.create(ray_start, ray_end)
 	query.exclude = [self]
 
 	var collision = get_world_3d().direct_space_state.intersect_ray(query)
 	if !collision:
 		collision.position = ray_end
+		collision.collider = null
 
 	return collision
 
 
+func interact():
+	var target
+	if held_item && held_item.get_parent() != inventory:
+		target = held_item
+	else:
+		target = get_aim_target(2.0).collider
+	if target && target.has_method("activate"):
+		target.activate(self)
+
+
+func action():
+	if held_item:
+		if held_item.has_method("activate"):
+			held_item.activate(self)
+	else:
+		interact()
+
+
 func get_movement():
 	# we don't have an assigned controller, so do nothing
-	return {"dir" = Vector3(), "speed" = 0.0, "jump" = 0}
+	return {"dir" = Vector3(), "speed" = 0.0}
