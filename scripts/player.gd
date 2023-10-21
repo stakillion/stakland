@@ -12,7 +12,7 @@ extends Node
 
 # camera
 var camera:Camera3D
-var ang_velocity = Vector3()
+var ang_velocity = Vector2()
 var desired_zoom = 0.0
 var zoom = 20.0
 
@@ -36,6 +36,9 @@ func _process(delta):
 		camera.rotation -= ang_velocity * delta
 		camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-89), deg_to_rad(89))
 
+	# inputs
+	process_inputs()
+
 	# lerp current camera zoom to desired zoom for smooth zoom effect
 	zoom = lerp(zoom, desired_zoom, 3 * delta)
 
@@ -56,6 +59,16 @@ func _process(delta):
 	camera.global_position = new_pos
 
 
+func process_inputs():
+	if Menu.visible:
+		return
+
+	# directional movement
+	var dir = Input.get_vector("move_left", "move_right", "move_forward", "move_back")
+	pawn.movement.x = dir.x
+	pawn.movement.z = dir.y
+	pawn.movement = pawn.movement.rotated(Vector3.UP, camera.rotation.y).normalized()
+
 	# jumping
 	if Input.is_action_just_pressed("jump"):
 		pawn.jump()
@@ -70,8 +83,17 @@ func _process(delta):
 		if pawn.has_method("action"):
 			pawn.action()
 
+	# camera zoom
+	if Input.is_action_just_pressed("zoom_in"):
+		desired_zoom = clamp(desired_zoom - 0.5, 0.0, zoom_max) if desired_zoom - 0.5 >= zoom_min else 0.0
+	if Input.is_action_just_pressed("zoom_out"):
+		desired_zoom = zoom_min if desired_zoom + 0.5 <= zoom_min else clamp(desired_zoom + 0.5, 0.0, zoom_max)
+
 
 func _unhandled_input(event):
+	if Menu.visible:
+		return
+
 	if event is InputEventMouseMotion:
 		# get mouse coordinates for camera rotation
 		var rot = camera.rotation
@@ -82,21 +104,16 @@ func _unhandled_input(event):
 		camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-89), deg_to_rad(89))
 	else:
 		# or use input mapping to rotate over time (e.g. joystick)
-		ang_velocity.y = (Input.get_action_strength("look_right") - Input.get_action_strength("look_left")) * (joy_sensitivity.x / 5)
-		ang_velocity.x = (Input.get_action_strength("look_down") - Input.get_action_strength("look_up")) * (joy_sensitivity.y / 5)
-
-	# *zoom*
-	if event.is_action_released("zoom_in"):
-		desired_zoom = clamp(desired_zoom - 0.5, 0.0, zoom_max) if desired_zoom - 0.5 >= zoom_min else 0.0
-	if event.is_action_released("zoom_out"):
-		desired_zoom = zoom_min if desired_zoom + 0.5 <= zoom_min else clamp(desired_zoom + 0.5, 0.0, zoom_max)
+		ang_velocity = Input.get_vector("look_left", "look_right", "look_up", "look_down")
+		#ang_velocity.y = (Input.get_action_strength("look_right") - Input.get_action_strength("look_left")) * (joy_sensitivity.x / 5)
+		#ang_velocity.x = (Input.get_action_strength("look_down") - Input.get_action_strength("look_up")) * (joy_sensitivity.y / 5)
 
 
-func get_aim_target(distance = 32768):
+func get_aim_target(distance = 32768.0, exclude = [pawn]):
 	var ray_start = camera.global_position
 	var ray_end = camera.global_position - camera.global_transform.basis.z * distance
 	var query = PhysicsRayQueryParameters3D.create(ray_start, ray_end)
-	query.exclude = [pawn]
+	query.exclude = exclude
 
 	var collision = camera.get_world_3d().direct_space_state.intersect_ray(query)
 	if !collision:
@@ -104,15 +121,3 @@ func get_aim_target(distance = 32768):
 		collision.collider = null
 
 	return collision
-
-
-func get_movement():
-	var movement = Vector3()
-	# get direction and speed from input
-	movement.x = Input.get_action_strength("move_right") - Input.get_action_strength("move_left")
-	movement.z = Input.get_action_strength("move_back") - Input.get_action_strength("move_forward")
-	var speed = movement.length()
-	# rotate direction vector according to the camera angle
-	var dir = movement.rotated(Vector3.UP, camera.rotation.y).normalized()
-
-	return {"dir" = dir, "speed" = speed}

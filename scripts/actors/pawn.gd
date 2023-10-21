@@ -14,8 +14,9 @@ var controller = self
 @export var air_friction = 0.0
 @export var jump_power = 8.0
 @export var jump_midair = 1
-@onready var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
+@export var gravity = 20.0
 
+var movement = Vector3()
 var velocity = Vector3()
 var on_ground = false
 var jump_midair_count = 0
@@ -41,22 +42,24 @@ func _physics_process(delta):
 	if controller != self && controller.has_method("get_aim_target"):
 		head.look_at(controller.get_aim_target().position)
 
-	# get desired movement from controller
-	var movement = controller.get_movement()
-
 	# accelerate velocity based on desired movement and ground state
 	if on_ground:
-		ground_accelerate(movement.dir, movement.speed, delta)
+		ground_accelerate(movement.normalized(), movement.length(), delta)
 	else:
-		air_accelerate(movement.dir, movement.speed, delta)
+		air_accelerate(movement.normalized(), movement.length(), delta)
 	# do move based on our new velocity
 	move(delta)
 
 	# update position of held item
 	if held_item:
-		#var new_pos = get_aim_target(2.0).position
-		var new_pos = inventory.global_position - head.global_transform.basis.z * 2
-		held_item.linear_velocity = (new_pos - held_item.position) * (4096 * delta)
+		if held_item.get_parent() == inventory:
+			held_item.linear_velocity = (inventory.position - held_item.position) / delta
+		else:
+			var new_pos = get_aim_target(2.0, [self, held_item]).position
+			held_item.linear_velocity = (new_pos - held_item.position) * (4096 * delta)
+
+	# reset movement vector
+	movement = Vector3()
 
 
 func move(delta, max_slides = 6):
@@ -136,11 +139,11 @@ func jump(midair = true):
 		jump_midair_count += 1
 
 
-func get_aim_target(distance = 32768.0):
+func get_aim_target(distance = 32768.0, exclude = [self]):
 	var ray_start = head.global_position
 	var ray_end = head.global_position - head.global_transform.basis.z * distance
 	var query = PhysicsRayQueryParameters3D.create(ray_start, ray_end)
-	query.exclude = [self]
+	query.exclude = exclude
 
 	var collision = get_world_3d().direct_space_state.intersect_ray(query)
 	if !collision:
@@ -166,8 +169,3 @@ func action():
 			held_item.activate(self)
 	else:
 		interact()
-
-
-func get_movement():
-	# we don't have an assigned controller, so do nothing
-	return {"dir" = Vector3(), "speed" = 0.0}

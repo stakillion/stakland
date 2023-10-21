@@ -17,6 +17,7 @@ config/features=PackedStringArray("4.1")
 [autoload]
 
 Player="*res://scripts/player.gd"
+Menu="*res://scenes/ui/menu.tscn"
 
 [display]
 
@@ -126,7 +127,6 @@ action={
 common/physics_ticks_per_second=120
 common/max_physics_steps_per_frame=16
 common/physics_jitter_fix=0.0
-3d/default_gravity=20.0
 
 [rendering]
 
