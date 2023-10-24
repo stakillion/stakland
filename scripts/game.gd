@@ -41,6 +41,9 @@ func add_player(peer_id = 1):
 
 func remove_player(peer_id):
 	var old_player = player_list.get_node_or_null(str(peer_id))
+	if old_player == player:
+		player = null
+		menu.enable_game_menu(false)
 	if old_player:
 		old_player.queue_free()
 
@@ -56,4 +59,3 @@ func host_game():
 func join_game(address = "localhost"):
 	peer.create_client(address, port)
 	multiplayer.multiplayer_peer = peer
-

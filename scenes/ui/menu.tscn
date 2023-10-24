@@ -22,19 +22,18 @@ grow_vertical = 2
 color = Color(0, 0, 0, 0.501961)
 
 [node name="MainMenu" type="VBoxContainer" parent="."]
-layout_mode = 0
+layout_mode = 1
+anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
+offset_left = -36.0
+offset_top = -26.0
+offset_right = 36.0
+offset_bottom = 26.0
 grow_horizontal = 2
 grow_vertical = 2
-
-[node name="AddressField" type="TextEdit" parent="MainMenu"]
-custom_minimum_size = Vector2(200, 0)
-layout_mode = 2
-tooltip_text = "Enter an IP to connect"
-scroll_fit_content_height = true
 
 [node name="PlayButton" type="Button" parent="MainMenu"]
 layout_mode = 2
@@ -53,16 +52,15 @@ text = "Quit"
 flat = true
 
 [node name="GameMenu" type="VBoxContainer" parent="."]
-visible = false
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -60.0
+offset_left = -84.0
 offset_top = -40.0
-offset_right = 60.0
+offset_right = 84.0
 offset_bottom = 40.0
 grow_horizontal = 2
 grow_vertical = 2
@@ -83,12 +81,12 @@ theme_override_fonts/font = ExtResource("2_wmh1k")
 text = "Respawn"
 flat = true
 
-[node name="QuitButton" type="Button" parent="GameMenu"]
+[node name="DisconnectButton" type="Button" parent="GameMenu"]
 layout_mode = 2
 theme_override_colors/font_pressed_color = Color(0, 1, 0.75, 1)
 theme_override_colors/font_hover_color = Color(0, 0.88, 0.66, 1)
 theme_override_fonts/font = ExtResource("2_wmh1k")
-text = "Quit"
+text = "Disconnect"
 flat = true
 
 [node name="PlayerMenu" type="VBoxContainer" parent="."]
@@ -265,6 +263,20 @@ offset_bottom = -4.0
 theme_override_fonts/font = ExtResource("2_wmh1k")
 text = "Gravity:"
 
+[node name="AddressField" type="TextEdit" parent="."]
+custom_minimum_size = Vector2(325, 0)
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -28.0
+offset_right = 325.0
+grow_vertical = 0
+tooltip_text = "Enter an IP to connect"
+theme_override_fonts/font = ExtResource("2_wmh1k")
+placeholder_text = "Multiplayer Address"
+scroll_fit_content_height = true
+
 [node name="FullscreenButton" type="Button" parent="."]
 layout_mode = 1
 anchors_preset = 7
@@ -284,10 +296,10 @@ theme_override_fonts/font = ExtResource("2_wmh1k")
 text = "Toggle Fullscreen"
 flat = true
 
-[connection signal="text_set" from="MainMenu/AddressField" to="." method="_on_address_field_text_set"]
 [connection signal="pressed" from="MainMenu/PlayButton" to="." method="_on_PlayButton_pressed"]
 [connection signal="pressed" from="MainMenu/QuitButton" to="." method="_on_QuitButton_pressed"]
 [connection signal="pressed" from="GameMenu/ResumeButton" to="." method="_on_resume_button_pressed"]
 [connection signal="pressed" from="GameMenu/RespawnButton" to="." method="_on_respawn_button_pressed"]
-[connection signal="pressed" from="GameMenu/QuitButton" to="." method="_on_QuitButton_pressed"]
+[connection signal="pressed" from="GameMenu/DisconnectButton" to="." method="_on_disconnect_button_pressed"]
+[connection signal="text_set" from="AddressField" to="." method="_on_address_field_text_set"]
 [connection signal="pressed" from="FullscreenButton" to="." method="_on_fullscreen_button_pressed"]

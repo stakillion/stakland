@@ -1,6 +1,10 @@
 extends Control
 
 
+func _ready():
+	enable_game_menu(false)
+
+
 func _process(_delta):
 	if visible:
 		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
@@ -31,12 +35,15 @@ func enable_game_menu(enable = true):
 		node.find_child("Label").text = "%s: %f" % [label, value]
 		node.connect("value_changed", Game.menu._on_physics_setting_value_changed.bind(property, label, node))
 
+	# disable multiplayer address field
+	$AddressField.visible = !enable
+
 
 func _on_PlayButton_pressed():
-	if $MainMenu/AddressField.text.is_empty():
+	if $AddressField.text.is_empty():
 		Game.host_game()
 	else:
-		Game.join_game($MainMenu/AddressField.text)
+		Game.join_game($AddressField.text)
 
 	visible = false
 
@@ -46,7 +53,12 @@ func _on_resume_button_pressed():
 
 
 func _on_respawn_button_pressed():
-	Game.player.pawn.position = Vector3(0, 2, 0)
+	Game.player.pawn.global_position = $/root/World/SpawnPoint.global_position
+
+
+func _on_disconnect_button_pressed():
+	Game.remove_player(Game.peer.get_unique_id())
+	Game.peer.close()
 
 
 func _on_QuitButton_pressed():
