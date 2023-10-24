@@ -8,18 +8,34 @@ extends Node
 @export var auto_jump = true
 
 # character we are controlling
-@onready var pawn_scene = preload("res://scenes/actors/pawn.tscn")
-var pawn:Pawn
+@onready var pawn = find_child("Pawn")
 
 # camera
-var camera:Camera3D
+@onready var camera = find_child("Camera")
 var ang_velocity = Vector2()
 var desired_zoom = 0.0
 var zoom = 10.0
 
 # hud
-@onready var hud_scene = preload("res://scenes/ui/hud.tscn")
-var hud:Node2D
+@onready var hud = find_child("Hud")
+
+
+func _enter_tree():
+	set_multiplayer_authority(str(name).to_int())
+
+
+func _ready():
+	# teleport pawn to spawn - TODO: find a better way to look for spawns on the map
+	pawn.global_position = $/root/World/SpawnPoint.global_position
+
+	# tell the game if we are the player
+	if is_multiplayer_authority():
+		camera.make_current()
+		hud.visible = true
+		Game.player = self
+		Game.menu.enable_game_menu()
+	else:
+		hud.visible = false
 
 
 func _process(delta):
@@ -54,27 +70,8 @@ func _process(delta):
 	camera.global_position = new_pos
 
 
-func create_pawn():
-	# create pawn
-	pawn = pawn_scene.instantiate()
-	add_child(pawn)
-	# teleport to spawn - TODO: find a better way to look for spawns on the map
-	pawn.global_position = $/root/World/SpawnPoint.global_position
-
-	# create camera
-	camera = Camera3D.new()
-	add_child(camera)
-	camera.name = "Camera"
-	camera.fov = 90
-	camera.make_current()
-
-	# create hud
-	hud = hud_scene.instantiate()
-	add_child(hud)
-
-
 func process_inputs():
-	if Game.menu.visible:
+	if Game.menu.visible || !is_multiplayer_authority():
 		return
 
 	# directional movement
@@ -105,7 +102,7 @@ func process_inputs():
 
 
 func _unhandled_input(event):
-	if Game.menu.visible:
+	if Game.menu.visible || !is_multiplayer_authority():
 		return
 	if !pawn:
 		return

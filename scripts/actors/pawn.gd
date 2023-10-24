@@ -1,7 +1,6 @@
 class_name Pawn
 extends PhysicsBody3D
 
-
 # -- physics --
 # higher air acceleration enables mid-air turns and slope surfing
 @export var ground_speed = 6.5

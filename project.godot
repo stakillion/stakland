@@ -16,7 +16,6 @@ config/features=PackedStringArray("4.1")
 
 [autoload]
 
-Player="*res://scripts/player.gd"
 Game="*res://scripts/game.gd"
 
 [display]

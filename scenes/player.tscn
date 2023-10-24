@@ -1,0 +1,40 @@
+[gd_scene load_steps=7 format=3 uid="uid://cnhi5a63710x5"]
+
+[ext_resource type="Script" path="res://scripts/ui/hud.gd" id="1_2gto7"]
+[ext_resource type="Script" path="res://scripts/player.gd" id="1_4m05c"]
+[ext_resource type="PackedScene" uid="uid://bicei8k7eppb3" path="res://scenes/actors/pawn.tscn" id="1_7q26r"]
+[ext_resource type="FontFile" uid="uid://cpb8liw262yah" path="res://resources/ui/fonts/PressStart2P-Regular.ttf" id="2_22o7v"]
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_mhe8r"]
+size = Vector2(3, 3)
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_hs4rr"]
+properties/0/path = NodePath("Pawn:position")
+properties/0/spawn = true
+properties/0/sync = true
+properties/0/watch = false
+
+[node name="Player" type="Node"]
+script = ExtResource("1_4m05c")
+
+[node name="Pawn" parent="." instance=ExtResource("1_7q26r")]
+
+[node name="Camera" type="Camera3D" parent="."]
+fov = 90.0
+
+[node name="Hud" type="Node2D" parent="."]
+script = ExtResource("1_2gto7")
+
+[node name="Info" type="Label" parent="Hud"]
+offset_right = 40.0
+offset_bottom = 23.0
+theme_override_fonts/font = ExtResource("2_22o7v")
+theme_override_font_sizes/font_size = 12
+
+[node name="Crosshair" type="Sprite2D" parent="Hud"]
+modulate = Color(1, 0, 0, 1)
+rotation = 0.785398
+texture = SubResource("PlaceholderTexture2D_mhe8r")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_hs4rr")

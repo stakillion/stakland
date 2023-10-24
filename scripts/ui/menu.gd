@@ -14,34 +14,39 @@ func _input(event):
 
 
 func enable_game_menu(enable = true):
-	# enable menu physics settings
-	$PhysicsSettings.visible = enable
-	for node in $PhysicsSettings.get_children():
+	# disable main menu
+	$MainMenu.visible = !enable
+
+	# enable game menu
+	$GameMenu.visible = enable
+
+	# enable player menu
+	$PlayerMenu.visible = enable
+	for node in $PlayerMenu.get_children():
 		if !enable: break
 		var label = node.get_meta("label")
 		var property = node.get_meta("property")
-		var value = Player.pawn.get(property)
+		var value = Game.player.pawn.get(property)
 		node.value = value
 		node.find_child("Label").text = "%s: %f" % [label, value]
 		node.connect("value_changed", Game.menu._on_physics_setting_value_changed.bind(property, label, node))
-	# enable respawn button
-	$Main/RespawnButton.visible = enable
-	# disable address field
-	$AddressField.visible = !enable
 
 
 func _on_PlayButton_pressed():
-	if multiplayer.multiplayer_peer != Game.peer:
-		if $AddressField.text.is_empty():
-			Game.host_game()
-		else:
-			Game.join_game($AddressField.text)
+	if $MainMenu/AddressField.text.is_empty():
+		Game.host_game()
+	else:
+		Game.join_game($MainMenu/AddressField.text)
 
 	visible = false
 
 
+func _on_resume_button_pressed():
+	visible = false
+
+
 func _on_respawn_button_pressed():
-	Player.pawn.position = Vector3(0, 2, 0)
+	Game.player.pawn.position = Vector3(0, 2, 0)
 
 
 func _on_QuitButton_pressed():
@@ -56,5 +61,5 @@ func _on_fullscreen_button_pressed():
 
 
 func _on_physics_setting_value_changed(value, property, label, node):
-	Player.pawn.set(property, value)
+	Game.player.pawn.set(property, value)
 	node.find_child("Label").text = "%s: %f" % [label, value]

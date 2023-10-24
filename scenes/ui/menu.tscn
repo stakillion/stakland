@@ -21,7 +21,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.501961)
 
-[node name="Main" type="VBoxContainer" parent="."]
+[node name="MainMenu" type="VBoxContainer" parent="."]
 layout_mode = 0
 anchor_left = 0.5
 anchor_top = 0.5
@@ -30,7 +30,13 @@ anchor_bottom = 0.5
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="PlayButton" type="Button" parent="Main"]
+[node name="AddressField" type="TextEdit" parent="MainMenu"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+tooltip_text = "Enter an IP to connect"
+scroll_fit_content_height = true
+
+[node name="PlayButton" type="Button" parent="MainMenu"]
 layout_mode = 2
 theme_override_colors/font_pressed_color = Color(0, 1, 0.75, 1)
 theme_override_colors/font_hover_color = Color(0, 0.88, 0.66, 1)
@@ -38,16 +44,7 @@ theme_override_fonts/font = ExtResource("2_wmh1k")
 text = "Play"
 flat = true
 
-[node name="RespawnButton" type="Button" parent="Main"]
-visible = false
-layout_mode = 2
-theme_override_colors/font_pressed_color = Color(0, 1, 0.75, 1)
-theme_override_colors/font_hover_color = Color(0, 0.88, 0.66, 1)
-theme_override_fonts/font = ExtResource("2_wmh1k")
-text = "Respawn"
-flat = true
-
-[node name="QuitButton" type="Button" parent="Main"]
+[node name="QuitButton" type="Button" parent="MainMenu"]
 layout_mode = 2
 theme_override_colors/font_pressed_color = Color(0, 1, 0.75, 1)
 theme_override_colors/font_hover_color = Color(0, 0.88, 0.66, 1)
@@ -55,8 +52,46 @@ theme_override_fonts/font = ExtResource("2_wmh1k")
 text = "Quit"
 flat = true
 
-[node name="PhysicsSettings" type="VBoxContainer" parent="."]
+[node name="GameMenu" type="VBoxContainer" parent="."]
 visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -60.0
+offset_top = -40.0
+offset_right = 60.0
+offset_bottom = 40.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ResumeButton" type="Button" parent="GameMenu"]
+layout_mode = 2
+theme_override_colors/font_pressed_color = Color(0, 1, 0.75, 1)
+theme_override_colors/font_hover_color = Color(0, 0.88, 0.66, 1)
+theme_override_fonts/font = ExtResource("2_wmh1k")
+text = "Resume"
+flat = true
+
+[node name="RespawnButton" type="Button" parent="GameMenu"]
+layout_mode = 2
+theme_override_colors/font_pressed_color = Color(0, 1, 0.75, 1)
+theme_override_colors/font_hover_color = Color(0, 0.88, 0.66, 1)
+theme_override_fonts/font = ExtResource("2_wmh1k")
+text = "Respawn"
+flat = true
+
+[node name="QuitButton" type="Button" parent="GameMenu"]
+layout_mode = 2
+theme_override_colors/font_pressed_color = Color(0, 1, 0.75, 1)
+theme_override_colors/font_hover_color = Color(0, 0.88, 0.66, 1)
+theme_override_fonts/font = ExtResource("2_wmh1k")
+text = "Quit"
+flat = true
+
+[node name="PlayerMenu" type="VBoxContainer" parent="."]
 custom_minimum_size = Vector2(420, 0)
 layout_mode = 1
 anchors_preset = 1
@@ -69,7 +104,7 @@ offset_bottom = 399.0
 grow_horizontal = 0
 scale = Vector2(0.75, 0.75)
 
-[node name="GroundSpeed" type="HSlider" parent="PhysicsSettings"]
+[node name="GroundSpeed" type="HSlider" parent="PlayerMenu"]
 layout_mode = 2
 size_flags_vertical = 2
 step = 0.5
@@ -79,7 +114,7 @@ tick_count = 12
 metadata/property = "ground_speed"
 metadata/label = "Ground Speed"
 
-[node name="Label" type="Label" parent="PhysicsSettings/GroundSpeed"]
+[node name="Label" type="Label" parent="PlayerMenu/GroundSpeed"]
 layout_mode = 2
 offset_top = -23.0
 offset_right = 420.0
@@ -87,7 +122,7 @@ offset_bottom = -4.0
 theme_override_fonts/font = ExtResource("2_wmh1k")
 text = "Ground Speed:"
 
-[node name="GroundAccel" type="HSlider" parent="PhysicsSettings"]
+[node name="GroundAccel" type="HSlider" parent="PlayerMenu"]
 layout_mode = 2
 size_flags_vertical = 2
 step = 0.5
@@ -97,7 +132,7 @@ tick_count = 12
 metadata/property = "ground_accel"
 metadata/label = "Ground Accel"
 
-[node name="Label" type="Label" parent="PhysicsSettings/GroundAccel"]
+[node name="Label" type="Label" parent="PlayerMenu/GroundAccel"]
 layout_mode = 2
 offset_top = -23.0
 offset_right = 420.0
@@ -105,7 +140,7 @@ offset_bottom = -4.0
 theme_override_fonts/font = ExtResource("2_wmh1k")
 text = "Ground Accel:"
 
-[node name="GroundFriction" type="HSlider" parent="PhysicsSettings"]
+[node name="GroundFriction" type="HSlider" parent="PlayerMenu"]
 layout_mode = 2
 size_flags_vertical = 2
 step = 0.5
@@ -115,7 +150,7 @@ tick_count = 12
 metadata/property = "ground_friction"
 metadata/label = "Ground Friction"
 
-[node name="Label" type="Label" parent="PhysicsSettings/GroundFriction"]
+[node name="Label" type="Label" parent="PlayerMenu/GroundFriction"]
 layout_mode = 2
 offset_top = -23.0
 offset_right = 420.0
@@ -123,7 +158,7 @@ offset_bottom = -4.0
 theme_override_fonts/font = ExtResource("2_wmh1k")
 text = "Ground Friction:"
 
-[node name="AirSpeed" type="HSlider" parent="PhysicsSettings"]
+[node name="AirSpeed" type="HSlider" parent="PlayerMenu"]
 layout_mode = 2
 size_flags_vertical = 2
 step = 0.5
@@ -133,7 +168,7 @@ tick_count = 12
 metadata/property = "air_speed"
 metadata/label = "Air Speed"
 
-[node name="Label" type="Label" parent="PhysicsSettings/AirSpeed"]
+[node name="Label" type="Label" parent="PlayerMenu/AirSpeed"]
 layout_mode = 2
 offset_top = -23.0
 offset_right = 420.0
@@ -141,7 +176,7 @@ offset_bottom = -4.0
 theme_override_fonts/font = ExtResource("2_wmh1k")
 text = "Air Speed:"
 
-[node name="AirAccel" type="HSlider" parent="PhysicsSettings"]
+[node name="AirAccel" type="HSlider" parent="PlayerMenu"]
 layout_mode = 2
 size_flags_vertical = 2
 step = 0.5
@@ -151,7 +186,7 @@ tick_count = 12
 metadata/property = "air_accel"
 metadata/label = "Air Accel"
 
-[node name="Label" type="Label" parent="PhysicsSettings/AirAccel"]
+[node name="Label" type="Label" parent="PlayerMenu/AirAccel"]
 layout_mode = 2
 offset_top = -23.0
 offset_right = 420.0
@@ -159,7 +194,7 @@ offset_bottom = -4.0
 theme_override_fonts/font = ExtResource("2_wmh1k")
 text = "Air Accel:"
 
-[node name="AirFriction" type="HSlider" parent="PhysicsSettings"]
+[node name="AirFriction" type="HSlider" parent="PlayerMenu"]
 layout_mode = 2
 size_flags_vertical = 2
 step = 0.5
@@ -169,7 +204,7 @@ tick_count = 12
 metadata/property = "air_friction"
 metadata/label = "Air Friction"
 
-[node name="Label" type="Label" parent="PhysicsSettings/AirFriction"]
+[node name="Label" type="Label" parent="PlayerMenu/AirFriction"]
 layout_mode = 2
 offset_top = -23.0
 offset_right = 420.0
@@ -177,7 +212,7 @@ offset_bottom = -4.0
 theme_override_fonts/font = ExtResource("2_wmh1k")
 text = "Air Friction:"
 
-[node name="JumpPower" type="HSlider" parent="PhysicsSettings"]
+[node name="JumpPower" type="HSlider" parent="PlayerMenu"]
 layout_mode = 2
 size_flags_vertical = 2
 step = 0.5
@@ -187,7 +222,7 @@ tick_count = 12
 metadata/property = "jump_power"
 metadata/label = "Jump Power"
 
-[node name="Label" type="Label" parent="PhysicsSettings/JumpPower"]
+[node name="Label" type="Label" parent="PlayerMenu/JumpPower"]
 layout_mode = 2
 offset_top = -23.0
 offset_right = 420.0
@@ -195,7 +230,7 @@ offset_bottom = -4.0
 theme_override_fonts/font = ExtResource("2_wmh1k")
 text = "Jump Power:"
 
-[node name="JumpMidair" type="HSlider" parent="PhysicsSettings"]
+[node name="JumpMidair" type="HSlider" parent="PlayerMenu"]
 layout_mode = 2
 size_flags_vertical = 2
 allow_greater = true
@@ -204,7 +239,7 @@ tick_count = 12
 metadata/property = "jump_midair"
 metadata/label = "Mid Air Jumps"
 
-[node name="Label" type="Label" parent="PhysicsSettings/JumpMidair"]
+[node name="Label" type="Label" parent="PlayerMenu/JumpMidair"]
 layout_mode = 2
 offset_top = -23.0
 offset_right = 420.0
@@ -212,7 +247,7 @@ offset_bottom = -4.0
 theme_override_fonts/font = ExtResource("2_wmh1k")
 text = "Mid Air Jumps:"
 
-[node name="Gravity" type="HSlider" parent="PhysicsSettings"]
+[node name="Gravity" type="HSlider" parent="PlayerMenu"]
 layout_mode = 2
 size_flags_vertical = 2
 step = 0.5
@@ -222,7 +257,7 @@ tick_count = 12
 metadata/property = "gravity"
 metadata/label = "Gravity"
 
-[node name="Label" type="Label" parent="PhysicsSettings/Gravity"]
+[node name="Label" type="Label" parent="PlayerMenu/Gravity"]
 layout_mode = 2
 offset_top = -23.0
 offset_right = 420.0
@@ -249,21 +284,10 @@ theme_override_fonts/font = ExtResource("2_wmh1k")
 text = "Toggle Fullscreen"
 flat = true
 
-[node name="AddressField" type="TextEdit" parent="."]
-layout_mode = 1
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_left = 1.0
-offset_top = -36.0
-offset_right = 243.0
-offset_bottom = -1.0
-grow_vertical = 0
-tooltip_text = "Enter an IP to connect"
-scroll_fit_content_height = true
-
-[connection signal="pressed" from="Main/PlayButton" to="." method="_on_PlayButton_pressed"]
-[connection signal="pressed" from="Main/RespawnButton" to="." method="_on_respawn_button_pressed"]
-[connection signal="pressed" from="Main/QuitButton" to="." method="_on_QuitButton_pressed"]
+[connection signal="text_set" from="MainMenu/AddressField" to="." method="_on_address_field_text_set"]
+[connection signal="pressed" from="MainMenu/PlayButton" to="." method="_on_PlayButton_pressed"]
+[connection signal="pressed" from="MainMenu/QuitButton" to="." method="_on_QuitButton_pressed"]
+[connection signal="pressed" from="GameMenu/ResumeButton" to="." method="_on_resume_button_pressed"]
+[connection signal="pressed" from="GameMenu/RespawnButton" to="." method="_on_respawn_button_pressed"]
+[connection signal="pressed" from="GameMenu/QuitButton" to="." method="_on_QuitButton_pressed"]
 [connection signal="pressed" from="FullscreenButton" to="." method="_on_fullscreen_button_pressed"]
-[connection signal="text_set" from="AddressField" to="." method="_on_address_field_text_set"]
