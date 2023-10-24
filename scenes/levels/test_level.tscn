@@ -104,9 +104,13 @@ material = SubResource("StandardMaterial3D_cpuil")
 [sub_resource type="ViewportTexture" id="ViewportTexture_1136q"]
 viewport_path = NodePath("Viewport")
 
-[node name="TestLevel" type="Node3D"]
+[node name="World" type="Node3D"]
+
+[node name="MainCamera" type="Camera3D" parent="."]
+transform = Transform3D(0.707107, 0.122788, -0.696364, 0, 0.984808, 0.173648, 0.707107, -0.122788, 0.696364, -25, 10, 25)
 
 [node name="SpawnPoint" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.838671, -0.385118, 0.385118, 0, 0.707107, 0.707107, -0.544639, -0.593029, 0.59303, 0, 10, 0)

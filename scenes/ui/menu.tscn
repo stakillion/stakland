@@ -1,4 +1,4 @@
-[gd_scene load_steps=3 format=3 uid="uid://bc0vci5xr8orb"]
+[gd_scene load_steps=3 format=3 uid="uid://c4rtn830u6i3h"]
 
 [ext_resource type="Script" path="res://scripts/ui/menu.gd" id="1_x8rw8"]
 [ext_resource type="FontFile" uid="uid://cpb8liw262yah" path="res://resources/ui/fonts/PressStart2P-Regular.ttf" id="2_wmh1k"]
@@ -35,10 +35,11 @@ layout_mode = 2
 theme_override_colors/font_pressed_color = Color(0, 1, 0.75, 1)
 theme_override_colors/font_hover_color = Color(0, 0.88, 0.66, 1)
 theme_override_fonts/font = ExtResource("2_wmh1k")
-text = "Resume"
+text = "Play"
 flat = true
 
 [node name="RespawnButton" type="Button" parent="Main"]
+visible = false
 layout_mode = 2
 theme_override_colors/font_pressed_color = Color(0, 1, 0.75, 1)
 theme_override_colors/font_hover_color = Color(0, 0.88, 0.66, 1)
@@ -55,6 +56,7 @@ text = "Quit"
 flat = true
 
 [node name="PhysicsSettings" type="VBoxContainer" parent="."]
+visible = false
 custom_minimum_size = Vector2(420, 0)
 layout_mode = 1
 anchors_preset = 1
@@ -247,7 +249,21 @@ theme_override_fonts/font = ExtResource("2_wmh1k")
 text = "Toggle Fullscreen"
 flat = true
 
+[node name="AddressField" type="TextEdit" parent="."]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 1.0
+offset_top = -36.0
+offset_right = 243.0
+offset_bottom = -1.0
+grow_vertical = 0
+tooltip_text = "Enter an IP to connect"
+scroll_fit_content_height = true
+
 [connection signal="pressed" from="Main/PlayButton" to="." method="_on_PlayButton_pressed"]
 [connection signal="pressed" from="Main/RespawnButton" to="." method="_on_respawn_button_pressed"]
 [connection signal="pressed" from="Main/QuitButton" to="." method="_on_QuitButton_pressed"]
 [connection signal="pressed" from="FullscreenButton" to="." method="_on_fullscreen_button_pressed"]
+[connection signal="text_set" from="AddressField" to="." method="_on_address_field_text_set"]

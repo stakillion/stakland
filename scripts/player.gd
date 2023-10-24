@@ -8,29 +8,24 @@ extends Node
 @export var auto_jump = true
 
 # character we are controlling
-@onready var pawn = $/root/World/Pawn
+@onready var pawn_scene = preload("res://scenes/actors/pawn.tscn")
+var pawn:Pawn
 
 # camera
 var camera:Camera3D
 var ang_velocity = Vector2()
 var desired_zoom = 0.0
-var zoom = 20.0
+var zoom = 10.0
 
-
-func _ready():
-	# give player control of pawn
-	if pawn.get("controller"):
-		pawn.controller = self
-
-	# spawn camera
-	camera = Camera3D.new()
-	add_child(camera)
-	camera.name = "Camera"
-	camera.fov = 90
-	camera.make_current()
+# hud
+@onready var hud_scene = preload("res://scenes/ui/hud.tscn")
+var hud:Node2D
 
 
 func _process(delta):
+	if !pawn:
+		return
+
 	# rotate camera by angular velocity (joystick)
 	if ang_velocity.length_squared() != 0.0:
 		camera.rotation -= ang_velocity * delta
@@ -59,8 +54,27 @@ func _process(delta):
 	camera.global_position = new_pos
 
 
+func create_pawn():
+	# create pawn
+	pawn = pawn_scene.instantiate()
+	add_child(pawn)
+	# teleport to spawn - TODO: find a better way to look for spawns on the map
+	pawn.global_position = $/root/World/SpawnPoint.global_position
+
+	# create camera
+	camera = Camera3D.new()
+	add_child(camera)
+	camera.name = "Camera"
+	camera.fov = 90
+	camera.make_current()
+
+	# create hud
+	hud = hud_scene.instantiate()
+	add_child(hud)
+
+
 func process_inputs():
-	if Menu.visible:
+	if Game.menu.visible:
 		return
 
 	# directional movement
@@ -91,7 +105,9 @@ func process_inputs():
 
 
 func _unhandled_input(event):
-	if Menu.visible:
+	if Game.menu.visible:
+		return
+	if !pawn:
 		return
 
 	if event is InputEventMouseMotion:

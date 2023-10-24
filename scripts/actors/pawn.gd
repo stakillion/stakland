@@ -1,8 +1,6 @@
+class_name Pawn
 extends PhysicsBody3D
 
-
-# uses built-in controller until we give it one
-var controller = self
 
 # -- physics --
 # higher air acceleration enables mid-air turns and slope surfing
@@ -39,7 +37,8 @@ func _ready():
 
 func _physics_process(delta):
 	# look where our controller is looking
-	if controller != self && controller.has_method("get_aim_target"):
+	var controller = get_parent()
+	if controller.has_method("get_aim_target"):
 		head.look_at(controller.get_aim_target().position)
 
 	# accelerate velocity based on desired movement and ground state
