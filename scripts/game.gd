@@ -1,6 +1,7 @@
 extends Node
 
 # multiplayer
+@onready var dedicated = OS.has_feature("dedicated_server")
 var peer = ENetMultiplayerPeer.new()
 var player_list:Node
 var mp_spawner:MultiplayerSpawner
@@ -21,16 +22,19 @@ func _ready():
 	player_list.name = "Players"
 	add_child(player_list)
 
-	# menu
-	menu = menu_scene.instantiate()
-	add_child(menu)
-
 	# mutliplayer spawner
 	mp_spawner = MultiplayerSpawner.new()
 	mp_spawner.name = "MultiplayerSpawner"
 	mp_spawner.spawn_path = player_list.get_path() # throws an error and works anyway?
 	mp_spawner.add_spawnable_scene("res://scenes/player.tscn")
 	add_child(mp_spawner)
+
+	if !dedicated:
+		# menu
+		menu = menu_scene.instantiate()
+		add_child(menu)
+	else:
+		host_game()
 
 
 func add_player(peer_id = 1):
@@ -53,7 +57,8 @@ func host_game():
 	multiplayer.multiplayer_peer = peer
 	multiplayer.peer_connected.connect(add_player)
 	multiplayer.peer_disconnected.connect(remove_player)
-	add_player()
+	if !dedicated:
+		add_player()
 
 
 func join_game(address = "localhost"):

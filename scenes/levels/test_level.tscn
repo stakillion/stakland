@@ -104,7 +104,7 @@ material = SubResource("StandardMaterial3D_cpuil")
 [sub_resource type="ViewportTexture" id="ViewportTexture_1136q"]
 viewport_path = NodePath("Viewport")
 
-[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_lvug0"]
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_moqbl"]
 properties/0/path = NodePath("BlueLamp:position")
 properties/0/spawn = true
 properties/0/sync = true
@@ -139,71 +139,65 @@ directional_shadow_blend_splits = true
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_ifkfe")
 
-[node name="Floor1" type="CSGCombiner3D" parent="."]
+[node name="MainLand" type="CSGCombiner3D" parent="."]
 use_collision = true
 collision_layer = 3
 
-[node name="Grass" type="CSGBox3D" parent="Floor1"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.5, 0)
-size = Vector3(50, 3, 50)
+[node name="Grass" type="CSGBox3D" parent="MainLand"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.5, -1.5, 0)
+size = Vector3(35, 3, 50)
 material = SubResource("StandardMaterial3D_04url")
 
-[node name="PitCarve" type="CSGSphere3D" parent="Floor1/Grass"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 2, 18)
+[node name="Grass2" type="CSGBox3D" parent="MainLand"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.5, -1.5, -7.5)
+size = Vector3(15, 3, 35)
+material = SubResource("StandardMaterial3D_04url")
+
+[node name="Grass3" type="CSGBox3D" parent="MainLand"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.5, -1.5, 17.5)
+size = Vector3(15, 3, 15)
+material = SubResource("StandardMaterial3D_04url")
+
+[node name="PitCarve" type="CSGSphere3D" parent="MainLand"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.5, 0.5, 17.5)
 operation = 2
 radius = 4.0
 radial_segments = 64
 rings = 2
 material = SubResource("StandardMaterial3D_kj4aw")
 
-[node name="Floor2" type="CSGCombiner3D" parent="."]
+[node name="Land2" type="CSGCombiner3D" parent="."]
 use_collision = true
 collision_layer = 3
 
-[node name="Ground" type="CSGBox3D" parent="Floor2"]
+[node name="Ground" type="CSGBox3D" parent="Land2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, -5, 0)
 use_collision = true
 size = Vector3(50, 10, 50)
 material = SubResource("StandardMaterial3D_nlhrf")
 
-[node name="Box" type="CSGBox3D" parent="Floor2/Ground"]
+[node name="Box" type="CSGBox3D" parent="Land2/Ground"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 7, 0)
-size = Vector3(33, 4, 44)
+size = Vector3(33, 4, 36)
 material = SubResource("StandardMaterial3D_nlhrf")
 
-[node name="SlopeCarve1" type="CSGPolygon3D" parent="Floor2/Ground/Box"]
-transform = Transform3D(4.37114e-08, -3.82137e-15, 1, -8.74228e-08, -1, 0, 1, -8.74228e-08, -4.37114e-08, 16.5, 3, 18)
-operation = 2
-use_collision = true
-polygon = PackedVector2Array(0, 0, 0, 0, 8, 0, 4, 5)
-depth = 33.0
-material = SubResource("StandardMaterial3D_kj4aw")
-
-[node name="SlopeCarve2" type="CSGPolygon3D" parent="Floor2/Ground/Box"]
-transform = Transform3D(4.37114e-08, -3.82137e-15, 1, -8.74228e-08, -1, 0, 1, -8.74228e-08, -4.37114e-08, 16.5, 3, -26)
-operation = 2
-use_collision = true
-polygon = PackedVector2Array(0, 0, 0, 0, 8, 0, 4, 5)
-depth = 33.0
-material = SubResource("StandardMaterial3D_kj4aw")
-
-[node name="RoomCarve" type="CSGBox3D" parent="Floor2"]
+[node name="RoomCarve" type="CSGBox3D" parent="Land2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -48.5, -1.5, 0)
 operation = 2
-size = Vector3(32, 10, 37)
+size = Vector3(32, 10, 35)
 material = SubResource("StandardMaterial3D_nlhrf")
 
-[node name="DoorCarve" type="CSGPolygon3D" parent="Floor2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -34, -6, 5)
+[node name="DoorCarve" type="CSGPolygon3D" parent="Land2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -32.5, -6, 5)
 operation = 2
-polygon = PackedVector2Array(0, 0, 0, 9, 8, 6, 0, 0)
+polygon = PackedVector2Array(0, 0, 0, 9, 11.25, 9, 0, 0)
 depth = 10.0
 material = SubResource("StandardMaterial3D_nlhrf")
 
-[node name="DoorCarve2" type="CSGPolygon3D" parent="Floor2"]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, -63, -6, -5)
+[node name="DoorCarve2" type="CSGPolygon3D" parent="Land2"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, -64.5, -6, -5)
 operation = 2
-polygon = PackedVector2Array(0, 0, 0, 9, 8, 6, 0, 0)
+polygon = PackedVector2Array(0, 0, 0, 9, 11.25, 9, 0, 0)
 depth = 10.0
 material = SubResource("StandardMaterial3D_nlhrf")
 
@@ -252,17 +246,45 @@ depth = 10.0
 material = SubResource("StandardMaterial3D_kj4aw")
 
 [node name="Slope5" type="CSGPolygon3D" parent="Obstacles"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -60, 4, 18.8)
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -32, 0, 22)
 use_collision = true
-polygon = PackedVector2Array(0, 0, 8, 0, 4, 5)
-depth = 37.6
+polygon = PackedVector2Array(0, 0, 0, 0, 4, 0, 4, 4)
+depth = 33.0
 material = SubResource("StandardMaterial3D_kj4aw")
 
 [node name="Slope6" type="CSGPolygon3D" parent="Obstacles"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -44.985, 4, 18.8)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -69, 0, 18)
 use_collision = true
-polygon = PackedVector2Array(0, 0, 8, 0, 4, 5)
-depth = 37.6
+polygon = PackedVector2Array(0, 0, 0, 0, 4, 0, 4, 4)
+depth = 13.0
+material = SubResource("StandardMaterial3D_kj4aw")
+
+[node name="Slope7" type="CSGPolygon3D" parent="Obstacles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -69, 0, -5)
+use_collision = true
+polygon = PackedVector2Array(0, 0, 0, 0, 4, 0, 4, 4)
+depth = 13.0
+material = SubResource("StandardMaterial3D_kj4aw")
+
+[node name="Slope8" type="CSGPolygon3D" parent="Obstacles"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -65, 0, -22)
+use_collision = true
+polygon = PackedVector2Array(0, 0, 0, 0, 4, 0, 4, 4)
+depth = 33.0
+material = SubResource("StandardMaterial3D_kj4aw")
+
+[node name="Slope9" type="CSGPolygon3D" parent="Obstacles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -60, 4, 17.995)
+use_collision = true
+polygon = PackedVector2Array(0, 0, 8, 0, 4, 4)
+depth = 35.99
+material = SubResource("StandardMaterial3D_kj4aw")
+
+[node name="Slope10" type="CSGPolygon3D" parent="Obstacles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -45, 4, 17.995)
+use_collision = true
+polygon = PackedVector2Array(0, 0, 8, 0, 4, 4)
+depth = 35.99
 material = SubResource("StandardMaterial3D_kj4aw")
 
 [node name="NorthEdge" type="CSGBox3D" parent="Obstacles"]
@@ -366,4 +388,4 @@ transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -55, -
 current = true
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
-replication_config = SubResource("SceneReplicationConfig_lvug0")
+replication_config = SubResource("SceneReplicationConfig_moqbl")

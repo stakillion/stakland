@@ -20,10 +20,11 @@ func _input(event):
 func enable_game_menu(enable = true):
 	# disable main menu
 	$MainMenu.visible = !enable
+	# disable multiplayer address field
+	$AddressField.visible = !enable
 
 	# enable game menu
 	$GameMenu.visible = enable
-
 	# enable player menu
 	$PlayerMenu.visible = enable
 	for node in $PlayerMenu.get_children():
@@ -34,9 +35,6 @@ func enable_game_menu(enable = true):
 		node.value = value
 		node.find_child("Label").text = "%s: %f" % [label, value]
 		node.connect("value_changed", Game.menu._on_physics_setting_value_changed.bind(property, label, node))
-
-	# disable multiplayer address field
-	$AddressField.visible = !enable
 
 
 func _on_PlayButton_pressed():
@@ -57,7 +55,9 @@ func _on_respawn_button_pressed():
 
 
 func _on_disconnect_button_pressed():
-	Game.remove_player(Game.peer.get_unique_id())
+	for player in Game.player_list.get_children():
+		Game.remove_player(player.name.to_int())
+
 	Game.peer.close()
 
 

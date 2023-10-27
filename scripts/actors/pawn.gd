@@ -158,12 +158,12 @@ func interact():
 	else:
 		target = get_aim_target(2.0).collider
 	if target && target.has_method("activate"):
-		target.activate(self)
+		target.activate.rpc(self)
 
 
 func action():
 	if held_item:
 		if held_item.has_method("activate"):
-			held_item.activate(self)
+			held_item.activate.rpc(self)
 	else:
 		interact()
