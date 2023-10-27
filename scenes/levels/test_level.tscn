@@ -104,7 +104,7 @@ material = SubResource("StandardMaterial3D_cpuil")
 [sub_resource type="ViewportTexture" id="ViewportTexture_1136q"]
 viewport_path = NodePath("Viewport")
 
-[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_moqbl"]
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_kq72o"]
 properties/0/path = NodePath("BlueLamp:position")
 properties/0/spawn = true
 properties/0/sync = true
@@ -388,4 +388,4 @@ transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -55, -
 current = true
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
-replication_config = SubResource("SceneReplicationConfig_moqbl")
+replication_config = SubResource("SceneReplicationConfig_kq72o")

@@ -24,8 +24,10 @@ var held_item:Node3D
 
 
 func _ready():
+	# head is used to track where we are looking
 	head = find_child("Head")
 	if !head: head = self
+	# inventory is used to store items
 	inventory = find_child("Inventory")
 	if !inventory:
 		inventory = Node3D.new()
@@ -33,20 +35,25 @@ func _ready():
 		add_child(inventory)
 		inventory.position = head.position
 
+	# multiplayer tick
+	if is_multiplayer_authority():
+		Game.mp_tick.connect("timeout", mp_tick)
+
 
 func _physics_process(delta):
 	# look where our controller is looking
-	var controller = get_parent()
-	if controller.has_method("get_aim_target"):
-		head.look_at(controller.get_aim_target().position)
+	if is_multiplayer_authority():
+		var controller = get_parent()
+		if controller.has_method("get_aim_target"):
+			head.look_at(controller.get_aim_target().position)
 
-	# accelerate velocity based on desired movement and ground state
-	if on_ground:
-		ground_accelerate(movement.normalized(), movement.length(), delta)
-	else:
-		air_accelerate(movement.normalized(), movement.length(), delta)
-	# do move based on our new velocity
-	move(delta)
+		# accelerate velocity based on desired movement and ground state
+		if on_ground:
+			ground_accelerate(movement.normalized(), movement.length(), delta)
+		else:
+			air_accelerate(movement.normalized(), movement.length(), delta)
+		# do move based on our new velocity
+		move(delta)
 
 	# update position of held item
 	if held_item:
@@ -56,7 +63,7 @@ func _physics_process(delta):
 			var new_pos = get_aim_target(2.0, [self, held_item]).position
 			held_item.linear_velocity = (new_pos - held_item.position) * (4096 * delta)
 
-	# reset movement vector
+	# reset motion vector
 	movement = Vector3()
 
 
@@ -127,16 +134,6 @@ func apply_friction(friction, delta):
 	velocity.z *= max(current_speed - drop, 0.0) / current_speed
 
 
-func jump(midair = true):
-	if on_ground:
-		on_ground = false # no longer on ground
-		velocity.y = jump_power
-		jump_midair_count = 0
-	elif midair && jump_midair_count < jump_midair:
-		velocity.y = jump_power
-		jump_midair_count += 1
-
-
 func get_aim_target(distance = 32768.0, exclude = [self]):
 	var ray_start = head.global_position
 	var ray_end = head.global_position - head.global_transform.basis.z * distance
@@ -151,6 +148,17 @@ func get_aim_target(distance = 32768.0, exclude = [self]):
 	return collision
 
 
+func jump(midair = true):
+	if on_ground:
+		on_ground = false # no longer on ground
+		velocity.y = jump_power
+		jump_midair_count = 0
+	elif midair && jump_midair_count < jump_midair:
+		velocity.y = jump_power
+		jump_midair_count += 1
+
+
+@rpc("any_peer", "call_local", "reliable")
 func interact():
 	var target
 	if held_item && held_item.get_parent() != inventory:
@@ -158,12 +166,25 @@ func interact():
 	else:
 		target = get_aim_target(2.0).collider
 	if target && target.has_method("activate"):
-		target.activate.rpc(self)
+		target.activate(self)
 
 
+@rpc("any_peer", "call_local", "reliable")
 func action():
 	if held_item:
 		if held_item.has_method("activate"):
-			held_item.activate.rpc(self)
+			held_item.activate(self)
 	else:
 		interact()
+
+
+func mp_tick():
+	mp_update_pos.rpc(global_position, global_rotation, head.global_position, head.global_rotation)
+
+
+@rpc
+func mp_update_pos(pos, rot, head_pos, head_rot):
+	global_position = pos
+	global_rotation = rot
+	head.global_position = head_pos
+	head.global_rotation = head_rot

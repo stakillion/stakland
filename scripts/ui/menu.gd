@@ -58,7 +58,7 @@ func _on_disconnect_button_pressed():
 	for player in Game.player_list.get_children():
 		Game.remove_player(player.name.to_int())
 
-	Game.peer.close()
+	Game.mp_peer.close()
 
 
 func _on_QuitButton_pressed():

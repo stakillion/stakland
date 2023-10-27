@@ -89,10 +89,10 @@ func process_inputs():
 	# interaction
 	if Input.is_action_just_pressed("interact"):
 		if pawn.has_method("interact"):
-			pawn.interact()
+			pawn.interact.rpc()
 	if Input.is_action_just_pressed("action"):
 		if pawn.has_method("action"):
-			pawn.action()
+			pawn.action.rpc()
 
 	# camera zoom
 	if Input.is_action_just_pressed("zoom_in"):
