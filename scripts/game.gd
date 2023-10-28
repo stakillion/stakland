@@ -1,6 +1,7 @@
 extends Node
 
 var player_list = Node.new()
+var world
 
 # multiplayer
 @onready var dedicated = OS.has_feature("dedicated_server")
@@ -69,7 +70,7 @@ func host_game():
 		add_player()
 
 
-func join_game(address = "localhost"):
+func join_game(address):
 	address = IP.resolve_hostname(address)
 	mp_peer.create_client(address, mp_port)
 	multiplayer.multiplayer_peer = mp_peer

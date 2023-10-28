@@ -26,7 +26,7 @@ func _enter_tree():
 
 func _ready():
 	# teleport pawn to spawn - TODO: find a better way to look for spawns on the map
-	pawn.global_position = $/root/World/SpawnPoint.global_position
+	pawn.global_position = Game.world.spawn_pos
 
 	# tell the game if we are the player
 	if is_multiplayer_authority():

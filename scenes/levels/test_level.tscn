@@ -1,6 +1,7 @@
-[gd_scene load_steps=24 format=3 uid="uid://o70p27l476fn"]
+[gd_scene load_steps=26 format=3 uid="uid://o70p27l476fn"]
 
 [ext_resource type="Texture2D" uid="uid://loxh1icksh70" path="res://materials/grass1.png" id="1_24n2b"]
+[ext_resource type="Script" path="res://scripts/levels/test_level.gd" id="1_nkfo3"]
 [ext_resource type="Script" path="res://scripts/objects/item.gd" id="2_kd064"]
 [ext_resource type="Texture2D" uid="uid://dnltefpxixakc" path="res://materials/dev_tile.png" id="2_yrh1y"]
 
@@ -39,6 +40,9 @@ background_mode = 2
 sky = SubResource("Sky_advgi")
 tonemap_white = 16.0
 ssao_enabled = true
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_2e1en"]
+plane = Plane(0, -1, 0, 0)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_04url"]
 albedo_texture = ExtResource("1_24n2b")
@@ -123,12 +127,10 @@ properties/3/sync = true
 properties/3/watch = false
 
 [node name="World" type="Node3D"]
+script = ExtResource("1_nkfo3")
 
 [node name="MainCamera" type="Camera3D" parent="."]
 transform = Transform3D(0.707107, 0.122788, -0.696364, 0, 0.984808, 0.173648, 0.707107, -0.122788, 0.696364, -25, 10, 25)
-
-[node name="SpawnPoint" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.838671, -0.385118, 0.385118, 0, 0.707107, 0.707107, -0.544639, -0.593029, 0.59303, 0, 10, 0)
@@ -138,6 +140,12 @@ directional_shadow_blend_splits = true
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_ifkfe")
+
+[node name="Boundary" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -100, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Boundary"]
+shape = SubResource("WorldBoundaryShape3D_2e1en")
 
 [node name="MainLand" type="CSGCombiner3D" parent="."]
 use_collision = true
@@ -389,3 +397,5 @@ current = true
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_kq72o")
+
+[connection signal="body_exited" from="Boundary" to="." method="_on_world_boundary_exited"]

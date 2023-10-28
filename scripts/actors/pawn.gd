@@ -41,8 +41,8 @@ func _ready():
 
 
 func _physics_process(delta):
-	# look where our controller is looking
 	if is_multiplayer_authority():
+		# look where our controller is looking
 		var controller = get_parent()
 		if controller.has_method("get_aim_target"):
 			head.look_at(controller.get_aim_target().position)
@@ -63,7 +63,7 @@ func _physics_process(delta):
 			var new_pos = get_aim_target(2.0, [self, held_item]).position
 			held_item.linear_velocity = (new_pos - held_item.position) * (4096 * delta)
 
-	# reset motion vector
+	# reset movement vector
 	movement = Vector3()
 
 
@@ -77,7 +77,7 @@ func move(delta, max_slides = 6):
 		if !collision:
 			continue
 		# if we hit something and it's not too steep then we consider it ground
-		if rad_to_deg(collision.get_angle()) <= 45:
+		if rad_to_deg(collision.get_angle()) < 45:
 			on_ground = true
 			jump_midair_count = 0
 		# slide along the normal vector of the colliding body

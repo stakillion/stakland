@@ -34,7 +34,7 @@ func enable_game_menu(enable = true):
 		var value = Game.player.pawn.get(property)
 		node.value = value
 		node.find_child("Label").text = "%s: %f" % [label, value]
-		node.connect("value_changed", Game.menu._on_physics_setting_value_changed.bind(property, label, node))
+		node.connect("value_changed", _on_physics_setting_value_changed.bind(property, label, node))
 
 
 func _on_PlayButton_pressed():
@@ -51,7 +51,7 @@ func _on_resume_button_pressed():
 
 
 func _on_respawn_button_pressed():
-	Game.player.pawn.global_position = $/root/World/SpawnPoint.global_position
+	Game.player.pawn.global_position = Game.world.spawn_pos
 
 
 func _on_disconnect_button_pressed():
