@@ -53,7 +53,8 @@ func add_player(peer_id = 1):
 	player_list.add_child(new_player)
 
 
-func remove_player(old_player):
+func remove_player(peer_id):
+	var old_player = player_list.get_node_or_null(str(peer_id))
 	if old_player == player:
 		menu.enable_game_menu(false)
 
