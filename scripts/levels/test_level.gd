@@ -8,7 +8,7 @@ func _ready():
 	Game.world = self
 
 
-func _on_world_boundary_exited(body):
+func _on_world_boundary_entered(body):
 	# respawn
 	body.global_position = spawn_pos
 	if "linear_velocity" in body:

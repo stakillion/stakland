@@ -21,6 +21,7 @@ var jump_midair_count = 0
 var head:Node3D = self
 var inventory:Node3D
 var held_item:Node3D
+var held_item_angle
 
 
 func _ready():
@@ -57,11 +58,7 @@ func _physics_process(delta):
 
 	# update position of held item
 	if held_item:
-		if held_item.get_parent() == inventory:
-			held_item.linear_velocity = (inventory.position - held_item.position) / delta
-		else:
-			var new_pos = get_aim_target(2.0, [self, held_item]).position
-			held_item.linear_velocity = (new_pos - held_item.position) * (4096 * delta)
+		update_item_pos(delta)
 
 	# reset movement vector
 	movement = Vector3()
@@ -176,6 +173,27 @@ func action():
 			held_item.activate(self)
 	else:
 		interact()
+
+
+func update_item_pos(delta):
+	var in_inventory = held_item.get_parent() == inventory
+	var use_velocity = "linear_velocity" in held_item
+
+	var new_pos
+	if in_inventory:
+		new_pos = inventory.global_position
+		use_velocity = false
+	else:
+		new_pos = get_aim_target(2.0, [self, held_item]).position
+
+	if use_velocity: # move and hold item in position with velocity
+		held_item.linear_velocity = (new_pos - held_item.global_position) * (4096 * delta)
+	else: # or just set position directly
+		held_item.global_position = new_pos
+
+	# set rotation relative to where we're looking
+	# TODO - figured out a better way to do this
+	held_item.global_rotation = head.global_rotation + held_item_angle
 
 
 func mp_tick():

@@ -4,15 +4,16 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://dnltefpxixakc"
 path.s3tc="res://.godot/imported/dev_tile.png-5f1705972dc6c7a5b9117517b29b924e.s3tc.ctex"
+path.etc2="res://.godot/imported/dev_tile.png-5f1705972dc6c7a5b9117517b29b924e.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://materials/dev_tile.png"
-dest_files=["res://.godot/imported/dev_tile.png-5f1705972dc6c7a5b9117517b29b924e.s3tc.ctex"]
+dest_files=["res://.godot/imported/dev_tile.png-5f1705972dc6c7a5b9117517b29b924e.s3tc.ctex", "res://.godot/imported/dev_tile.png-5f1705972dc6c7a5b9117517b29b924e.etc2.ctex"]
 
 [params]
 

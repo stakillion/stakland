@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=3 uid="uid://o70p27l476fn"]
+[gd_scene load_steps=31 format=3 uid="uid://o70p27l476fn"]
 
 [ext_resource type="Texture2D" uid="uid://loxh1icksh70" path="res://materials/grass1.png" id="1_24n2b"]
 [ext_resource type="Script" path="res://scripts/levels/test_level.gd" id="1_nkfo3"]
@@ -42,7 +42,6 @@ tonemap_white = 16.0
 ssao_enabled = true
 
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_2e1en"]
-plane = Plane(0, -1, 0, 0)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_04url"]
 albedo_texture = ExtResource("1_24n2b")
@@ -108,6 +107,24 @@ material = SubResource("StandardMaterial3D_cpuil")
 [sub_resource type="ViewportTexture" id="ViewportTexture_1136q"]
 viewport_path = NodePath("Viewport")
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lc8p0"]
+albedo_color = Color(0.501961, 0.501961, 0.501961, 1)
+metallic = 1.0
+metallic_specular = 0.0
+roughness = 0.2
+
+[sub_resource type="BoxMesh" id="BoxMesh_e8hpv"]
+material = SubResource("StandardMaterial3D_lc8p0")
+size = Vector3(0.5, 0.5, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_3odnp"]
+material = SubResource("StandardMaterial3D_lc8p0")
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_x688r"]
+size = Vector3(0.5, 0.5, 1)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_yqspg"]
+
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_kq72o"]
 properties/0/path = NodePath("BlueLamp:position")
 properties/0/spawn = true
@@ -125,8 +142,32 @@ properties/3/path = NodePath("WhiteLamp:position")
 properties/3/spawn = true
 properties/3/sync = true
 properties/3/watch = false
+properties/4/path = NodePath("BlueLamp:rotation")
+properties/4/spawn = true
+properties/4/sync = true
+properties/4/watch = false
+properties/5/path = NodePath("RedLamp:rotation")
+properties/5/spawn = true
+properties/5/sync = true
+properties/5/watch = false
+properties/6/path = NodePath("GreenLamp:rotation")
+properties/6/spawn = true
+properties/6/sync = true
+properties/6/watch = false
+properties/7/path = NodePath("WhiteLamp:rotation")
+properties/7/spawn = true
+properties/7/sync = true
+properties/7/watch = false
+properties/8/path = NodePath("Viewport/Camera:position")
+properties/8/spawn = true
+properties/8/sync = true
+properties/8/watch = false
+properties/9/path = NodePath("Viewport/Camera:rotation")
+properties/9/spawn = true
+properties/9/sync = true
+properties/9/watch = false
 
-[node name="World" type="Node3D"]
+[node name="TestLevel" type="Node3D"]
 script = ExtResource("1_nkfo3")
 
 [node name="MainCamera" type="Camera3D" parent="."]
@@ -320,7 +361,7 @@ size = Vector3(100, 3.3, 0.5)
 material = SubResource("StandardMaterial3D_nlhrf")
 
 [node name="BlueLamp" type="RigidBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, 0, -3)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, -5.97, -3)
 mass = 0.01
 script = ExtResource("2_kd064")
 
@@ -336,7 +377,7 @@ light_color = Color(0, 0, 1, 1)
 light_energy = 5.0
 
 [node name="RedLamp" type="RigidBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, -5.97, 0)
 mass = 0.01
 script = ExtResource("2_kd064")
 
@@ -352,7 +393,7 @@ light_color = Color(1, 0, 0, 1)
 light_energy = 5.0
 
 [node name="GreenLamp" type="RigidBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, 0, 3)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, -5.97, 3)
 mass = 0.01
 script = ExtResource("2_kd064")
 
@@ -391,11 +432,33 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, -19.7)
 pixel_size = 0.015
 texture = SubResource("ViewportTexture_1136q")
 
-[node name="Camera" type="Camera3D" parent="Viewport"]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -55, -5, 0)
+[node name="Camera" type="RigidBody3D" parent="Viewport"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -42.5, -5.97, 0)
+mass = 0.01
+script = ExtResource("2_kd064")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Viewport/Camera"]
+mesh = SubResource("BoxMesh_e8hpv")
+skeleton = NodePath("../../..")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="Viewport/Camera"]
+transform = Transform3D(0.05, 0, 0, 0, 0.3, 0, 0, 0, 0.05, -0.15, 0.4, 0)
+mesh = SubResource("BoxMesh_3odnp")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Viewport/Camera"]
+shape = SubResource("BoxShape3D_x688r")
+
+[node name="Camera" type="Camera3D" parent="Viewport/Camera"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.4)
 current = true
+
+[node name="Sprite3D" type="Sprite3D" parent="Viewport/Camera"]
+transform = Transform3D(-20, 0, -1.74846e-06, 0, 20, 0, 1.74846e-06, 0, -20, 0, 0, -0.500999)
+modulate = Color(1, 0, 0, 1)
+double_sided = false
+texture = SubResource("PlaceholderTexture2D_yqspg")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_kq72o")
 
-[connection signal="body_exited" from="Boundary" to="." method="_on_world_boundary_exited"]
+[connection signal="body_entered" from="Boundary" to="." method="_on_world_boundary_entered"]

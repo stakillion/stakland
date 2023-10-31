@@ -14,9 +14,11 @@ func activate(activator):
 
 	if activator.held_item == self:
 		activator.held_item = null
+		self.angular_velocity = Vector3()
 		self.collision_layer = 1
 	else:
 		activator.held_item = self
+		activator.held_item_angle = global_rotation - activator.head.global_rotation
 		self.collision_layer = 2
 
 

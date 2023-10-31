@@ -1,10 +1,11 @@
 extends Node
 
 var player_list = Node.new()
-var world
+var world:Node3D
 
 # multiplayer
 @onready var dedicated = OS.has_feature("dedicated_server")
+@onready var mobile = get_name() == "Android"
 var mp_peer = ENetMultiplayerPeer.new()
 var mp_spawner = MultiplayerSpawner.new()
 var mp_tick = Timer.new()
@@ -52,13 +53,11 @@ func add_player(peer_id = 1):
 	player_list.add_child(new_player)
 
 
-func remove_player(peer_id):
-	var old_player = player_list.get_node_or_null(str(peer_id))
+func remove_player(old_player):
 	if old_player == player:
-		player = null
 		menu.enable_game_menu(false)
-	if old_player:
-		old_player.queue_free()
+
+	get_tree().queue_delete(old_player)
 
 
 func host_game():

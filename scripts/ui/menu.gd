@@ -56,7 +56,7 @@ func _on_respawn_button_pressed():
 
 func _on_disconnect_button_pressed():
 	for player in Game.player_list.get_children():
-		Game.remove_player(player.name.to_int())
+		Game.remove_player(player)
 
 	Game.mp_peer.close()
 
