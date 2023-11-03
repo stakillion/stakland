@@ -12,6 +12,7 @@ func _physics_process(_delta):
 	$Info.text = "FPS:%d\nH.Speed:%f" % [fps, speed.length()]
 
 	# crosshair
+	var camera = get_viewport().get_camera_3d()
 	var aim_pos = player.pawn.get_aim_target().position
-	$Crosshair.visible = !player.camera.is_position_behind(aim_pos)
-	$Crosshair.position = player.camera.unproject_position(aim_pos)
+	$Crosshair.visible = !camera.is_position_behind(aim_pos)
+	$Crosshair.position = camera.unproject_position(aim_pos)

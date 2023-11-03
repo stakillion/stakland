@@ -1,4 +1,7 @@
+class_name Player
 extends Node
+
+var spawned = false
 
 # control settings
 @export var mouse_sensitivity = Vector2(10.0, 10.0)
@@ -8,40 +11,65 @@ extends Node
 @export var auto_jump = true
 
 # character we are controlling
-@onready var pawn = find_child("Pawn")
+@export var pawn_scene = preload("res://scenes/actors/pawn.tscn")
+var pawn:Pawn
 
 # camera
-@onready var camera = find_child("Camera")
+var camera:Camera3D
 var ang_velocity = Vector2()
 var desired_zoom = 0.0
 var zoom = 10.0
 
 # hud
-@onready var hud = find_child("Hud")
+@export var hud_scene = preload("res://scenes/ui/hud.tscn")
+var hud:Node2D
 
 
-func _enter_tree():
-	set_multiplayer_authority(name.to_int())
+func _init(id:int):
+	name = str(id)
+	Game.player_list.add_child(self)
+	set_multiplayer_authority(id)
 
 
 func _ready():
+	# create the pawn
+	pawn = pawn_scene.instantiate()
+	add_child(pawn)
+	# create the camera
+	camera = Camera3D.new()
+	camera.name = "Camera"
+	add_child(camera)
+	# create the hud
+	hud = hud_scene.instantiate()
+	add_child(hud)
+
+	# set as inactive until we spawn
+	camera.current = false
+	hud.visible = false
+	pawn.process_mode = PROCESS_MODE_DISABLED
+	if !is_multiplayer_authority():
+		pawn.visible = false
+
+	# move pawn in front of the camera
+	var current_cam = get_viewport().get_camera_3d()
+	pawn.global_position = current_cam.global_position - current_cam.global_transform.basis.z * 2
+
+
+@rpc("any_peer", "call_local", "reliable")
+func spawn():
 	# teleport pawn to spawn - TODO: find a better way to look for spawns on the map
 	pawn.global_position = Game.world.spawn_pos
-
-	# tell the game if we are the player
+	pawn.visible = true
+	pawn.process_mode = PROCESS_MODE_INHERIT
+	# tell the game we have spawned
+	spawned = true
 	if is_multiplayer_authority():
 		camera.make_current()
 		hud.visible = true
-		Game.player = self
-		Game.menu.enable_game_menu()
-	else:
-		hud.visible = false
+		Game.menu.toggle_player_menu()
 
 
 func _process(delta):
-	if !pawn:
-		return
-
 	# rotate camera by angular velocity (joystick)
 	if ang_velocity.length_squared() != 0.0:
 		camera.rotation -= ang_velocity * delta
@@ -51,7 +79,8 @@ func _process(delta):
 	process_inputs()
 
 	# lerp current camera zoom to desired zoom for smooth zoom effect
-	zoom = lerp(zoom, desired_zoom, 3 * delta)
+	if camera.current:
+		zoom = lerp(zoom, desired_zoom, 3 * delta)
 
 	# have camera follow pawn, or its head if it has one
 	var follow_pos = pawn.global_position if !pawn.get("head") else pawn.head.global_position
@@ -71,7 +100,7 @@ func _process(delta):
 
 
 func process_inputs():
-	if Game.menu.visible || !is_multiplayer_authority():
+	if !spawned || Game.menu.visible || !is_multiplayer_authority():
 		return
 
 	# directional movement
@@ -102,9 +131,7 @@ func process_inputs():
 
 
 func _unhandled_input(event):
-	if Game.menu.visible || !is_multiplayer_authority():
-		return
-	if !pawn:
+	if !spawned || Game.menu.visible || !is_multiplayer_authority():
 		return
 
 	if event is InputEventMouseMotion:

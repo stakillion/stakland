@@ -7,7 +7,6 @@ var world:Node3D
 @onready var dedicated = OS.has_feature("dedicated_server")
 @onready var mobile = get_name() == "Android"
 var mp_peer = ENetMultiplayerPeer.new()
-var mp_spawner = MultiplayerSpawner.new()
 var mp_tick = Timer.new()
 var mp_port = 26262
 
@@ -16,61 +15,81 @@ var mp_port = 26262
 var menu:Control
 
 # player
-@export var player_scene = preload("res://scenes/player.tscn")
-var player:Node
+var player:Player
 
 
 func _ready():
-	# menu (unless we're a server)
-	if !dedicated:
-		menu = menu_scene.instantiate()
-		add_child(menu)
-
-	# player list
+	# the node containing the players
 	player_list.name = "Players"
 	add_child(player_list)
+	# the player (unless we're a server)
+	if !dedicated:
+		player = Player.new(1)
 
-	# mutliplayer spawner
-	mp_spawner.name = "MPSpawner"
-	mp_spawner.spawn_path = player_list.get_path() # throws an error and works anyway?
-	mp_spawner.add_spawnable_scene("res://scenes/player.tscn")
-	add_child(mp_spawner)
-
-	# multiplayer tick
+	# multiplayer tick timer
 	mp_tick.name = "MPTick"
 	mp_tick.wait_time = 1.0/60 # 60hz
 	add_child(mp_tick)
 	mp_tick.start()
+
+	# the menu (unless we're a server)
+	if !dedicated:
+		menu = menu_scene.instantiate()
+		add_child(menu)
 
 	# start the game if we are a server
 	if dedicated:
 		host_game()
 
 
-func add_player(peer_id = 1):
-	var new_player = player_scene.instantiate()
-	new_player.name = str(peer_id)
-	player_list.add_child(new_player)
-
-
-func remove_player(peer_id):
-	var old_player = player_list.get_node_or_null(str(peer_id))
-	if old_player == player:
-		menu.enable_game_menu(false)
-
-	get_tree().queue_delete(old_player)
-
-
 func host_game():
-	mp_peer.create_server(mp_port)
+	if mp_peer.create_server(mp_port) != OK:
+		return
 	multiplayer.multiplayer_peer = mp_peer
-	multiplayer.peer_connected.connect(add_player)
-	multiplayer.peer_disconnected.connect(remove_player)
-	if !dedicated:
-		add_player()
+	multiplayer.peer_connected.connect(_on_player_connected)
+	multiplayer.peer_disconnected.connect(_on_player_disconnected)
 
 
 func join_game(address):
 	address = IP.resolve_hostname(address)
-	mp_peer.create_client(address, mp_port)
+	if mp_peer.create_client(address, mp_port) != OK:
+		return
 	multiplayer.multiplayer_peer = mp_peer
+	multiplayer.peer_connected.connect(_on_player_connected)
+	multiplayer.peer_disconnected.connect(_on_player_disconnected)
+	multiplayer.connected_to_server.connect(_on_connected_to_server)
+
+
+func _on_player_connected(id):
+	request_player.rpc_id(id)
+
+
+func _on_player_disconnected(id):
+	var old_player = player_list.get_node_or_null(str(id))
+	if old_player:
+		get_tree().queue_delete(old_player)
+
+
+func _on_connected_to_server():
+	# change player id to our new peer id
+	var id = mp_peer.get_unique_id()
+	player.name = str(id)
+	player.set_multiplayer_authority(id)
+
+
+@rpc("any_peer", "call_remote", "reliable")
+func request_player():
+	if !player:
+		return
+	var peer_id = multiplayer.get_remote_sender_id()
+	# for now just send whether or not the player has spawned, can extend in the future
+	send_player.rpc_id(peer_id, player.spawned)
+
+
+@rpc("any_peer", "call_remote", "reliable")
+func send_player(spawned):
+	var peer_id = multiplayer.get_remote_sender_id()
+	print("recieving player: ", peer_id)
+	var new_player = Player.new(peer_id)
+	if spawned:
+		new_player.spawn()

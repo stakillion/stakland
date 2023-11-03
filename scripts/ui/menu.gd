@@ -2,7 +2,14 @@ extends Control
 
 
 func _ready():
-	enable_game_menu(false)
+	toggle_player_menu(false)
+	for node in $PlayerMenu/PhysicsSettings.get_children():
+		var label = node.get_meta("label")
+		var property = node.get_meta("property")
+		var value = Game.player.pawn.get(property)
+		node.value = value
+		node.find_child("Label").text = "%s: %f" % [label, value]
+		node.connect("value_changed", _on_physics_setting_value_changed.bind(property, label, node))
 
 
 func _process(_delta):
@@ -17,48 +24,29 @@ func _input(event):
 		visible = !visible
 
 
-func enable_game_menu(enable = true):
-	# disable main menu
-	$MainMenu.visible = !enable
-	# disable multiplayer address field
-	$AddressField.visible = !enable
-
-	# enable game menu
-	$GameMenu.visible = enable
-	# enable player menu
-	$PlayerMenu.visible = enable
-	for node in $PlayerMenu.get_children():
-		if !enable: break
-		var label = node.get_meta("label")
-		var property = node.get_meta("property")
-		var value = Game.player.pawn.get(property)
-		node.value = value
-		node.find_child("Label").text = "%s: %f" % [label, value]
-		node.connect("value_changed", _on_physics_setting_value_changed.bind(property, label, node))
-
-
 func _on_PlayButton_pressed():
-	if $AddressField.text.is_empty():
-		Game.host_game()
-	else:
-		Game.join_game($AddressField.text)
-
-	visible = false
-
-
-func _on_resume_button_pressed():
+	if !Game.player.spawned:
+		Game.player.spawn.rpc()
 	visible = false
 
 
 func _on_respawn_button_pressed():
-	Game.player.pawn.global_position = Game.world.spawn_pos
+	Game.player.spawn()
 
 
 func _on_disconnect_button_pressed():
-	for player in Game.player_list.get_children():
-		Game.remove_player(player)
-
 	Game.mp_peer.close()
+
+
+func toggle_player_menu(enable = true):
+	$PlayerMenu.visible = enable
+
+
+func _on_connect_button_pressed():
+	if $MultiplayerMenu/AddressField.text.is_empty():
+		Game.host_game()
+	else:
+		Game.join_game($MultiplayerMenu/AddressField.text)
 
 
 func _on_QuitButton_pressed():
@@ -75,3 +63,10 @@ func _on_fullscreen_button_pressed():
 func _on_physics_setting_value_changed(value, property, label, node):
 	Game.player.pawn.set(property, value)
 	node.find_child("Label").text = "%s: %f" % [label, value]
+
+
+func _on_address_field_text_changed():
+	if $MultiplayerMenu/AddressField.text.is_empty():
+		$MultiplayerMenu/ConnectButton.text = "Host"
+	else:
+		$MultiplayerMenu/ConnectButton.text = "Connect"

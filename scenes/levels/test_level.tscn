@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=3 uid="uid://o70p27l476fn"]
+[gd_scene load_steps=30 format=3 uid="uid://o70p27l476fn"]
 
 [ext_resource type="Texture2D" uid="uid://loxh1icksh70" path="res://materials/grass1.png" id="1_24n2b"]
 [ext_resource type="Script" path="res://scripts/levels/test_level.gd" id="1_nkfo3"]
@@ -125,48 +125,6 @@ size = Vector3(0.5, 0.5, 1)
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_yqspg"]
 
-[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_kq72o"]
-properties/0/path = NodePath("BlueLamp:position")
-properties/0/spawn = true
-properties/0/sync = true
-properties/0/watch = false
-properties/1/path = NodePath("RedLamp:position")
-properties/1/spawn = true
-properties/1/sync = true
-properties/1/watch = false
-properties/2/path = NodePath("GreenLamp:position")
-properties/2/spawn = true
-properties/2/sync = true
-properties/2/watch = false
-properties/3/path = NodePath("WhiteLamp:position")
-properties/3/spawn = true
-properties/3/sync = true
-properties/3/watch = false
-properties/4/path = NodePath("BlueLamp:rotation")
-properties/4/spawn = true
-properties/4/sync = true
-properties/4/watch = false
-properties/5/path = NodePath("RedLamp:rotation")
-properties/5/spawn = true
-properties/5/sync = true
-properties/5/watch = false
-properties/6/path = NodePath("GreenLamp:rotation")
-properties/6/spawn = true
-properties/6/sync = true
-properties/6/watch = false
-properties/7/path = NodePath("WhiteLamp:rotation")
-properties/7/spawn = true
-properties/7/sync = true
-properties/7/watch = false
-properties/8/path = NodePath("Viewport/Camera:position")
-properties/8/spawn = true
-properties/8/sync = true
-properties/8/watch = false
-properties/9/path = NodePath("Viewport/Camera:rotation")
-properties/9/spawn = true
-properties/9/sync = true
-properties/9/watch = false
-
 [node name="TestLevel" type="Node3D"]
 script = ExtResource("1_nkfo3")
 
@@ -183,7 +141,7 @@ directional_shadow_blend_splits = true
 environment = SubResource("Environment_ifkfe")
 
 [node name="Boundary" type="Area3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -100, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -256, 0)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Boundary"]
 shape = SubResource("WorldBoundaryShape3D_2e1en")
@@ -457,8 +415,5 @@ transform = Transform3D(-20, 0, -1.74846e-06, 0, 20, 0, 1.74846e-06, 0, -20, 0, 
 modulate = Color(1, 0, 0, 1)
 double_sided = false
 texture = SubResource("PlaceholderTexture2D_yqspg")
-
-[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
-replication_config = SubResource("SceneReplicationConfig_kq72o")
 
 [connection signal="body_entered" from="Boundary" to="." method="_on_world_boundary_entered"]

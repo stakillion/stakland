@@ -22,6 +22,7 @@ grow_vertical = 2
 color = Color(0, 0, 0, 0.501961)
 
 [node name="MainMenu" type="VBoxContainer" parent="."]
+custom_minimum_size = Vector2(256, 0)
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -41,7 +42,6 @@ theme_override_colors/font_pressed_color = Color(0, 1, 0.75, 1)
 theme_override_colors/font_hover_color = Color(0, 0.88, 0.66, 1)
 theme_override_fonts/font = ExtResource("2_wmh1k")
 text = "Play"
-flat = true
 
 [node name="QuitButton" type="Button" parent="MainMenu"]
 layout_mode = 2
@@ -49,60 +49,24 @@ theme_override_colors/font_pressed_color = Color(0, 1, 0.75, 1)
 theme_override_colors/font_hover_color = Color(0, 0.88, 0.66, 1)
 theme_override_fonts/font = ExtResource("2_wmh1k")
 text = "Quit"
-flat = true
-
-[node name="GameMenu" type="VBoxContainer" parent="."]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -84.0
-offset_top = -40.0
-offset_right = 84.0
-offset_bottom = 40.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="ResumeButton" type="Button" parent="GameMenu"]
-layout_mode = 2
-theme_override_colors/font_pressed_color = Color(0, 1, 0.75, 1)
-theme_override_colors/font_hover_color = Color(0, 0.88, 0.66, 1)
-theme_override_fonts/font = ExtResource("2_wmh1k")
-text = "Resume"
-flat = true
-
-[node name="RespawnButton" type="Button" parent="GameMenu"]
-layout_mode = 2
-theme_override_colors/font_pressed_color = Color(0, 1, 0.75, 1)
-theme_override_colors/font_hover_color = Color(0, 0.88, 0.66, 1)
-theme_override_fonts/font = ExtResource("2_wmh1k")
-text = "Respawn"
-flat = true
-
-[node name="DisconnectButton" type="Button" parent="GameMenu"]
-layout_mode = 2
-theme_override_colors/font_pressed_color = Color(0, 1, 0.75, 1)
-theme_override_colors/font_hover_color = Color(0, 0.88, 0.66, 1)
-theme_override_fonts/font = ExtResource("2_wmh1k")
-text = "Disconnect"
-flat = true
 
 [node name="PlayerMenu" type="VBoxContainer" parent="."]
-custom_minimum_size = Vector2(420, 0)
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -325.0
-offset_top = 32.0
-offset_right = 95.0
-offset_bottom = 399.0
+offset_left = -305.0
+offset_top = 25.0
+offset_right = 94.9998
+offset_bottom = 453.0
 grow_horizontal = 0
 scale = Vector2(0.75, 0.75)
 
-[node name="GroundSpeed" type="HSlider" parent="PlayerMenu"]
+[node name="PhysicsSettings" type="VBoxContainer" parent="PlayerMenu"]
+custom_minimum_size = Vector2(0, 400)
+layout_mode = 2
+
+[node name="GroundSpeed" type="HSlider" parent="PlayerMenu/PhysicsSettings"]
 layout_mode = 2
 size_flags_vertical = 2
 step = 0.5
@@ -112,7 +76,7 @@ tick_count = 12
 metadata/property = "ground_speed"
 metadata/label = "Ground Speed"
 
-[node name="Label" type="Label" parent="PlayerMenu/GroundSpeed"]
+[node name="Label" type="Label" parent="PlayerMenu/PhysicsSettings/GroundSpeed"]
 layout_mode = 2
 offset_top = -23.0
 offset_right = 420.0
@@ -120,7 +84,7 @@ offset_bottom = -4.0
 theme_override_fonts/font = ExtResource("2_wmh1k")
 text = "Ground Speed:"
 
-[node name="GroundAccel" type="HSlider" parent="PlayerMenu"]
+[node name="GroundAccel" type="HSlider" parent="PlayerMenu/PhysicsSettings"]
 layout_mode = 2
 size_flags_vertical = 2
 step = 0.5
@@ -130,7 +94,7 @@ tick_count = 12
 metadata/property = "ground_accel"
 metadata/label = "Ground Accel"
 
-[node name="Label" type="Label" parent="PlayerMenu/GroundAccel"]
+[node name="Label" type="Label" parent="PlayerMenu/PhysicsSettings/GroundAccel"]
 layout_mode = 2
 offset_top = -23.0
 offset_right = 420.0
@@ -138,7 +102,7 @@ offset_bottom = -4.0
 theme_override_fonts/font = ExtResource("2_wmh1k")
 text = "Ground Accel:"
 
-[node name="GroundFriction" type="HSlider" parent="PlayerMenu"]
+[node name="GroundFriction" type="HSlider" parent="PlayerMenu/PhysicsSettings"]
 layout_mode = 2
 size_flags_vertical = 2
 step = 0.5
@@ -148,7 +112,7 @@ tick_count = 12
 metadata/property = "ground_friction"
 metadata/label = "Ground Friction"
 
-[node name="Label" type="Label" parent="PlayerMenu/GroundFriction"]
+[node name="Label" type="Label" parent="PlayerMenu/PhysicsSettings/GroundFriction"]
 layout_mode = 2
 offset_top = -23.0
 offset_right = 420.0
@@ -156,7 +120,7 @@ offset_bottom = -4.0
 theme_override_fonts/font = ExtResource("2_wmh1k")
 text = "Ground Friction:"
 
-[node name="AirSpeed" type="HSlider" parent="PlayerMenu"]
+[node name="AirSpeed" type="HSlider" parent="PlayerMenu/PhysicsSettings"]
 layout_mode = 2
 size_flags_vertical = 2
 step = 0.5
@@ -166,7 +130,7 @@ tick_count = 12
 metadata/property = "air_speed"
 metadata/label = "Air Speed"
 
-[node name="Label" type="Label" parent="PlayerMenu/AirSpeed"]
+[node name="Label" type="Label" parent="PlayerMenu/PhysicsSettings/AirSpeed"]
 layout_mode = 2
 offset_top = -23.0
 offset_right = 420.0
@@ -174,7 +138,7 @@ offset_bottom = -4.0
 theme_override_fonts/font = ExtResource("2_wmh1k")
 text = "Air Speed:"
 
-[node name="AirAccel" type="HSlider" parent="PlayerMenu"]
+[node name="AirAccel" type="HSlider" parent="PlayerMenu/PhysicsSettings"]
 layout_mode = 2
 size_flags_vertical = 2
 step = 0.5
@@ -184,7 +148,7 @@ tick_count = 12
 metadata/property = "air_accel"
 metadata/label = "Air Accel"
 
-[node name="Label" type="Label" parent="PlayerMenu/AirAccel"]
+[node name="Label" type="Label" parent="PlayerMenu/PhysicsSettings/AirAccel"]
 layout_mode = 2
 offset_top = -23.0
 offset_right = 420.0
@@ -192,7 +156,7 @@ offset_bottom = -4.0
 theme_override_fonts/font = ExtResource("2_wmh1k")
 text = "Air Accel:"
 
-[node name="AirFriction" type="HSlider" parent="PlayerMenu"]
+[node name="AirFriction" type="HSlider" parent="PlayerMenu/PhysicsSettings"]
 layout_mode = 2
 size_flags_vertical = 2
 step = 0.5
@@ -202,7 +166,7 @@ tick_count = 12
 metadata/property = "air_friction"
 metadata/label = "Air Friction"
 
-[node name="Label" type="Label" parent="PlayerMenu/AirFriction"]
+[node name="Label" type="Label" parent="PlayerMenu/PhysicsSettings/AirFriction"]
 layout_mode = 2
 offset_top = -23.0
 offset_right = 420.0
@@ -210,7 +174,7 @@ offset_bottom = -4.0
 theme_override_fonts/font = ExtResource("2_wmh1k")
 text = "Air Friction:"
 
-[node name="JumpPower" type="HSlider" parent="PlayerMenu"]
+[node name="JumpPower" type="HSlider" parent="PlayerMenu/PhysicsSettings"]
 layout_mode = 2
 size_flags_vertical = 2
 step = 0.5
@@ -220,7 +184,7 @@ tick_count = 12
 metadata/property = "jump_power"
 metadata/label = "Jump Power"
 
-[node name="Label" type="Label" parent="PlayerMenu/JumpPower"]
+[node name="Label" type="Label" parent="PlayerMenu/PhysicsSettings/JumpPower"]
 layout_mode = 2
 offset_top = -23.0
 offset_right = 420.0
@@ -228,7 +192,7 @@ offset_bottom = -4.0
 theme_override_fonts/font = ExtResource("2_wmh1k")
 text = "Jump Power:"
 
-[node name="JumpMidair" type="HSlider" parent="PlayerMenu"]
+[node name="JumpMidair" type="HSlider" parent="PlayerMenu/PhysicsSettings"]
 layout_mode = 2
 size_flags_vertical = 2
 allow_greater = true
@@ -237,7 +201,7 @@ tick_count = 12
 metadata/property = "jump_midair"
 metadata/label = "Mid Air Jumps"
 
-[node name="Label" type="Label" parent="PlayerMenu/JumpMidair"]
+[node name="Label" type="Label" parent="PlayerMenu/PhysicsSettings/JumpMidair"]
 layout_mode = 2
 offset_top = -23.0
 offset_right = 420.0
@@ -245,7 +209,7 @@ offset_bottom = -4.0
 theme_override_fonts/font = ExtResource("2_wmh1k")
 text = "Mid Air Jumps:"
 
-[node name="Gravity" type="HSlider" parent="PlayerMenu"]
+[node name="Gravity" type="HSlider" parent="PlayerMenu/PhysicsSettings"]
 layout_mode = 2
 size_flags_vertical = 2
 step = 0.5
@@ -255,7 +219,7 @@ tick_count = 12
 metadata/property = "gravity"
 metadata/label = "Gravity"
 
-[node name="Label" type="Label" parent="PlayerMenu/Gravity"]
+[node name="Label" type="Label" parent="PlayerMenu/PhysicsSettings/Gravity"]
 layout_mode = 2
 offset_top = -23.0
 offset_right = 420.0
@@ -263,19 +227,40 @@ offset_bottom = -4.0
 theme_override_fonts/font = ExtResource("2_wmh1k")
 text = "Gravity:"
 
-[node name="AddressField" type="TextEdit" parent="."]
-custom_minimum_size = Vector2(325, 0)
+[node name="RespawnButton" type="Button" parent="PlayerMenu"]
+custom_minimum_size = Vector2(256, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_pressed_color = Color(0, 1, 0.75, 1)
+theme_override_colors/font_hover_color = Color(0, 0.88, 0.66, 1)
+theme_override_fonts/font = ExtResource("2_wmh1k")
+text = "Respawn"
+
+[node name="MultiplayerMenu" type="VBoxContainer" parent="."]
+custom_minimum_size = Vector2(256, 0)
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_top = -28.0
-offset_right = 325.0
+offset_left = 5.0
+offset_top = -61.0
+offset_right = 125.0
+offset_bottom = -5.0
 grow_vertical = 0
+
+[node name="AddressField" type="TextEdit" parent="MultiplayerMenu"]
+layout_mode = 2
 tooltip_text = "Enter an IP to connect"
 theme_override_fonts/font = ExtResource("2_wmh1k")
-placeholder_text = "Multiplayer Address"
+placeholder_text = "Address"
 scroll_fit_content_height = true
+
+[node name="ConnectButton" type="Button" parent="MultiplayerMenu"]
+layout_mode = 2
+theme_override_colors/font_pressed_color = Color(0, 1, 0.75, 1)
+theme_override_colors/font_hover_color = Color(0, 0.88, 0.66, 1)
+theme_override_fonts/font = ExtResource("2_wmh1k")
+text = "Host"
 
 [node name="FullscreenButton" type="Button" parent="."]
 layout_mode = 1
@@ -285,21 +270,19 @@ anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
 offset_left = -140.0
-offset_top = -34.0
+offset_top = -29.0
 offset_right = 140.0
-offset_bottom = -10.0
+offset_bottom = -5.0
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_colors/font_pressed_color = Color(0, 1, 0.75, 1)
 theme_override_colors/font_hover_color = Color(0, 0.88, 0.66, 1)
 theme_override_fonts/font = ExtResource("2_wmh1k")
 text = "Toggle Fullscreen"
-flat = true
 
 [connection signal="pressed" from="MainMenu/PlayButton" to="." method="_on_PlayButton_pressed"]
 [connection signal="pressed" from="MainMenu/QuitButton" to="." method="_on_QuitButton_pressed"]
-[connection signal="pressed" from="GameMenu/ResumeButton" to="." method="_on_resume_button_pressed"]
-[connection signal="pressed" from="GameMenu/RespawnButton" to="." method="_on_respawn_button_pressed"]
-[connection signal="pressed" from="GameMenu/DisconnectButton" to="." method="_on_disconnect_button_pressed"]
-[connection signal="text_set" from="AddressField" to="." method="_on_address_field_text_set"]
+[connection signal="pressed" from="PlayerMenu/RespawnButton" to="." method="_on_respawn_button_pressed"]
+[connection signal="text_changed" from="MultiplayerMenu/AddressField" to="." method="_on_address_field_text_changed"]
+[connection signal="pressed" from="MultiplayerMenu/ConnectButton" to="." method="_on_connect_button_pressed"]
 [connection signal="pressed" from="FullscreenButton" to="." method="_on_fullscreen_button_pressed"]

@@ -21,7 +21,7 @@ var jump_midair_count = 0
 var head:Node3D = self
 var inventory:Node3D
 var held_item:Node3D
-var held_item_angle
+var held_item_angle:Vector3
 
 
 func _ready():
@@ -36,9 +36,7 @@ func _ready():
 		add_child(inventory)
 		inventory.position = head.position
 
-	# multiplayer tick
-	if is_multiplayer_authority():
-		Game.mp_tick.connect("timeout", mp_tick)
+	Game.mp_tick.connect("timeout", mp_tick)
 
 
 func _physics_process(delta):
@@ -192,12 +190,13 @@ func update_item_pos(delta):
 		held_item.global_position = new_pos
 
 	# set rotation relative to where we're looking
-	# TODO - figured out a better way to do this
+	# TODO - figure out a better way to do this
 	held_item.global_rotation = head.global_rotation + held_item_angle
 
 
 func mp_tick():
-	mp_update_pos.rpc(global_position, global_rotation, head.global_position, head.global_rotation)
+	if is_multiplayer_authority():
+		mp_update_pos.rpc(global_position, global_rotation, head.global_position, head.global_rotation)
 
 
 @rpc
