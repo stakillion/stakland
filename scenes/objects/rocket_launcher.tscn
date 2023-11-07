@@ -1,0 +1,39 @@
+[gd_scene load_steps=6 format=3 uid="uid://ds3wnxy8jxm8d"]
+
+[ext_resource type="Texture2D" uid="uid://dnltefpxixakc" path="res://materials/dev_tile.png" id="1_6t6bu"]
+[ext_resource type="Script" path="res://scripts/objects/weapon.gd" id="1_lfcrf"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fw5sk"]
+albedo_color = Color(0, 0, 0, 1)
+albedo_texture = ExtResource("1_6t6bu")
+metallic_specular = 1.0
+roughness = 0.75
+uv1_triplanar = true
+uv1_triplanar_sharpness = 150.0
+texture_filter = 5
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_jxy7x"]
+material = SubResource("StandardMaterial3D_fw5sk")
+top_radius = 0.15
+bottom_radius = 0.15
+height = 1.25
+
+[sub_resource type="BoxMesh" id="BoxMesh_r7v8i"]
+material = SubResource("StandardMaterial3D_fw5sk")
+size = Vector3(0.1, 0.5, 0.1)
+
+[node name="RocketLauncher" type="RigidBody3D"]
+script = ExtResource("1_lfcrf")
+use_inventory = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
+mesh = SubResource("CylinderMesh_jxy7x")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.15, -0.4)
+mesh = SubResource("BoxMesh_r7v8i")
+
+[node name="CollisionPolygon3D" type="CollisionPolygon3D" parent="."]
+depth = 1.25
+polygon = PackedVector2Array(-0.11, 0.1, -0.15, 0, 0, -0.4, 0.15, 0, 0.1, 0.11, 0, 0.15)

@@ -9,7 +9,7 @@ extends PhysicsBody3D
 @export var air_speed = 1.0
 @export var air_accel = 20.0
 @export var air_friction = 0.0
-@export var jump_power = 8.0
+@export var jump_power = 7.0
 @export var jump_midair = 1
 @export var gravity = 20.0
 
@@ -18,24 +18,15 @@ var velocity = Vector3()
 var on_ground = false
 var jump_midair_count = 0
 
-var head:Node3D = self
-var inventory:Node3D
-var held_item:Node3D
-var held_item_angle:Vector3
+# head is used to track where we are looking
+@onready var head = $Head
+# inventory is used to store items
+@onready var inventory = $Head/Inventory
+var active_item:Item
+var held_item:Item
 
 
 func _ready():
-	# head is used to track where we are looking
-	head = find_child("Head")
-	if !head: head = self
-	# inventory is used to store items
-	inventory = find_child("Inventory")
-	if !inventory:
-		inventory = Node3D.new()
-		inventory.name = "Inventory"
-		add_child(inventory)
-		inventory.position = head.position
-
 	Game.mp_tick.connect("timeout", mp_tick)
 
 
@@ -53,10 +44,6 @@ func _physics_process(delta):
 			air_accelerate(movement.normalized(), movement.length(), delta)
 		# do move based on our new velocity
 		move(delta)
-
-	# update position of held item
-	if held_item:
-		update_item_pos(delta)
 
 	# reset movement vector
 	movement = Vector3()
@@ -156,8 +143,8 @@ func jump(midair = true):
 @rpc("any_peer", "call_local", "reliable")
 func interact():
 	var target
-	if held_item && held_item.get_parent() != inventory:
-		target = held_item
+	if active_item && active_item.get_parent() != inventory:
+		target = active_item
 	else:
 		target = get_aim_target(2.0).collider
 	if target && target.has_method("activate"):
@@ -166,32 +153,14 @@ func interact():
 
 @rpc("any_peer", "call_local", "reliable")
 func action():
-	if held_item:
-		if held_item.has_method("activate"):
-			held_item.activate(self)
+	var item = held_item if held_item else active_item
+	if item:
+		if item.has_method("action"):
+			item.action()
+		elif item.has_method("activate"):
+			item.activate(self)
 	else:
 		interact()
-
-
-func update_item_pos(delta):
-	var in_inventory = held_item.get_parent() == inventory
-	var use_velocity = "linear_velocity" in held_item
-
-	var new_pos
-	if in_inventory:
-		new_pos = inventory.global_position
-		use_velocity = false
-	else:
-		new_pos = get_aim_target(2.0, [self, held_item]).position
-
-	if use_velocity: # move and hold item in position with velocity
-		held_item.linear_velocity = (new_pos - held_item.global_position) * (4096 * delta)
-	else: # or just set position directly
-		held_item.global_position = new_pos
-
-	# set rotation relative to where we're looking
-	# TODO - figure out a better way to do this
-	held_item.global_rotation = head.global_rotation + held_item_angle
 
 
 func mp_tick():
@@ -200,8 +169,8 @@ func mp_tick():
 
 
 @rpc
-func mp_update_pos(pos, rot, head_pos, head_rot):
+func mp_update_pos(pos, ang, head_pos, head_ang):
 	global_position = pos
-	global_rotation = rot
+	global_rotation = ang
 	head.global_position = head_pos
-	head.global_rotation = head_rot
+	head.global_rotation = head_ang

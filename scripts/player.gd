@@ -35,10 +35,12 @@ func _ready():
 	# create the pawn
 	pawn = pawn_scene.instantiate()
 	add_child(pawn)
+
 	# create the camera
 	camera = Camera3D.new()
 	camera.name = "Camera"
 	add_child(camera)
+
 	# create the hud
 	hud = hud_scene.instantiate()
 	add_child(hud)
@@ -53,14 +55,17 @@ func _ready():
 	# move pawn in front of the camera
 	var current_cam = get_viewport().get_camera_3d()
 	pawn.global_position = current_cam.global_position - current_cam.global_transform.basis.z * 2
+	pawn.global_position -= Vector3(0.0, 0.75, 0.0)
+	pawn.head.look_at(current_cam.global_position)
 
 
 @rpc("any_peer", "call_local", "reliable")
 func spawn():
-	# teleport pawn to spawn - TODO: find a better way to look for spawns on the map
-	pawn.global_position = Game.world.spawn_pos
 	pawn.visible = true
 	pawn.process_mode = PROCESS_MODE_INHERIT
+	# teleport pawn to spawn - TODO: find a better way to look for spawns on the map
+	pawn.global_position = Game.world.spawn_pos
+	camera.global_rotation = Game.world.spawn_ang
 	# tell the game we have spawned
 	spawned = true
 	if is_multiplayer_authority():

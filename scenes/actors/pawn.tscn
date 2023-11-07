@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://bicei8k7eppb3"]
+[gd_scene load_steps=7 format=3 uid="uid://bicei8k7eppb3"]
 
 [ext_resource type="Script" path="res://scripts/actors/pawn.gd" id="1_txe8y"]
 
@@ -9,19 +9,53 @@ distance_fade_max_distance = 2.0
 
 [sub_resource type="CylinderMesh" id="2"]
 material = SubResource("1")
-height = 1.5
+top_radius = 0.25
+height = 1.25
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_fn5q8"]
 size = Vector3(1, 1.5, 1)
 
+[sub_resource type="CylinderMesh" id="CylinderMesh_vbkiy"]
+material = SubResource("1")
+bottom_radius = 0.15
+height = 0.35
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_165mo"]
+
 [node name="Pawn" type="CharacterBody3D"]
 script = ExtResource("1_txe8y")
 
-[node name="MeshInstance" type="MeshInstance3D" parent="."]
+[node name="BodyMesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.625, 0)
 mesh = SubResource("2")
 
-[node name="CollisionShape" type="CollisionShape3D" parent="."]
+[node name="Collision" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)
 shape = SubResource("BoxShape3D_fn5q8")
 
 [node name="Head" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0.000523597, 0, -0.000523597, 1, 0, 1.375, 0)
+
+[node name="Inventory" type="Node3D" parent="Head"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.42, -0.175, -0.25)
+
+[node name="HeadMesh" type="MeshInstance3D" parent="Head"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.05, 0)
+mesh = SubResource("CylinderMesh_vbkiy")
+
+[node name="LeftEye" type="Sprite3D" parent="Head/HeadMesh"]
+transform = Transform3D(-1, 0, -8.74228e-08, -5.89806e-17, 1, 0, 8.74229e-08, 0, -1, -0.1, 0.0500783, -0.399586)
+modulate = Color(1, 0, 0, 1)
+pixel_size = 0.1
+double_sided = false
+texture = SubResource("PlaceholderTexture2D_165mo")
+
+[node name="RightEye" type="Sprite3D" parent="Head/HeadMesh"]
+transform = Transform3D(-1, 0, -8.74228e-08, -1.04083e-17, 1, 0, 8.74228e-08, 0, -1, 0.1, 0.05, -0.4)
+modulate = Color(0, 0, 1, 1)
+pixel_size = 0.1
+double_sided = false
+texture = SubResource("PlaceholderTexture2D_165mo")
+
+[node name="Viewport" type="SubViewport" parent="."]
+transparent_bg = true

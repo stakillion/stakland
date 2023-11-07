@@ -69,10 +69,11 @@ layout_mode = 2
 [node name="GroundSpeed" type="HSlider" parent="PlayerMenu/PhysicsSettings"]
 layout_mode = 2
 size_flags_vertical = 2
+max_value = 50.0
 step = 0.5
 allow_greater = true
 allow_lesser = true
-tick_count = 12
+tick_count = 10
 metadata/property = "ground_speed"
 metadata/label = "Ground Speed"
 
@@ -87,10 +88,11 @@ text = "Ground Speed:"
 [node name="GroundAccel" type="HSlider" parent="PlayerMenu/PhysicsSettings"]
 layout_mode = 2
 size_flags_vertical = 2
+max_value = 20.0
 step = 0.5
 allow_greater = true
 allow_lesser = true
-tick_count = 12
+tick_count = 10
 metadata/property = "ground_accel"
 metadata/label = "Ground Accel"
 
@@ -105,10 +107,11 @@ text = "Ground Accel:"
 [node name="GroundFriction" type="HSlider" parent="PlayerMenu/PhysicsSettings"]
 layout_mode = 2
 size_flags_vertical = 2
+max_value = 20.0
 step = 0.5
 allow_greater = true
 allow_lesser = true
-tick_count = 12
+tick_count = 10
 metadata/property = "ground_friction"
 metadata/label = "Ground Friction"
 
@@ -123,10 +126,11 @@ text = "Ground Friction:"
 [node name="AirSpeed" type="HSlider" parent="PlayerMenu/PhysicsSettings"]
 layout_mode = 2
 size_flags_vertical = 2
-step = 0.5
+max_value = 20.0
+step = 0.1
 allow_greater = true
 allow_lesser = true
-tick_count = 12
+tick_count = 10
 metadata/property = "air_speed"
 metadata/label = "Air Speed"
 
@@ -141,10 +145,11 @@ text = "Air Speed:"
 [node name="AirAccel" type="HSlider" parent="PlayerMenu/PhysicsSettings"]
 layout_mode = 2
 size_flags_vertical = 2
+max_value = 200.0
 step = 0.5
 allow_greater = true
 allow_lesser = true
-tick_count = 12
+tick_count = 10
 metadata/property = "air_accel"
 metadata/label = "Air Accel"
 
@@ -159,10 +164,11 @@ text = "Air Accel:"
 [node name="AirFriction" type="HSlider" parent="PlayerMenu/PhysicsSettings"]
 layout_mode = 2
 size_flags_vertical = 2
+max_value = 20.0
 step = 0.5
 allow_greater = true
 allow_lesser = true
-tick_count = 12
+tick_count = 10
 metadata/property = "air_friction"
 metadata/label = "Air Friction"
 
@@ -177,10 +183,11 @@ text = "Air Friction:"
 [node name="JumpPower" type="HSlider" parent="PlayerMenu/PhysicsSettings"]
 layout_mode = 2
 size_flags_vertical = 2
+max_value = 50.0
 step = 0.5
 allow_greater = true
 allow_lesser = true
-tick_count = 12
+tick_count = 10
 metadata/property = "jump_power"
 metadata/label = "Jump Power"
 
@@ -195,9 +202,9 @@ text = "Jump Power:"
 [node name="JumpMidair" type="HSlider" parent="PlayerMenu/PhysicsSettings"]
 layout_mode = 2
 size_flags_vertical = 2
+max_value = 10.0
 allow_greater = true
-allow_lesser = true
-tick_count = 12
+tick_count = 10
 metadata/property = "jump_midair"
 metadata/label = "Mid Air Jumps"
 
@@ -215,7 +222,7 @@ size_flags_vertical = 2
 step = 0.5
 allow_greater = true
 allow_lesser = true
-tick_count = 12
+tick_count = 10
 metadata/property = "gravity"
 metadata/label = "Gravity"
 
