@@ -445,6 +445,12 @@ shape = SubResource("ConcavePolygonShape3D_g8ehe")
 [node name="RocketLauncher" parent="." instance=ExtResource("6_tb0c1")]
 transform = Transform3D(0.311041, 0.950396, 0, -0.950396, 0.311041, 0, 0, 0, 1, -30, 0.25, -7)
 
+[node name="RocketLauncher2" parent="." instance=ExtResource("6_tb0c1")]
+transform = Transform3D(0.311041, 0.950396, 0, -0.950396, 0.311041, 0, 0, 0, 1, -30, 0.25, -9.52183)
+
+[node name="RocketLauncher3" parent="." instance=ExtResource("6_tb0c1")]
+transform = Transform3D(0.311041, 0.950396, 0, -0.950396, 0.311041, 0, 0, 0, 1, -30, 0.25, -12.097)
+
 [connection signal="body_entered" from="Boundary" to="." method="_on_world_boundary_entered"]
 
 [editable path="Surf"]

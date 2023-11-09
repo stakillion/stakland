@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://ds3wnxy8jxm8d"]
+[gd_scene load_steps=8 format=3 uid="uid://ds3wnxy8jxm8d"]
 
 [ext_resource type="Texture2D" uid="uid://dnltefpxixakc" path="res://materials/dev_tile.png" id="1_6t6bu"]
 [ext_resource type="Script" path="res://scripts/objects/weapon.gd" id="1_lfcrf"]
@@ -22,6 +22,13 @@ height = 1.25
 material = SubResource("StandardMaterial3D_fw5sk")
 size = Vector3(0.1, 0.5, 0.1)
 
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_qrgpn"]
+height = 1.25
+radius = 0.15
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ase61"]
+size = Vector3(0.1, 0.5, 0.1)
+
 [node name="RocketLauncher" type="RigidBody3D"]
 script = ExtResource("1_lfcrf")
 use_inventory = true
@@ -34,6 +41,10 @@ mesh = SubResource("CylinderMesh_jxy7x")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.15, -0.4)
 mesh = SubResource("BoxMesh_r7v8i")
 
-[node name="CollisionPolygon3D" type="CollisionPolygon3D" parent="."]
-depth = 1.25
-polygon = PackedVector2Array(-0.11, 0.1, -0.15, 0, 0, -0.4, 0.15, 0, 0.1, 0.11, 0, 0.15)
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
+shape = SubResource("CylinderShape3D_qrgpn")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.15, -0.4)
+shape = SubResource("BoxShape3D_ase61")

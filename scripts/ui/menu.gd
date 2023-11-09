@@ -2,6 +2,7 @@ extends Control
 
 
 func _ready():
+	$MainMenu/PlayButton.grab_focus()
 	toggle_player_menu(false)
 	for node in $PlayerMenu/PhysicsSettings.get_children():
 		var label = node.get_meta("label")
@@ -21,6 +22,7 @@ func _process(_delta):
 
 func _input(event):
 	if event.is_action_pressed("ui_cancel"):
+		$MainMenu/PlayButton.grab_focus()
 		visible = !visible
 
 

@@ -26,6 +26,13 @@ var held_item:Item
 
 
 func _ready():
+	if !head: head = self
+	if !inventory:
+		inventory = Node3D.new()
+		inventory.name = "Inventory"
+		head.add_child(inventory)
+		inventory.global_position = head.global_position
+
 	Game.mp_tick.connect("timeout", mp_tick)
 
 

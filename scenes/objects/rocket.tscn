@@ -1,0 +1,49 @@
+[gd_scene load_steps=7 format=3 uid="uid://c42y4yit3mem3"]
+
+[ext_resource type="Script" path="res://scripts/objects/projectile.gd" id="1_87xn5"]
+[ext_resource type="Texture2D" uid="uid://dnltefpxixakc" path="res://materials/dev_tile.png" id="1_uoiuf"]
+
+[sub_resource type="Curve" id="Curve_qleey"]
+_data = [Vector2(0, 0), 0.0, 3.41809, 0, 0, Vector2(0.251724, 0.347368), 0.0, 0.0, 0, 0, Vector2(0.548276, 0.2), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_u254s"]
+albedo_color = Color(0.501961, 0, 0, 1)
+albedo_texture = ExtResource("1_uoiuf")
+metallic_specular = 1.0
+roughness = 0.75
+uv1_triplanar = true
+uv1_triplanar_sharpness = 150.0
+texture_filter = 5
+
+[sub_resource type="TubeTrailMesh" id="TubeTrailMesh_jg7lg"]
+material = SubResource("StandardMaterial3D_u254s")
+radius = 0.3
+sections = 2
+section_length = 0.5
+curve = SubResource("Curve_qleey")
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_vu1gg"]
+height = 1.0
+radius = 0.1
+
+[node name="Rocket" type="RigidBody3D"]
+top_level = true
+collision_layer = 2
+collision_mask = 2
+script = ExtResource("1_87xn5")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
+mesh = SubResource("TubeTrailMesh_jg7lg")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
+shape = SubResource("CylinderShape3D_vu1gg")
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 60.0
+one_shot = true
+autostart = true
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

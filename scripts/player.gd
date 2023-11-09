@@ -4,8 +4,8 @@ extends Node
 var spawned = false
 
 # control settings
-@export var mouse_sensitivity = Vector2(10.0, 10.0)
-@export var joy_sensitivity = Vector2(10.0, 7.5)
+@export var mouse_sensitivity = Vector2(5.0, 5.0)
+@export var joy_sensitivity = Vector2(5.0, 3.5)
 @export var zoom_min = 2.0
 @export var zoom_max = 4.5
 @export var auto_jump = true
@@ -16,7 +16,6 @@ var pawn:Pawn
 
 # camera
 var camera:Camera3D
-var ang_velocity = Vector2()
 var desired_zoom = 0.0
 var zoom = 10.0
 
@@ -75,13 +74,8 @@ func spawn():
 
 
 func _process(delta):
-	# rotate camera by angular velocity (joystick)
-	if ang_velocity.length_squared() != 0.0:
-		camera.rotation -= ang_velocity * delta
-		camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-89), deg_to_rad(89))
-
 	# inputs
-	process_inputs()
+	process_inputs(delta)
 
 	# lerp current camera zoom to desired zoom for smooth zoom effect
 	if camera.current:
@@ -104,9 +98,19 @@ func _process(delta):
 	camera.global_position = new_pos
 
 
-func process_inputs():
+func process_inputs(delta):
 	if !spawned || Game.menu.visible || !is_multiplayer_authority():
 		return
+
+	# rotate camera by angular velocity (joystick)
+	var ang_velocity = Input.get_vector("look_left", "look_right", "look_up", "look_down")
+	if ang_velocity.length_squared() != 0.0:
+		var rot = Vector3()
+		rot.x = ang_velocity.y * joy_sensitivity.y
+		rot.y = ang_velocity.x * joy_sensitivity.x
+		# rotate view
+		camera.rotation -= rot * delta
+		camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-89), deg_to_rad(89))
 
 	# directional movement
 	var dir = Input.get_vector("move_left", "move_right", "move_forward", "move_back")
@@ -142,16 +146,11 @@ func _unhandled_input(event):
 	if event is InputEventMouseMotion:
 		# get mouse coordinates for camera rotation
 		var rot = camera.rotation
-		rot.y -= event.relative.x * (mouse_sensitivity.x / 10000)
-		rot.x -= event.relative.y * (mouse_sensitivity.y / 10000)
+		rot.y -= event.relative.x * (mouse_sensitivity.x / 4096)
+		rot.x -= event.relative.y * (mouse_sensitivity.y / 4096)
 		# rotate view
 		camera.rotation = rot
 		camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-89), deg_to_rad(89))
-	else:
-		# or use input mapping to rotate over time (e.g. joystick)
-		ang_velocity = Input.get_vector("look_left", "look_right", "look_up", "look_down")
-		#ang_velocity.y = (Input.get_action_strength("look_right") - Input.get_action_strength("look_left")) * (joy_sensitivity.x / 5)
-		#ang_velocity.x = (Input.get_action_strength("look_down") - Input.get_action_strength("look_up")) * (joy_sensitivity.y / 5)
 
 
 func get_aim_target(distance = 32768.0, exclude = [pawn]):
