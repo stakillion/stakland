@@ -237,6 +237,12 @@ use_collision = true
 size = Vector3(20, 10, 0.5)
 material = SubResource("StandardMaterial3D_nlhrf")
 
+[node name="Platform" type="CSGBox3D" parent="Obstacles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.5, 0.125, 17.5)
+use_collision = true
+size = Vector3(5, 0.25, 5)
+material = SubResource("StandardMaterial3D_nlhrf")
+
 [node name="Slope1" type="CSGPolygon3D" parent="Obstacles"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.5, 0, -10)
 use_collision = true
@@ -333,6 +339,7 @@ material = SubResource("StandardMaterial3D_nlhrf")
 
 [node name="BlueLamp" type="RigidBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, -5.97, -3)
+script = ExtResource("2_kd064")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="BlueLamp"]
 mesh = SubResource("SphereMesh_xhmdm")
@@ -347,6 +354,7 @@ light_energy = 5.0
 
 [node name="RedLamp" type="RigidBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, -5.97, 0)
+script = ExtResource("2_kd064")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="RedLamp"]
 mesh = SubResource("SphereMesh_sqmsl")
@@ -361,6 +369,7 @@ light_energy = 5.0
 
 [node name="GreenLamp" type="RigidBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, -5.97, 3)
+script = ExtResource("2_kd064")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="GreenLamp"]
 mesh = SubResource("SphereMesh_xdasw")
@@ -375,6 +384,7 @@ light_energy = 5.0
 
 [node name="WhiteLamp" type="RigidBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.0748, 0.640447, 14.6147)
+script = ExtResource("2_kd064")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="WhiteLamp"]
 mesh = SubResource("SphereMesh_bdxpx")

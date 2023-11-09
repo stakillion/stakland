@@ -37,25 +37,24 @@ func pick_up(new_user:Pawn):
 	if !use_inventory:
 		held_angle = global_rotation - new_user.head.global_rotation
 		collision_layer = 2
-		new_user.held_item = self
+		new_user.set_held_item(self)
 	else:
 		reparent(new_user.inventory)
 		position = Vector3()
 		rotation = Vector3()
 		collision_layer = 0
 		freeze = true
-		new_user.active_item = self
+		new_user.set_held_item(self)
 
 	user = new_user
 
 
 func drop():
 	if user.held_item == self:
-		user.held_item = null
-	elif user.active_item == self:
-		user.active_item = null
-		reparent(Game.world)
+		user.set_held_item(null)
+	if use_inventory:
 		freeze = false
+		reparent(Game.world)
 		update_position(0.0)
 
 	angular_velocity = Vector3()

@@ -22,7 +22,7 @@ var zoom = 10.0
 
 # hud
 @export var hud_scene = preload("res://scenes/ui/hud.tscn")
-var hud:Node2D
+var hud:Control
 
 
 func _init(id:int):
@@ -49,7 +49,7 @@ func _ready():
 	camera.current = false
 	hud.visible = false
 	pawn.process_mode = PROCESS_MODE_DISABLED
-	if !is_multiplayer_authority():
+	if !is_multiplayer_authority() || name.to_int() != 1:
 		pawn.visible = false
 
 	# move pawn in front of the camera

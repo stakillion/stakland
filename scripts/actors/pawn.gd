@@ -19,10 +19,9 @@ var on_ground = false
 var jump_midair_count = 0
 
 # head is used to track where we are looking
-@onready var head = $Head
+@onready var head = find_child("Head")
 # inventory is used to store items
-@onready var inventory = $Head/Inventory
-var active_item:Item
+@onready var inventory = find_child("Inventory")
 var held_item:Item
 
 
@@ -51,6 +50,7 @@ func _physics_process(delta):
 
 func move(delta, max_slides = 6):
 	on_ground = false
+	var collisions = []
 	var motion = (velocity * delta) / max_slides
 	while max_slides:
 		max_slides -= 1
@@ -66,6 +66,9 @@ func move(delta, max_slides = 6):
 		var collision_norm = collision.get_normal()
 		motion = motion.slide(collision_norm)
 		velocity = velocity.slide(collision_norm)
+		collisions.append(collision)
+
+	return collisions
 
 
 func ground_accelerate(dir, speed, delta):
@@ -143,8 +146,8 @@ func jump(midair = true):
 @rpc("any_peer", "call_local", "reliable")
 func interact():
 	var target
-	if active_item && active_item.get_parent() != inventory:
-		target = active_item
+	if held_item && held_item.get_parent() != inventory:
+		target = held_item
 	else:
 		target = get_aim_target(2.0).collider
 	if target && target.has_method("activate"):
@@ -153,14 +156,24 @@ func interact():
 
 @rpc("any_peer", "call_local", "reliable")
 func action():
-	var item = held_item if held_item else active_item
-	if item:
-		if item.has_method("action"):
-			item.action()
-		elif item.has_method("activate"):
-			item.activate(self)
+	if held_item:
+		if held_item.has_method("action"):
+			held_item.action()
+		elif held_item.has_method("activate"):
+			held_item.activate(self)
 	else:
 		interact()
+
+
+func set_held_item(item:Item):
+	for inv_item in inventory.get_children():
+		if item == null:
+			item = inv_item
+			item.visible = true
+		elif item != inv_item && item.get_parent() == inventory:
+			inv_item.visible = false
+
+	held_item = item
 
 
 func mp_tick():
