@@ -438,6 +438,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 163.1, -127.54, 0)
 surface_material_override/0 = SubResource("StandardMaterial3D_kj4aw")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Surf/surf_utopia2" index="0"]
+collision_layer = 3
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Surf/surf_utopia2/StaticBody3D"]
 shape = SubResource("ConcavePolygonShape3D_g8ehe")

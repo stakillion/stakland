@@ -5,10 +5,10 @@ var world:Node3D
 
 # multiplayer
 @onready var dedicated = OS.has_feature("dedicated_server")
-@onready var mobile = get_name() == "Android"
 var mp_peer = ENetMultiplayerPeer.new()
-var mp_tick = Timer.new()
 var mp_port = 26262
+var mp_tick_frame = true
+signal mp_tick()
 
 # menu
 @export var menu_scene = preload("res://scenes/ui/menu.tscn")
@@ -22,23 +22,15 @@ func _ready():
 	# the node containing the players
 	player_list.name = "Players"
 	add_child(player_list)
-	# the player (unless we're a server)
+
 	if !dedicated:
+		# load the player
 		player = Player.new(1)
-
-	# multiplayer tick timer
-	mp_tick.name = "MPTick"
-	mp_tick.wait_time = 1.0/60 # 60hz
-	add_child(mp_tick)
-	mp_tick.start()
-
-	# the menu (unless we're a server)
-	if !dedicated:
+		# load the menu
 		menu = menu_scene.instantiate()
 		add_child(menu)
-
-	# start the game if we are a server
-	if dedicated:
+	else:
+		# or start the game if we are a server
 		host_game()
 
 
@@ -58,6 +50,12 @@ func join_game(address):
 	multiplayer.peer_connected.connect(_on_player_connected)
 	multiplayer.peer_disconnected.connect(_on_player_disconnected)
 	multiplayer.connected_to_server.connect(_on_connected_to_server)
+
+
+func _physics_process(_delta):
+	if mp_tick_frame:
+		emit_signal("mp_tick")
+	mp_tick_frame = !mp_tick_frame
 
 
 func _on_player_connected(id):

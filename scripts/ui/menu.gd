@@ -14,16 +14,17 @@ func _ready():
 
 
 func _process(_delta):
+	if !DisplayServer.window_is_focused():
+		visible = true
+
 	if visible:
 		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-	else:
-		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
 
 func _input(event):
 	if event.is_action_pressed("ui_cancel"):
-		$MainMenu/PlayButton.grab_focus()
 		visible = !visible
+		$MainMenu/PlayButton.grab_focus()
 
 
 func _on_PlayButton_pressed():

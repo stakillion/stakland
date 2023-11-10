@@ -27,3 +27,9 @@ theme_override_font_sizes/font_size = 12
 modulate = Color(1, 0, 0, 1)
 rotation = 0.785398
 texture = SubResource("PlaceholderTexture2D_mhe8r")
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 0.05
+autostart = true
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

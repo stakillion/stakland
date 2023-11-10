@@ -32,17 +32,22 @@ func _ready():
 		inventory.name = "Inventory"
 		head.add_child(inventory)
 		inventory.global_position = head.global_position
+	# aim towards the center of our view
+	inventory.look_at(head.global_position - head.global_transform.basis.z * 32768)
 
-	Game.mp_tick.connect("timeout", mp_tick)
+	Game.connect("mp_tick", mp_tick)
 
 
-func _physics_process(delta):
+func _process(_delta):
 	if is_multiplayer_authority():
 		# look where our controller is looking
 		var controller = get_parent()
 		if controller.has_method("get_aim_target"):
 			head.look_at(controller.get_aim_target().position)
 
+
+func _physics_process(delta):
+	if is_multiplayer_authority():
 		# accelerate velocity based on desired movement and ground state
 		if on_ground:
 			ground_accelerate(movement.normalized(), movement.length(), delta)
@@ -58,13 +63,14 @@ func _physics_process(delta):
 func move(delta, max_slides = 6):
 	on_ground = false
 	var collisions = []
-	var motion = (velocity * delta) / max_slides
+	var motion = velocity / max_slides * delta
 	while max_slides:
 		max_slides -= 1
 		# move and check for collision
 		var collision = move_and_collide(motion, false, 0.001, true)
 		if !collision:
 			continue
+		collisions.append(collision)
 		# if we hit something and it's not too steep then we consider it ground
 		if rad_to_deg(collision.get_angle()) < 45:
 			on_ground = true
@@ -73,7 +79,6 @@ func move(delta, max_slides = 6):
 		var collision_norm = collision.get_normal()
 		motion = motion.slide(collision_norm)
 		velocity = velocity.slide(collision_norm)
-		collisions.append(collision)
 
 	return collisions
 
@@ -117,11 +122,12 @@ func air_accelerate(dir, speed, delta):
 
 
 func apply_friction(friction, delta):
+	# TODO - fix bug where friction is causing the player to move at a crawl at low framerates
 	var current_speed = velocity.length()
 	if current_speed == 0.0:
 		return
 
-	var drop = max(current_speed, friction) * friction * delta
+	var drop = max(current_speed, 2.0) * friction * delta
 	velocity.x *= max(current_speed - drop, 0.0) / current_speed
 	velocity.z *= max(current_speed - drop, 0.0) / current_speed
 
@@ -131,9 +137,10 @@ func get_aim_target(distance = 32768.0, exclude = [self]):
 	var ray_end = head.global_position - head.global_transform.basis.z * distance
 	var query = PhysicsRayQueryParameters3D.create(ray_start, ray_end)
 	query.exclude = exclude
-
+	# check for collision
 	var collision = get_world_3d().direct_space_state.intersect_ray(query)
 	if !collision:
+		# if we missed, set position to end position anyway
 		collision.position = ray_end
 		collision.collider = null
 
@@ -185,12 +192,12 @@ func set_held_item(item:Item):
 
 func mp_tick():
 	if is_multiplayer_authority():
-		mp_update_pos.rpc(global_position, global_rotation, head.global_position, head.global_rotation)
+		mp_update_pos.rpc(position, rotation, head.position, head.rotation)
 
 
 @rpc
 func mp_update_pos(pos, ang, head_pos, head_ang):
-	global_position = pos
-	global_rotation = ang
-	head.global_position = head_pos
-	head.global_rotation = head_ang
+	position = pos
+	rotation = ang
+	head.position = head_pos
+	head.rotation = head_ang

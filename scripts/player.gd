@@ -12,12 +12,14 @@ var spawned = false
 
 # character we are controlling
 @export var pawn_scene = preload("res://scenes/actors/pawn.tscn")
-var pawn:Pawn
+var pawn = null
 
 # camera
 var camera:Camera3D
 var desired_zoom = 0.0
 var zoom = 10.0
+
+var cursor_aim = false
 
 # hud
 @export var hud_scene = preload("res://scenes/ui/hud.tscn")
@@ -78,13 +80,13 @@ func _process(delta):
 	process_inputs(delta)
 
 	# lerp current camera zoom to desired zoom for smooth zoom effect
-	if camera.current:
+	if spawned:
 		zoom = lerp(zoom, desired_zoom, 3 * delta)
 
-	# have camera follow pawn, or its head if it has one
+	# have camera follow the pawn's head, or its head if it has one
 	var follow_pos = pawn.global_position if !pawn.get("head") else pawn.head.global_position
 	var new_pos = follow_pos + camera.global_transform.basis.z * zoom
-	if zoom > 0.0:
+	if zoom > 0.1:
 		# check for collisions behind the camera to prevent it from going through walls
 		var query = PhysicsShapeQueryParameters3D.new()
 		query.transform.origin = follow_pos
@@ -109,14 +111,14 @@ func process_inputs(delta):
 		rot.x = ang_velocity.y * joy_sensitivity.y
 		rot.y = ang_velocity.x * joy_sensitivity.x
 		# rotate view
-		camera.rotation -= rot * delta
-		camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-89), deg_to_rad(89))
+		camera.global_rotation -= rot * delta
+		camera.global_rotation.x = clamp(camera.global_rotation.x, deg_to_rad(-89), deg_to_rad(89))
 
 	# directional movement
 	var dir = Input.get_vector("move_left", "move_right", "move_forward", "move_back")
 	pawn.movement.x = dir.x
 	pawn.movement.z = dir.y
-	pawn.movement = pawn.movement.rotated(Vector3.UP, camera.rotation.y).normalized()
+	pawn.movement = pawn.movement.rotated(Vector3.UP, camera.global_rotation.y).normalized()
 
 	# jumping
 	if Input.is_action_just_pressed("jump"):
@@ -138,29 +140,43 @@ func process_inputs(delta):
 	if Input.is_action_just_pressed("zoom_out"):
 		desired_zoom = zoom_min if desired_zoom + 0.5 <= zoom_min else clamp(desired_zoom + 0.5, 0.0, zoom_max)
 
+	# aim with projected cursor position
+	if Input.is_action_pressed("cursor_aim"):
+		Input.mouse_mode = Input.MOUSE_MODE_CONFINED_HIDDEN
+		cursor_aim = true
+	else:
+		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+		cursor_aim = false
+
 
 func _unhandled_input(event):
 	if !spawned || Game.menu.visible || !is_multiplayer_authority():
 		return
 
-	if event is InputEventMouseMotion:
+	if event is InputEventMouseMotion && Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 		# get mouse coordinates for camera rotation
-		var rot = camera.rotation
+		var rot = camera.global_rotation
 		rot.y -= event.relative.x * (mouse_sensitivity.x / 4096)
 		rot.x -= event.relative.y * (mouse_sensitivity.y / 4096)
 		# rotate view
-		camera.rotation = rot
-		camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-89), deg_to_rad(89))
+		camera.global_rotation = rot
+		camera.global_rotation.x = clamp(camera.global_rotation.x, deg_to_rad(-89), deg_to_rad(89))
 
 
 func get_aim_target(distance = 32768.0, exclude = [pawn]):
 	var ray_start = camera.global_position
-	var ray_end = camera.global_position - camera.global_transform.basis.z * distance
+	var ray_end
+	# raycast from camera position to either center of view or cursor position
+	if cursor_aim:
+		ray_end = camera.project_position(get_viewport().get_mouse_position(), distance)
+	else:
+		ray_end = camera.global_position - camera.global_transform.basis.z * distance
 	var query = PhysicsRayQueryParameters3D.create(ray_start, ray_end)
 	query.exclude = exclude
-
+	# check for collision
 	var collision = camera.get_world_3d().direct_space_state.intersect_ray(query)
 	if !collision:
+		# if we missed, set position to end position anyway
 		collision.position = ray_end
 		collision.collider = null
 

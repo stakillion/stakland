@@ -14,7 +14,7 @@ var held_angle:Vector3
 
 func _ready():
 	# multiplayer tick
-	Game.mp_tick.connect("timeout", mp_tick)
+	Game.connect("mp_tick", mp_tick)
 
 
 func _physics_process(delta):
@@ -74,12 +74,12 @@ func update_position(delta):
 
 func mp_tick():
 	if is_multiplayer_authority():
-		mp_update_pos.rpc(global_position, global_rotation, self.linear_velocity, self.angular_velocity)
+		mp_update_pos.rpc(position, rotation, linear_velocity, angular_velocity)
 
 
-@rpc
+@rpc("any_peer")
 func mp_update_pos(pos, ang, vel, ang_vel):
-	global_position = pos
-	global_rotation = ang
-	self.linear_velocity = vel
-	self.angular_velocity = ang_vel
+	position = pos
+	rotation = ang
+	linear_velocity = vel
+	angular_velocity = ang_vel
