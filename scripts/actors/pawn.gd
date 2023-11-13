@@ -195,6 +195,7 @@ func mp_tick():
 	if is_multiplayer_authority():
 		mp_send_movement.rpc(desired_move)
 		mp_send_position.rpc(position, rotation, head.position, head.rotation)
+		mp_send_velocity.rpc(velocity)
 
 
 @rpc

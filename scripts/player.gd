@@ -55,7 +55,6 @@ func _ready():
 	# move pawn in front of the camera
 	var current_cam = get_viewport().get_camera_3d()
 	pawn.global_position = current_cam.global_position - current_cam.global_transform.basis.z * 2
-	pawn.global_position -= Vector3(0.0, 0.75, 0.0)
 	pawn.head.look_at(current_cam.global_position)
 
 

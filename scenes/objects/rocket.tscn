@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://c42y4yit3mem3"]
+[gd_scene load_steps=8 format=3 uid="uid://c42y4yit3mem3"]
 
 [ext_resource type="Script" path="res://scripts/objects/projectile.gd" id="1_87xn5"]
 [ext_resource type="Texture2D" uid="uid://dnltefpxixakc" path="res://materials/dev_tile.png" id="1_uoiuf"]
@@ -27,6 +27,9 @@ curve = SubResource("Curve_qleey")
 height = 1.0
 radius = 0.1
 
+[sub_resource type="SphereShape3D" id="SphereShape3D_8gkb7"]
+radius = 5.0
+
 [node name="Rocket" type="AnimatableBody3D"]
 top_level = true
 sync_to_physics = false
@@ -39,6 +42,11 @@ mesh = SubResource("TubeTrailMesh_jg7lg")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
 shape = SubResource("CylinderShape3D_vu1gg")
+
+[node name="ExplosionArea" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ExplosionArea"]
+shape = SubResource("SphereShape3D_8gkb7")
 
 [node name="Timer" type="Timer" parent="."]
 wait_time = 60.0

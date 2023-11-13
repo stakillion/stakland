@@ -1,7 +1,7 @@
 extends Node3D
 
 # spawn point
-@onready var spawn_pos = $SpawnPoint.global_position
+@onready var spawn_pos = $SpawnPoint.global_position + Vector3(0.0, 0.75, 0.0)
 @onready var spawn_ang = $SpawnPoint.global_rotation
 
 
