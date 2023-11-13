@@ -14,7 +14,7 @@ var held_angle:Vector3
 
 func _ready():
 	# multiplayer tick
-	Game.connect("mp_tick", mp_tick)
+	Game.mp_tick.connect("timeout", mp_tick)
 
 
 func _physics_process(delta):
@@ -23,7 +23,9 @@ func _physics_process(delta):
 		update_position(delta)
 
 
-func activate(activator:Pawn):
+@rpc("any_peer", "call_local", "reliable")
+func activate(activator):
+	activator = get_node_or_null(activator)
 	if user && user != activator:
 		return
 
@@ -64,7 +66,7 @@ func drop():
 
 
 func update_position(delta):
-	var new_pos = user.get_aim_target(2.0, [user, self]).position
+	var new_pos = user.get_aim(2.0, [user, self]).position
 	linear_velocity = (new_pos - global_position) * (4096 * delta)
 
 	# set rotation relative to where we're looking
@@ -74,11 +76,11 @@ func update_position(delta):
 
 func mp_tick():
 	if is_multiplayer_authority():
-		mp_update_pos.rpc(position, rotation, linear_velocity, angular_velocity)
+		mp_send_position.rpc(position, rotation, linear_velocity, angular_velocity)
 
 
-@rpc("any_peer")
-func mp_update_pos(pos, ang, vel, ang_vel):
+@rpc
+func mp_send_position(pos, ang, vel, ang_vel):
 	position = pos
 	rotation = ang
 	linear_velocity = vel

@@ -7,7 +7,7 @@ extends Control
 func _process(_delta):
 	# crosshair
 	var camera = get_viewport().get_camera_3d()
-	var aim_pos = player.get_aim_target().position
+	var aim_pos = player.get_aim().position
 	$Crosshair.visible = !camera.is_position_behind(aim_pos)
 	$Crosshair.position = camera.unproject_position(aim_pos)
 

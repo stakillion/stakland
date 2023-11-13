@@ -22,7 +22,8 @@ height = 0.35
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_165mo"]
 
-[node name="Pawn" type="CharacterBody3D"]
+[node name="Pawn" type="StaticBody3D"]
+constant_linear_velocity = Vector3(2, 1, 2)
 script = ExtResource("1_txe8y")
 
 [node name="BodyMesh" type="MeshInstance3D" parent="."]

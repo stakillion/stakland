@@ -18,7 +18,6 @@ var pawn = null
 var camera:Camera3D
 var desired_zoom = 0.0
 var zoom = 10.0
-
 var cursor_aim = false
 
 # hud
@@ -83,7 +82,7 @@ func _process(delta):
 	if spawned:
 		zoom = lerp(zoom, desired_zoom, 3 * delta)
 
-	# have camera follow the pawn's head, or its head if it has one
+	# have camera follow the pawn, or its head if it has one
 	var follow_pos = pawn.global_position if !pawn.get("head") else pawn.head.global_position
 	var new_pos = follow_pos + camera.global_transform.basis.z * zoom
 	if zoom > 0.1:
@@ -101,7 +100,10 @@ func _process(delta):
 
 
 func process_inputs(delta):
-	if !spawned || Game.menu.visible || !is_multiplayer_authority():
+	if !is_multiplayer_authority() || !spawned:
+		return
+	if Game.menu.visible:
+		pawn.desired_move = Vector2()
 		return
 
 	# rotate camera by angular velocity (joystick)
@@ -111,14 +113,12 @@ func process_inputs(delta):
 		rot.x = ang_velocity.y * joy_sensitivity.y
 		rot.y = ang_velocity.x * joy_sensitivity.x
 		# rotate view
-		camera.global_rotation -= rot * delta
-		camera.global_rotation.x = clamp(camera.global_rotation.x, deg_to_rad(-89), deg_to_rad(89))
+		camera.rotation -= rot * delta
+		camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-89), deg_to_rad(89))
 
 	# directional movement
-	var dir = Input.get_vector("move_left", "move_right", "move_forward", "move_back")
-	pawn.movement.x = dir.x
-	pawn.movement.z = dir.y
-	pawn.movement = pawn.movement.rotated(Vector3.UP, camera.global_rotation.y).normalized()
+	pawn.desired_move = Input.get_vector("move_forward", "move_back", "move_left", "move_right")
+	pawn.desired_move = pawn.desired_move.rotated(camera.rotation.y)
 
 	# jumping
 	if Input.is_action_just_pressed("jump"):
@@ -129,10 +129,10 @@ func process_inputs(delta):
 	# interaction
 	if Input.is_action_just_pressed("interact"):
 		if pawn.has_method("interact"):
-			pawn.interact.rpc()
+			pawn.interact()
 	if Input.is_action_just_pressed("action"):
 		if pawn.has_method("action"):
-			pawn.action.rpc()
+			pawn.action()
 
 	# camera zoom
 	if Input.is_action_just_pressed("zoom_in"):
@@ -142,7 +142,7 @@ func process_inputs(delta):
 
 	# aim with projected cursor position
 	if Input.is_action_pressed("cursor_aim"):
-		Input.mouse_mode = Input.MOUSE_MODE_CONFINED_HIDDEN
+		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 		cursor_aim = true
 	else:
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
@@ -150,20 +150,20 @@ func process_inputs(delta):
 
 
 func _unhandled_input(event):
-	if !spawned || Game.menu.visible || !is_multiplayer_authority():
+	if !is_multiplayer_authority() || !spawned || Game.menu.visible:
 		return
 
 	if event is InputEventMouseMotion && Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 		# get mouse coordinates for camera rotation
-		var rot = camera.global_rotation
+		var rot = camera.rotation
 		rot.y -= event.relative.x * (mouse_sensitivity.x / 4096)
 		rot.x -= event.relative.y * (mouse_sensitivity.y / 4096)
 		# rotate view
-		camera.global_rotation = rot
-		camera.global_rotation.x = clamp(camera.global_rotation.x, deg_to_rad(-89), deg_to_rad(89))
+		camera.rotation = rot
+		camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-89), deg_to_rad(89))
 
 
-func get_aim_target(distance = 32768.0, exclude = [pawn]):
+func get_aim(distance = 32768.0, exclude = [pawn]):
 	var ray_start = camera.global_position
 	var ray_end
 	# raycast from camera position to either center of view or cursor position

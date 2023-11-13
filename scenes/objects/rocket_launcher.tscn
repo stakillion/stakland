@@ -30,6 +30,9 @@ radius = 0.15
 size = Vector3(0.1, 0.5, 0.1)
 
 [node name="RocketLauncher" type="RigidBody3D"]
+continuous_cd = true
+max_contacts_reported = 10
+contact_monitor = true
 script = ExtResource("1_lfcrf")
 use_inventory = true
 
