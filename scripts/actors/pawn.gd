@@ -34,7 +34,7 @@ func _ready():
 		inventory.global_position = head.global_position
 	# aim towards the center of our view
 	inventory.look_at(head.global_position - head.global_transform.basis.z * 8)
-
+	# multiplayer tick
 	Game.mp_tick.connect("timeout", mp_tick)
 
 

@@ -9,11 +9,13 @@ func _ready():
 	Game.world = self
 
 
-func _on_world_boundary_entered(body):
+func _on_world_boundary_entered(object):
 	# respawn
-	body.global_position = body.spawn_pos if "spawn_pos" in body else spawn_pos
-	body.global_rotation = body.spawn_ang if "spawn_ang" in body else spawn_ang
-	if "linear_velocity" in body:
-		body.linear_velocity = Vector3()
-	if "angular_velocity" in body:
-		body.angular_velocity = Vector3()
+	object.global_position = object.spawn_pos if "spawn_pos" in object else spawn_pos
+	object.global_rotation = object.spawn_ang if "spawn_ang" in object else spawn_ang
+	if "velocity" in object:
+		object.velocity = Vector3()
+	if "linear_velocity" in object:
+		object.linear_velocity = Vector3()
+	if "angular_velocity" in object:
+		object.angular_velocity = Vector3()

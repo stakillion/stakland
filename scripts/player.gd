@@ -78,7 +78,7 @@ func _process(delta):
 	process_inputs(delta)
 
 	# lerp current camera zoom to desired zoom for smooth zoom effect
-	if spawned:
+	if camera.is_current():
 		zoom = lerp(zoom, desired_zoom, 3 * delta)
 
 	# have camera follow the pawn, or its head if it has one

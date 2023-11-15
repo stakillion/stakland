@@ -1,39 +1,60 @@
-extends PhysicsBody3D
+extends Node3D
 
 
 @export var speed = 25.0
-@export var impulse = 3.0
+@export var impulse = 5.0
 
 @onready var weapon = get_parent()
 @onready var user = weapon.user
 
+var timer = Timer.new()
+var exploded = false
+
 
 func _ready():
-	add_collision_exception_with(weapon)
-	add_collision_exception_with(user)
+	# clean up timer
+	add_child(timer)
+	timer.connect("timeout", _on_timer_timeout)
+	timer.start(60)
+
+	$RayCast.add_exception(weapon)
+	$RayCast.add_exception(user)
 
 
 func _physics_process(delta):
-	var new_pos = position - transform.basis.z * speed * delta
-	var collision = move_and_collide(new_pos - position)
-	if collision:
-		explode(collision.get_position())
+	if !exploded:
+		position -= transform.basis.z * speed * delta
+		if $RayCast.get_collider():
+			explode($RayCast.get_collision_point())
 
 
 func explode(pos):
-	var radius = $ExplosionArea/CollisionShape3D.shape.radius
-	for object in $ExplosionArea.get_overlapping_bodies():
-		if "linear_velocity" in object:
-			var dir = (pos - object.global_position).normalized()
-			var power = radius / pos.distance_to(object.global_position)
-			object.linear_velocity -= dir * power * impulse
-		elif "velocity" in object:
-			var dir = (object.global_position - pos).normalized()
-			var power = radius / pos.distance_to(object.global_position)
-			object.velocity += dir * power * impulse
+	exploded = true
+	timer.start(1.0)
 
-	queue_free()
+	var radius = $ExplosionArea/CollisionShape3D.shape.radius
+	$ExplosionArea.global_position = pos
+	for object in $ExplosionArea.get_overlapping_bodies():
+		if object == self:
+			continue
+		var dir = (object.global_position - pos).normalized()
+		var power = radius / exp(pos.distance_to(object.global_position))
+		# apply force to players and objects within radius
+		if "linear_velocity" in object:
+			object.linear_velocity += impulse * power * dir
+		elif "velocity" in object:
+			object.velocity += impulse * power * dir
+
+	# clean up
+	$Mesh.queue_free()
+	$RayCast.queue_free()
+	$ExplosionArea.queue_free()
+	$ParticleTrail.emitting = false
 
 
 func _on_timer_timeout():
-	queue_free()
+	if !exploded:
+		explode(global_position)
+	else:
+		# clean up remaining nodes
+		queue_free()

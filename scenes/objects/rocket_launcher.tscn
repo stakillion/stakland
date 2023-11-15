@@ -1,25 +1,25 @@
 [gd_scene load_steps=8 format=3 uid="uid://ds3wnxy8jxm8d"]
 
-[ext_resource type="Texture2D" uid="uid://dnltefpxixakc" path="res://materials/dev_tile.png" id="1_6t6bu"]
 [ext_resource type="Script" path="res://scripts/objects/weapon.gd" id="1_lfcrf"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fw5sk"]
-albedo_color = Color(0, 0, 0, 1)
-albedo_texture = ExtResource("1_6t6bu")
-metallic_specular = 1.0
-roughness = 0.75
-uv1_triplanar = true
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jgj6e"]
+albedo_color = Color(0.156863, 0.156863, 0.156863, 1)
+roughness = 0.5
 uv1_triplanar_sharpness = 150.0
-texture_filter = 5
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_jxy7x"]
-material = SubResource("StandardMaterial3D_fw5sk")
+material = SubResource("StandardMaterial3D_jgj6e")
 top_radius = 0.15
 bottom_radius = 0.15
 height = 1.25
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_af4jw"]
+albedo_color = Color(0.156863, 0.156863, 0.156863, 1)
+roughness = 0.5
+uv1_triplanar_sharpness = 150.0
+
 [sub_resource type="BoxMesh" id="BoxMesh_r7v8i"]
-material = SubResource("StandardMaterial3D_fw5sk")
+material = SubResource("StandardMaterial3D_af4jw")
 size = Vector3(0.1, 0.5, 0.1)
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_qrgpn"]
