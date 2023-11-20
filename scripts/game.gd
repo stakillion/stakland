@@ -1,20 +1,22 @@
 extends Node
 
-var player_list = Node.new()
-var world:Node3D
+var world:
+	get: return get_tree().current_scene
 
-# multiplayer
-@onready var dedicated = OS.has_feature("dedicated_server")
-var mp_peer = ENetMultiplayerPeer.new()
-var mp_tick = Timer.new()
-var mp_port = 26262
+
+# player
+var player_list = Node.new()
+var player:Player
 
 # menu
 @export var menu_scene = preload("res://scenes/ui/menu.tscn")
 var menu:Control
 
-# player
-var player:Player
+# multiplayer
+var dedicated = OS.has_feature("dedicated_server") || "--server" in OS.get_cmdline_user_args()
+var mp_peer = ENetMultiplayerPeer.new()
+var mp_tick = Timer.new()
+var mp_port = 26262
 
 
 func _ready():
@@ -55,6 +57,7 @@ func join_game(address):
 	multiplayer.peer_connected.connect(_on_player_connected)
 	multiplayer.peer_disconnected.connect(_on_player_disconnected)
 	multiplayer.connected_to_server.connect(_on_connected_to_server)
+	multiplayer.server_disconnected.connect(_on_server_disconnected)
 
 
 func _on_player_connected(id):
@@ -72,6 +75,16 @@ func _on_connected_to_server():
 	var id = mp_peer.get_unique_id()
 	player.name = str(id)
 	player.set_multiplayer_authority(id)
+	if player.pawn:
+		# respawn the player
+		player.spawn()
+
+
+func _on_server_disconnected():
+	# create new peer
+	mp_peer.close()
+	mp_peer = ENetMultiplayerPeer.new()
+	multiplayer.multiplayer_peer = null
 
 
 @rpc("any_peer", "call_remote", "reliable")
@@ -79,14 +92,14 @@ func request_player():
 	if !player:
 		return
 	var peer_id = multiplayer.get_remote_sender_id()
-	# for now just send whether or not the player has spawned, can extend in the future
-	send_player.rpc_id(peer_id, player.spawned)
+	# send player data and whether they have spawned
+	send_player.rpc_id(peer_id, player.data, !!player.pawn)
 
 
 @rpc("any_peer", "call_remote", "reliable")
-func send_player(spawned):
+func send_player(player_data, spawned):
 	var peer_id = multiplayer.get_remote_sender_id()
 	print("recieving player: ", peer_id)
-	var new_player = Player.new(peer_id)
+	var new_player = Player.new(peer_id, player_data)
 	if spawned:
 		new_player.spawn()

@@ -1,6 +1,9 @@
-[gd_scene load_steps=7 format=3 uid="uid://bicei8k7eppb3"]
+[gd_scene load_steps=11 format=3 uid="uid://bicei8k7eppb3"]
 
 [ext_resource type="Script" path="res://scripts/actors/pawn.gd" id="1_txe8y"]
+[ext_resource type="PackedScene" uid="uid://ds3wnxy8jxm8d" path="res://scenes/objects/rocket_launcher.tscn" id="2_4ktkv"]
+[ext_resource type="Script" path="res://scripts/ui/hud.gd" id="2_ebipa"]
+[ext_resource type="FontFile" uid="uid://cpb8liw262yah" path="res://resources/ui/fonts/PressStart2P-Regular.ttf" id="3_oh47t"]
 
 [sub_resource type="StandardMaterial3D" id="1"]
 distance_fade_mode = 3
@@ -22,8 +25,11 @@ height = 0.35
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_165mo"]
 
-[node name="Pawn" type="StaticBody3D"]
-constant_linear_velocity = Vector3(2, 1, 2)
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_mhe8r"]
+size = Vector2(3, 3)
+
+[node name="Pawn" type="AnimatableBody3D"]
+sync_to_physics = false
 script = ExtResource("1_txe8y")
 
 [node name="BodyMesh" type="MeshInstance3D" parent="."]
@@ -38,6 +44,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0.000523597, 0, -0.000523597, 1, 0, 0.625
 
 [node name="Inventory" type="Node3D" parent="Head"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.42, -0.175, -0.25)
+
+[node name="RocketLauncher" parent="Head/Inventory" instance=ExtResource("2_4ktkv")]
 
 [node name="HeadMesh" type="MeshInstance3D" parent="Head"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.05, 0)
@@ -56,3 +64,32 @@ modulate = Color(0, 0, 1, 1)
 pixel_size = 0.1
 double_sided = false
 texture = SubResource("PlaceholderTexture2D_165mo")
+
+[node name="Hud" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("2_ebipa")
+
+[node name="Info" type="Label" parent="Hud"]
+layout_mode = 1
+offset_right = 64.0
+offset_bottom = 12.0
+theme_override_fonts/font = ExtResource("3_oh47t")
+theme_override_font_sizes/font_size = 12
+
+[node name="Crosshair" type="Sprite2D" parent="Hud"]
+visible = false
+modulate = Color(1, 0, 0, 1)
+rotation = 0.785398
+texture = SubResource("PlaceholderTexture2D_mhe8r")
+
+[node name="Timer" type="Timer" parent="Hud"]
+wait_time = 0.05
+autostart = true
+
+[connection signal="timeout" from="Hud/Timer" to="Hud" method="_on_timer_timeout" flags=18]

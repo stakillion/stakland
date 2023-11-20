@@ -3,22 +3,14 @@ extends Control
 
 func _ready():
 	$MainMenu/PlayButton.grab_focus()
-	toggle_player_menu(false)
-	for node in $PlayerMenu/PhysicsSettings.get_children():
-		var label = node.get_meta("label")
-		var property = node.get_meta("property")
-		var value = Game.player.pawn.get(property)
-		node.value = value
-		node.find_child("Label").text = "%s: %f" % [label, value]
-		node.connect("value_changed", _on_physics_setting_value_changed.bind(property, label, node))
+	toggle_player_menu()
 
 
 func _process(_delta):
-	if !DisplayServer.window_is_focused():
-		visible = true
-
 	if visible:
 		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+	else:
+		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
 
 func _input(event):
@@ -27,22 +19,31 @@ func _input(event):
 		$MainMenu/PlayButton.grab_focus()
 
 
+func toggle_player_menu():
+	if !Game.player.pawn:
+		$PlayerMenu.visible = false
+		return
+
+	$PlayerMenu.visible = true
+	for node in $PlayerMenu/PhysicsSettings.get_children():
+		var label = node.get_meta("label")
+		var property = node.get_meta("property")
+		var value = Game.player.pawn.get(property)
+		if value:
+			node.value = value
+			node.find_child("Label").text = "%s: %f" % [label, value]
+		if !node.is_connected("value_changed", _on_physics_setting_value_changed.bind(property, label, node)):
+			node.connect("value_changed", _on_physics_setting_value_changed.bind(property, label, node))
+
+
 func _on_PlayButton_pressed():
-	if !Game.player.spawned:
+	if !Game.player.pawn:
 		Game.player.spawn.rpc()
 	visible = false
 
 
 func _on_respawn_button_pressed():
-	Game.player.spawn()
-
-
-func _on_disconnect_button_pressed():
-	Game.mp_peer.close()
-
-
-func toggle_player_menu(enable = true):
-	$PlayerMenu.visible = enable
+	Game.player.spawn.rpc()
 
 
 func _on_connect_button_pressed():
@@ -64,7 +65,7 @@ func _on_fullscreen_button_pressed():
 
 
 func _on_physics_setting_value_changed(value, property, label, node):
-	Game.player.pawn.set(property, value)
+	Game.player.set_pawn_variable.rpc(property, value)
 	node.find_child("Label").text = "%s: %f" % [label, value]
 
 

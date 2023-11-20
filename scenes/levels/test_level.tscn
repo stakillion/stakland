@@ -1,11 +1,10 @@
-[gd_scene load_steps=33 format=3 uid="uid://o70p27l476fn"]
+[gd_scene load_steps=32 format=3 uid="uid://o70p27l476fn"]
 
 [ext_resource type="Texture2D" uid="uid://loxh1icksh70" path="res://materials/grass1.png" id="1_24n2b"]
 [ext_resource type="Script" path="res://scripts/levels/test_level.gd" id="1_nkfo3"]
 [ext_resource type="Script" path="res://scripts/objects/item.gd" id="2_kd064"]
 [ext_resource type="Texture2D" uid="uid://dnltefpxixakc" path="res://materials/dev_tile.png" id="2_yrh1y"]
 [ext_resource type="PackedScene" uid="uid://cksuv8qe5yex2" path="res://models/surf_utopia.glb" id="5_ya5h1"]
-[ext_resource type="PackedScene" uid="uid://ds3wnxy8jxm8d" path="res://scenes/objects/rocket_launcher.tscn" id="6_tb0c1"]
 
 [sub_resource type="Gradient" id="Gradient_r4md3"]
 interpolation_mode = 2
@@ -442,15 +441,6 @@ collision_layer = 3
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Surf/surf_utopia2/StaticBody3D"]
 shape = SubResource("ConcavePolygonShape3D_g8ehe")
-
-[node name="RocketLauncher" parent="." instance=ExtResource("6_tb0c1")]
-transform = Transform3D(0.311041, 0.950396, 0, -0.950396, 0.311041, 0, 0, 0, 1, -30, 0.25, -7)
-
-[node name="RocketLauncher2" parent="." instance=ExtResource("6_tb0c1")]
-transform = Transform3D(0.311041, 0.950396, 0, -0.950396, 0.311041, 0, 0, 0, 1, -30, 0.25, -9.52183)
-
-[node name="RocketLauncher3" parent="." instance=ExtResource("6_tb0c1")]
-transform = Transform3D(0.311041, 0.950396, 0, -0.950396, 0.311041, 0, 0, 0, 1, -30, 0.25, -12.097)
 
 [connection signal="body_entered" from="Boundary" to="." method="_on_world_boundary_entered"]
 

@@ -23,9 +23,7 @@ func _physics_process(delta):
 		update_position(delta)
 
 
-@rpc("any_peer", "call_local", "reliable")
 func activate(activator):
-	activator = get_node_or_null(activator)
 	if user && user != activator:
 		return
 
@@ -79,8 +77,7 @@ func mp_tick():
 		mp_send_position.rpc(position, rotation, linear_velocity, angular_velocity)
 
 
-@rpc
-func mp_send_position(pos, ang, vel, ang_vel):
+@rpc func mp_send_position(pos, ang, vel, ang_vel):
 	position = pos
 	rotation = ang
 	linear_velocity = vel

@@ -32,19 +32,24 @@ func _ready():
 		inventory.name = "Inventory"
 		head.add_child(inventory)
 		inventory.global_position = head.global_position
+	# make sure we are properly holding any items found in inventory
+	for item in inventory.get_children():
+		if !item:
+			continue
+		item.pick_up(self)
 	# aim towards the center of our view
-	inventory.look_at(head.global_position - head.global_transform.basis.z * 8)
+	inventory.look_at(head.position - head.basis.z * 12)
+
 	# multiplayer tick
 	Game.mp_tick.connect("timeout", mp_tick)
 
 
 func _process(_delta):
-	if is_multiplayer_authority():
-		# look where our controller is looking
-		var controller = get_parent()
-		if controller.has_method("get_aim"):
-			var aim_pos = controller.get_aim().position
-			head.look_at(aim_pos)
+	var parent = get_parent()
+	if "camera" in parent:
+		# look where the camera is looking
+		head.rotation.x = parent.camera.rotation.x
+		rotation.y = parent.camera.rotation.y
 
 
 func _physics_process(delta):
@@ -125,7 +130,6 @@ func apply_friction(friction, delta):
 	var current_speed = velocity.length()
 	if current_speed == 0.0:
 		return
-
 	var drop = max(current_speed, 1.0) * friction * delta
 	velocity.x *= max(current_speed - drop, 0.0) / current_speed
 	velocity.z *= max(current_speed - drop, 0.0) / current_speed
@@ -150,32 +154,28 @@ func jump(midair = true):
 	if on_ground:
 		on_ground = false # no longer on ground
 		velocity.y = jump_power
-		mp_send_velocity.rpc(velocity)
 		jump_midair_count = 0
 	elif midair && jump_midair_count < jump_midair:
 		velocity.y = jump_power
-		mp_send_velocity.rpc(velocity)
 		jump_midair_count += 1
 
 
 func interact():
-	mp_send_position.rpc(position, rotation, head.position, head.rotation)
 	var target
 	if held_item && held_item.get_parent() != inventory:
 		target = held_item
 	else:
 		target = get_aim(2.0).collider
 	if target && target.has_method("activate"):
-		target.activate.rpc(get_path())
+		target.activate(self)
 
 
 func action():
-	mp_send_position.rpc(position, rotation, head.position, head.rotation)
 	if held_item:
 		if held_item.has_method("action"):
 			held_item.action.rpc()
 		elif held_item.has_method("activate"):
-			held_item.activate.rpc(get_path())
+			held_item.activate(self)
 	else:
 		interact()
 
@@ -193,22 +193,12 @@ func set_held_item(item:Item):
 
 func mp_tick():
 	if is_multiplayer_authority():
-		mp_send_movement.rpc(desired_move)
-		mp_send_position.rpc(position, rotation, head.position, head.rotation)
-		mp_send_velocity.rpc(velocity)
+		mp_send_position.rpc(position, rotation, head.position, head.rotation, velocity)
 
 
-@rpc
-func mp_send_movement(movement):
-	desired_move = movement
-
-@rpc
-func mp_send_position(pos, ang, head_pos, head_ang):
+@rpc func mp_send_position(pos, ang, head_pos, head_ang, vel):
 	position = pos
 	rotation = ang
 	head.position = head_pos
 	head.rotation = head_ang
-
-@rpc
-func mp_send_velocity(vel):
 	velocity = vel

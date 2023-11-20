@@ -5,10 +5,6 @@ extends Node3D
 @onready var spawn_ang = $SpawnPoint.global_rotation
 
 
-func _ready():
-	Game.world = self
-
-
 func _on_world_boundary_entered(object):
 	# respawn
 	object.global_position = object.spawn_pos if "spawn_pos" in object else spawn_pos

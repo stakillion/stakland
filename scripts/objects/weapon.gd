@@ -1,8 +1,7 @@
 extends Item
 
-
 @export var projectile_scene = preload("res://scenes/objects/rocket.tscn")
-@export var cooldown = 400
+@export var cooldown = 500
 var last_fire:int
 
 
@@ -18,5 +17,5 @@ func action():
 
 	# aim projectile towards crosshair
 	var aim_pos = user.get_aim().position
-	if global_position.distance_squared_to(aim_pos) > 32.0:
+	if global_position.distance_squared_to(aim_pos) > 64.0:
 		projectile.look_at(aim_pos)
