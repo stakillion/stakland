@@ -4,13 +4,16 @@ extends Control
 
 
 func _process(_delta):
-	visible = (pawn == Game.player.pawn)
+	visible = (pawn == Player.pawn)
 
 	# crosshair
 	var camera = get_viewport().get_camera_3d()
 	var aim_pos = pawn.get_aim().position
 	$Crosshair.visible = !camera.is_position_behind(aim_pos)
 	$Crosshair.position = camera.unproject_position(aim_pos)
+	
+	# health
+	$Health.text = str(pawn.health)
 
 
 func _on_timer_timeout():

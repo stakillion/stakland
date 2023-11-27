@@ -4,9 +4,8 @@ var world:
 	get: return get_tree().current_scene
 
 
-# player
+# players
 var player_list = Node.new()
-var player:Player
 
 # menu
 @export var menu_scene = preload("res://scenes/ui/menu.tscn")
@@ -14,46 +13,52 @@ var menu:Control
 
 # multiplayer
 var dedicated = OS.has_feature("dedicated_server") || "--server" in OS.get_cmdline_user_args()
-var mp_peer = ENetMultiplayerPeer.new()
-var mp_tick = Timer.new()
+var mp_sync = Timer.new()
 var mp_port = 26262
 
 
-func _ready():
+func _init():
 	# the node containing the players
 	player_list.name = "Players"
-	add_child(player_list)
+	add_sibling.call_deferred(player_list)
 
-	# multiplayer tick timer
-	mp_tick.name = "MPTick"
-	mp_tick.process_callback = Timer.TIMER_PROCESS_PHYSICS
-	add_child(mp_tick)
-	mp_tick.start(1.0/30) # 30hz
+	# multiplayer sync timer
+	mp_sync.name = "MPSync"
+	mp_sync.process_callback = Timer.TIMER_PROCESS_PHYSICS
+	add_child(mp_sync)
+
+
+func _ready():
+	# start sync timer
+	mp_sync.start(1.0/20) # 20hz
 
 	if !dedicated:
 		# load the player
-		player = Player.new(1)
+		Player.set_name.call_deferred(1)
+		Player.reparent.call_deferred(player_list)
 		# load the menu
 		menu = menu_scene.instantiate()
 		add_child(menu)
 	else:
 		# or start the game if we are a server
+		Player.queue_free()
 		host_game()
 
 
 func host_game():
-	if mp_peer.create_server(mp_port) != OK:
+	var peer = ENetMultiplayerPeer.new()
+	if peer.create_server(mp_port) != OK:
 		return
-	multiplayer.multiplayer_peer = mp_peer
+	multiplayer.multiplayer_peer = peer
 	multiplayer.peer_connected.connect(_on_player_connected)
 	multiplayer.peer_disconnected.connect(_on_player_disconnected)
 
 
 func join_game(address):
-	address = IP.resolve_hostname(address)
-	if mp_peer.create_client(address, mp_port) != OK:
+	var peer = ENetMultiplayerPeer.new()
+	if peer.create_client(IP.resolve_hostname(address), mp_port) != OK:
 		return
-	multiplayer.multiplayer_peer = mp_peer
+	multiplayer.multiplayer_peer = peer
 	multiplayer.peer_connected.connect(_on_player_connected)
 	multiplayer.peer_disconnected.connect(_on_player_disconnected)
 	multiplayer.connected_to_server.connect(_on_connected_to_server)
@@ -72,34 +77,40 @@ func _on_player_disconnected(id):
 
 func _on_connected_to_server():
 	# change player id to our new peer id
-	var id = mp_peer.get_unique_id()
-	player.name = str(id)
-	player.set_multiplayer_authority(id)
-	if player.pawn:
+	var id = multiplayer.multiplayer_peer.get_unique_id()
+	Player.name = str(id)
+	Player.set_multiplayer_authority(id)
+	if Player.pawn:
 		# respawn the player
-		player.spawn()
+		Player.spawn()
 
 
 func _on_server_disconnected():
-	# create new peer
-	mp_peer.close()
-	mp_peer = ENetMultiplayerPeer.new()
 	multiplayer.multiplayer_peer = null
+
+
+func create_player(id, data):
+	var new_player = player.new()
+	new_player.name = str(id)
+	player_list.add_child(new_player)
+	new_player.set_multiplayer_authority(id)
+	new_player.data.merge(data, true)
+	return new_player
 
 
 @rpc("any_peer", "call_remote", "reliable")
 func request_player():
-	if !player:
+	if !Player:
 		return
 	var peer_id = multiplayer.get_remote_sender_id()
 	# send player data and whether they have spawned
-	send_player.rpc_id(peer_id, player.data, !!player.pawn)
+	send_player.rpc_id(peer_id, Player.data, !!Player.pawn)
 
 
 @rpc("any_peer", "call_remote", "reliable")
 func send_player(player_data, spawned):
 	var peer_id = multiplayer.get_remote_sender_id()
 	print("recieving player: ", peer_id)
-	var new_player = Player.new(peer_id, player_data)
+	var new_player = create_player(peer_id, player_data)
 	if spawned:
 		new_player.spawn()

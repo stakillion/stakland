@@ -20,7 +20,7 @@ func _input(event):
 
 
 func toggle_player_menu():
-	if !Game.player.pawn:
+	if !Player.pawn:
 		$PlayerMenu.visible = false
 		return
 
@@ -28,8 +28,8 @@ func toggle_player_menu():
 	for node in $PlayerMenu/PhysicsSettings.get_children():
 		var label = node.get_meta("label")
 		var property = node.get_meta("property")
-		var value = Game.player.pawn.get(property)
-		if value:
+		var value = Player.pawn.physics.get(property)
+		if value != null:
 			node.value = value
 			node.find_child("Label").text = "%s: %f" % [label, value]
 		if !node.is_connected("value_changed", _on_physics_setting_value_changed.bind(property, label, node)):
@@ -37,13 +37,13 @@ func toggle_player_menu():
 
 
 func _on_PlayButton_pressed():
-	if !Game.player.pawn:
-		Game.player.spawn.rpc()
+	if !Player.pawn:
+		Player.spawn.rpc()
 	visible = false
 
 
 func _on_respawn_button_pressed():
-	Game.player.spawn.rpc()
+	Player.spawn.rpc()
 
 
 func _on_connect_button_pressed():
@@ -65,7 +65,7 @@ func _on_fullscreen_button_pressed():
 
 
 func _on_physics_setting_value_changed(value, property, label, node):
-	Game.player.set_pawn_variable.rpc(property, value)
+	Player.set_physics_parameter.rpc(property, value)
 	node.find_child("Label").text = "%s: %f" % [label, value]
 
 

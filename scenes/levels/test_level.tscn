@@ -1,8 +1,7 @@
-[gd_scene load_steps=32 format=3 uid="uid://o70p27l476fn"]
+[gd_scene load_steps=31 format=3 uid="uid://o70p27l476fn"]
 
 [ext_resource type="Texture2D" uid="uid://loxh1icksh70" path="res://materials/grass1.png" id="1_24n2b"]
 [ext_resource type="Script" path="res://scripts/levels/test_level.gd" id="1_nkfo3"]
-[ext_resource type="Script" path="res://scripts/objects/item.gd" id="2_kd064"]
 [ext_resource type="Texture2D" uid="uid://dnltefpxixakc" path="res://materials/dev_tile.png" id="2_yrh1y"]
 [ext_resource type="PackedScene" uid="uid://cksuv8qe5yex2" path="res://models/surf_utopia.glb" id="5_ya5h1"]
 
@@ -132,10 +131,32 @@ data = PackedVector3Array(-225.967, 21.3353, -120.609, 217.432, -10.6676, 135.38
 [node name="TestLevel" type="Node3D"]
 script = ExtResource("1_nkfo3")
 
-[node name="SpawnPoint" type="Node3D" parent="."]
+[node name="Spawns" type="Node3D" parent="."]
+
+[node name="1" type="Node3D" parent="Spawns"]
+transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 10, 0, 20)
+
+[node name="2" type="Node3D" parent="Spawns"]
+transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, -17.5, 0.25, 17.5)
+
+[node name="3" type="Node3D" parent="Spawns"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -35, 4, 15)
+
+[node name="4" type="Node3D" parent="Spawns"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -35, 4, 0)
+
+[node name="5" type="Node3D" parent="Spawns"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -35, 4, -15)
+
+[node name="6" type="Node3D" parent="Spawns"]
+transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, -20, 0, -20)
+
+[node name="7" type="Node3D" parent="Spawns"]
+transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, 20, 0, -20)
 
 [node name="MainCamera" type="Camera3D" parent="."]
 transform = Transform3D(0.707107, 0.122788, -0.696364, 0, 0.984808, 0.173648, 0.707107, -0.122788, 0.696364, -25, 10, 25)
+current = true
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.838671, -0.385118, 0.385118, 0, 0.707107, 0.707107, -0.544639, -0.593029, 0.59303, 0, 10, 0)
@@ -338,7 +359,6 @@ material = SubResource("StandardMaterial3D_nlhrf")
 
 [node name="BlueLamp" type="RigidBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, -5.97, -3)
-script = ExtResource("2_kd064")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="BlueLamp"]
 mesh = SubResource("SphereMesh_xhmdm")
@@ -353,7 +373,6 @@ light_energy = 5.0
 
 [node name="RedLamp" type="RigidBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, -5.97, 0)
-script = ExtResource("2_kd064")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="RedLamp"]
 mesh = SubResource("SphereMesh_sqmsl")
@@ -368,7 +387,6 @@ light_energy = 5.0
 
 [node name="GreenLamp" type="RigidBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, -5.97, 3)
-script = ExtResource("2_kd064")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="GreenLamp"]
 mesh = SubResource("SphereMesh_xdasw")
@@ -383,7 +401,6 @@ light_energy = 5.0
 
 [node name="WhiteLamp" type="RigidBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.0748, 0.640447, 14.6147)
-script = ExtResource("2_kd064")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="WhiteLamp"]
 mesh = SubResource("SphereMesh_bdxpx")
@@ -407,7 +424,6 @@ texture = SubResource("ViewportTexture_1136q")
 [node name="Camera" type="RigidBody3D" parent="Viewport"]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -42.5, -5.97, 0)
 mass = 0.01
-script = ExtResource("2_kd064")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Viewport/Camera"]
 mesh = SubResource("BoxMesh_e8hpv")

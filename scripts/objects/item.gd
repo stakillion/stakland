@@ -1,83 +1,63 @@
 class_name Item
 extends RigidBody3D
 
-# who is using this item?
-var user:Pawn
-# does it go into the inventory?
-@export var use_inventory:bool
-var held_angle:Vector3
-
-# spawn position
-@onready var spawn_pos = global_position
-@onready var spawn_ang = global_rotation
+var user:Pawn = null
 
 
 func _ready():
-	# multiplayer tick
-	Game.mp_tick.connect("timeout", mp_tick)
+	# multiplayer sync
+	Game.mp_sync.connect("timeout", mp_sync)
 
 
-func _physics_process(delta):
-	# update position of held item
-	if !use_inventory && user:
-		update_position(delta)
-
-
-func activate(activator):
-	if user && user != activator:
+func activate(pawn:Pawn):
+	# do not allow other users to activate this if someone is already using it
+	if user && user != pawn:
 		return
 
-	if activator == user:
+	if pawn == user:
 		drop()
 	else:
-		pick_up(activator)
+		pick_up(pawn)
 
 
-func pick_up(new_user:Pawn):
-	if !use_inventory:
-		held_angle = global_rotation - new_user.head.global_rotation
-		collision_layer = 2
-		new_user.set_held_item(self)
-	else:
-		reparent(new_user.inventory)
-		position = Vector3()
-		rotation = Vector3()
-		collision_layer = 0
-		freeze = true
-		new_user.set_held_item(self)
-
-	user = new_user
+func pick_up(pawn:Pawn):
+	# add to pawn's inventory
+	get_parent().remove_child(self)
+	pawn.inventory.add_child(self, true)
+	owner = pawn.owner
+	# set physics and position
+	add_collision_exception_with(pawn)
+	position = Vector3()
+	rotation = Vector3()
+	freeze = true
+	# set this as the pawn's active item
+	user = pawn
+	pawn.set_active_item(self)
 
 
 func drop():
-	if user.held_item == self:
-		user.set_held_item(null)
-	if use_inventory:
-		freeze = false
-		reparent(Game.world)
-		update_position(0.0)
-
+	if !user: return
+	# remove from user's inventory
+	get_parent().remove_child(self)
+	user.owner.add_child(self, true)
+	owner = user.owner
+	# set physics and collision
+	remove_collision_exception_with(user)
+	global_position = user.get_aim(2.0, [user, self]).position
 	angular_velocity = Vector3()
-	collision_layer = 1
-
+	freeze = false
+	# tell the user to stop holding this if they are
+	if user.active_item == self:
+		user.set_active_item(null)
 	user = null
 
 
-func update_position(delta):
-	var new_pos = user.get_aim(2.0, [user, self]).position
-	linear_velocity = (new_pos - global_position) * (4096 * delta)
-
-	# set rotation relative to where we're looking
-	# TODO - figure out a better way to do this
-	global_rotation = user.head.global_rotation + held_angle
-
-
-func mp_tick():
+func mp_sync():
 	if is_multiplayer_authority():
 		mp_send_position.rpc(position, rotation, linear_velocity, angular_velocity)
 
-
-@rpc func mp_send_position(pos, ang, vel, ang_vel):
+@rpc("unreliable_ordered")
+func mp_send_position(pos, ang, vel, ang_vel):
 	position = pos
 	rotation = ang
 	linear_velocity = vel

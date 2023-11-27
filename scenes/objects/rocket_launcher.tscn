@@ -34,7 +34,6 @@ continuous_cd = true
 max_contacts_reported = 10
 contact_monitor = true
 script = ExtResource("1_lfcrf")
-use_inventory = true
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)

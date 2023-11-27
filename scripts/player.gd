@@ -1,4 +1,4 @@
-class_name Player
+class_name player
 extends Node
 
 # networked player data
@@ -7,14 +7,18 @@ var data = {
 }
 
 # networked input
+var last_input = {}
 var input = {
 	movement = Vector2(),
 	jump = false,
 	action = false,
 	interact = false,
+	next_item = false,
+	prev_item = false,
+	drop_item = false,
+	in_menu = false,
 	desired_zoom = 0.0
 }
-var last_input = {}
 
 # control settings
 @export var mouse_sensitivity = Vector2(5.0, 5.0)
@@ -29,22 +33,21 @@ var pawn = null
 var camera:Camera3D
 var zoom = 10.0
 var cursor_aim = false
+var last_view:Vector3
 
 
-func _init(id:int, player_data = {}):
-	name = str(id)
-	Game.player_list.add_child(self)
-	set_multiplayer_authority(id)
-	data.merge(player_data, true)
+func _init():
+	last_input = input.duplicate()
 
-
-func _ready():
 	# create the camera
 	camera = Camera3D.new()
 	camera.name = "Camera"
 	add_child(camera, true)
-	# multiplayer tick
-	Game.mp_tick.connect("timeout", mp_tick)
+
+
+func _ready():
+	# multiplayer sync
+	Game.mp_sync.connect("timeout", mp_sync)
 
 
 func _process(delta):
@@ -70,6 +73,9 @@ func _process(delta):
 
 
 func _physics_process(delta):
+	if !pawn:
+		return
+
 	# inputs
 	read_input(delta)
 	apply_input()
@@ -90,7 +96,7 @@ func _unhandled_input(event):
 
 
 func read_input(delta):
-	if !is_multiplayer_authority() || Game.menu.visible:
+	if !is_multiplayer_authority():
 		return
 
 	# rotate camera by angular velocity (joystick)
@@ -110,6 +116,10 @@ func read_input(delta):
 	# interaction
 	input.action = Input.is_action_pressed("action")
 	input.interact = Input.is_action_pressed("interact")
+	# inventory management
+	input.next_item = Input.is_action_pressed("next_item")
+	input.prev_item = Input.is_action_pressed("prev_item")
+	input.drop_item = Input.is_action_pressed("drop_item")
 
 	# camera zoom
 	if Input.is_action_just_pressed("zoom_in"):
@@ -117,27 +127,41 @@ func read_input(delta):
 	if Input.is_action_just_pressed("zoom_out"):
 		input.desired_zoom = zoom_min if input.desired_zoom + 0.5 <= zoom_min else clamp(input.desired_zoom + 0.5, 0.0, zoom_max)
 
+	input.in_menu = Game.menu.visible
+
 	# send input over network
 	if input != last_input:
+		mp_send_view.rpc(camera.rotation)
 		mp_send_input.rpc(input, last_input)
 
 
+# tells our pawn to perform desired actions
 func apply_input():
-	if !pawn || !(pawn is Pawn):
-		return
-
-	# tell our pawn to perform desired actions
-	pawn.desired_move = input.movement.rotated(camera.rotation.y)
-
-	if input.jump && !last_input.jump:
-		pawn.jump()
-	elif input.jump:
-		pawn.jump(false)
-
-	if input.action:
-		pawn.action()
-	if input.interact && !last_input.interact:
-		pawn.interact()
+	# directional movement
+	if input.in_menu:
+		pawn.desired_move = Vector2()
+	elif pawn.alive:
+		pawn.desired_move = input.movement.rotated(camera.rotation.y)
+		# jumping
+		if input.jump && !last_input.jump:
+			pawn.jump()
+		elif input.jump:
+			pawn.jump(false)
+		# interaction
+		if input.action:
+			pawn.action()
+		if input.interact && !last_input.interact:
+			pawn.interact()
+		# inventory management
+		if input.next_item && !last_input.next_item:
+			pawn.item_next()
+		if input.prev_item && !last_input.prev_item:
+			pawn.item_prev()
+		if input.drop_item && !last_input.drop_item:
+			pawn.item_drop()
+	elif is_multiplayer_authority():
+		if input.jump && !last_input.jump || input.action && !last_input.action:
+			spawn.rpc()
 
 	last_input = input.duplicate()
 
@@ -145,14 +169,14 @@ func apply_input():
 @rpc("authority", "call_local", "reliable")
 func spawn():
 	if pawn:
-		pawn.name = "_Pawn"
+		remove_child(pawn)
 		pawn.queue_free()
 
 	pawn = load(data.pawn_scene).instantiate()
 	add_child(pawn)
-	# teleport our pawn to spawn - TODO: find a better way to look for spawns on the map
-	pawn.global_position = Game.world.spawn_pos
-	camera.global_rotation = Game.world.spawn_ang
+	# teleport our pawn to spawn
+	pawn.global_position = Game.world.find_player_spawn().position
+	camera.global_rotation = Game.world.find_player_spawn().rotation
 	if is_multiplayer_authority():
 		# activate player camera and in-game menu
 		camera.make_current()
@@ -160,20 +184,23 @@ func spawn():
 
 
 @rpc("authority", "call_local", "reliable")
-func set_pawn_variable(variable, value):
-	if variable in pawn:
-		pawn.set(variable, value)
+func set_physics_parameter(property, value):
+	if "physics" in pawn:
+		pawn.physics[property] = value
 
 
-func mp_tick():
+func mp_sync():
 	if is_multiplayer_authority():
-		mp_send_view.rpc(camera.rotation)
+		if last_view != camera.rotation:
+			last_view = camera.rotation
+			mp_send_view.rpc(camera.rotation)
 
-
-@rpc func mp_send_input(new_input, old_input):
-	input = new_input 
+@rpc("unreliable_ordered")
+func mp_send_input(new_input, old_input):
+	input = new_input
 	last_input = old_input
 	apply_input()
 
-@rpc func mp_send_view(camera_ang):
+@rpc("unreliable_ordered")
+func mp_send_view(camera_ang):
 	camera.rotation = camera_ang

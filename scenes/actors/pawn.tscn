@@ -29,6 +29,7 @@ height = 0.35
 size = Vector2(3, 3)
 
 [node name="Pawn" type="AnimatableBody3D"]
+constant_linear_velocity = Vector3(1, 1, 1)
 sync_to_physics = false
 script = ExtResource("1_txe8y")
 
@@ -66,6 +67,7 @@ double_sided = false
 texture = SubResource("PlaceholderTexture2D_165mo")
 
 [node name="Hud" type="Control" parent="."]
+z_index = -1
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -75,18 +77,28 @@ grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("2_ebipa")
 
+[node name="Health" type="Label" parent="Hud"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -12.0
+offset_right = 64.0
+grow_vertical = 0
+theme_override_fonts/font = ExtResource("3_oh47t")
+theme_override_font_sizes/font_size = 32
+
+[node name="Crosshair" type="Sprite2D" parent="Hud"]
+modulate = Color(1, 0, 0, 1)
+rotation = 0.785398
+texture = SubResource("PlaceholderTexture2D_mhe8r")
+
 [node name="Info" type="Label" parent="Hud"]
 layout_mode = 1
 offset_right = 64.0
 offset_bottom = 12.0
 theme_override_fonts/font = ExtResource("3_oh47t")
 theme_override_font_sizes/font_size = 12
-
-[node name="Crosshair" type="Sprite2D" parent="Hud"]
-visible = false
-modulate = Color(1, 0, 0, 1)
-rotation = 0.785398
-texture = SubResource("PlaceholderTexture2D_mhe8r")
 
 [node name="Timer" type="Timer" parent="Hud"]
 wait_time = 0.05
