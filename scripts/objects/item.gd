@@ -1,12 +1,25 @@
-class_name Item
-extends RigidBody3D
+class_name Item extends RigidBody3D
 
+@export var cooldown = 500
+var last_use:int
 var user:Pawn = null
+
+var no_depth_mat = {}
 
 
 func _ready():
-	# multiplayer sync
-	Game.mp_sync.connect("timeout", mp_sync)
+	if Player: for mesh in find_children("*", "MeshInstance3D"):
+		no_depth_mat[mesh] = mesh.get_active_material(0).duplicate()
+		no_depth_mat[mesh].no_depth_test = true
+
+
+func _process(_delta):
+	# always draw on top if we are holding this item in first-person
+	if Player: for mesh in find_children("*", "MeshInstance3D"):
+		if user && user.is_player && Player.zoom < 0.5:
+			mesh.set_surface_override_material(0, no_depth_mat[mesh])
+		else:
+			mesh.set_surface_override_material(0, null)
 
 
 func activate(pawn:Pawn):
@@ -24,7 +37,6 @@ func pick_up(pawn:Pawn):
 	# add to pawn's inventory
 	get_parent().remove_child(self)
 	pawn.inventory.add_child(self, true)
-	owner = pawn.owner
 	# set physics and position
 	add_collision_exception_with(pawn)
 	position = Vector3()
@@ -40,7 +52,6 @@ func drop():
 	# remove from user's inventory
 	get_parent().remove_child(self)
 	user.owner.add_child(self, true)
-	owner = user.owner
 	# set physics and collision
 	remove_collision_exception_with(user)
 	global_position = user.get_aim(2.0, [user, self]).position
@@ -52,7 +63,7 @@ func drop():
 	user = null
 
 
-func mp_sync():
+func _on_mp_sync_frame():
 	if is_multiplayer_authority():
 		mp_send_position.rpc(position, rotation, linear_velocity, angular_velocity)
 

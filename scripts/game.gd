@@ -3,46 +3,47 @@ extends Node
 var world:
 	get: return get_tree().current_scene
 
-
 # players
-var player_list = Node.new()
+var player_list:Node
 
 # menu
 @export var menu_scene = preload("res://scenes/ui/menu.tscn")
 var menu:Control
 
 # multiplayer
-var dedicated = OS.has_feature("dedicated_server") || "--server" in OS.get_cmdline_user_args()
-var mp_sync = Timer.new()
-var mp_port = 26262
+const mp_port = 26262
+const mp_sync_rate = 30
+var mp_tick:int
 
 
 func _init():
-	# the node containing the players
+	# node containing the players
+	player_list = Node.new()
 	player_list.name = "Players"
 	add_sibling.call_deferred(player_list)
 
-	# multiplayer sync timer
-	mp_sync.name = "MPSync"
-	mp_sync.process_callback = Timer.TIMER_PROCESS_PHYSICS
-	add_child(mp_sync)
-
 
 func _ready():
-	# start sync timer
-	mp_sync.start(1.0/20) # 20hz
+	get_tree().connect("node_added", _on_node_added)
 
-	if !dedicated:
-		# load the player
+	if OS.has_feature("dedicated_server"):
+		# start the game without the player if we are a server
+		Player.queue_free()
+		host_game()
+	else:
+		# add player to the player list
 		Player.set_name.call_deferred(1)
 		Player.reparent.call_deferred(player_list)
 		# load the menu
 		menu = menu_scene.instantiate()
 		add_child(menu)
-	else:
-		# or start the game if we are a server
-		Player.queue_free()
-		host_game()
+
+
+func _physics_process(delta):
+	mp_tick += 1
+	# sync physics at our desired sync rate
+	if mp_tick % int(1 / (delta * mp_sync_rate)) == 0:
+		get_tree().root.propagate_call.call_deferred("_on_mp_sync_frame", mp_tick, true)
 
 
 func host_game():
@@ -67,6 +68,8 @@ func join_game(address):
 
 func _on_player_connected(id):
 	request_player.rpc_id(id)
+	if is_multiplayer_authority():
+		set_mp_tick.rpc_id(id, mp_tick)
 
 
 func _on_player_disconnected(id):
@@ -89,8 +92,16 @@ func _on_server_disconnected():
 	multiplayer.multiplayer_peer = null
 
 
+func _on_node_added(node):
+	# automatically set ownership of any nodes under a player to that player
+	for player in player_list.get_children():
+		if player.is_ancestor_of(node):
+			node.owner = player
+			return
+
+
 func create_player(id, data):
-	var new_player = player.new()
+	var new_player = GamePlayer.new()
 	new_player.name = str(id)
 	player_list.add_child(new_player)
 	new_player.set_multiplayer_authority(id)
@@ -114,3 +125,8 @@ func send_player(player_data, spawned):
 	var new_player = create_player(peer_id, player_data)
 	if spawned:
 		new_player.spawn()
+
+
+@rpc("call_remote", "reliable")
+func set_mp_tick(tick):
+	mp_tick = tick

@@ -5,18 +5,13 @@ extends Node3D
 @export var damage = 20
 @export var radius = 5
 
-@onready var weapon = get_parent()
-
-var timer = Timer.new()
+var weapon = null
 var exploded = false
 
 
 func _ready():
-	$RayCast.add_exception(weapon)
-	$RayCast.add_exception(weapon.user)
-
-	# multiplayer sync
-	Game.mp_sync.connect("timeout", mp_sync)
+	if weapon: $RayCast.add_exception(weapon)
+	if "pawn" in owner: $RayCast.add_exception(owner.pawn)
 
 	# automatically explode after 60 seconds
 	await get_tree().create_timer(60).timeout
@@ -49,6 +44,7 @@ func explode(pos):
 		var dir = body.global_position - pos
 		if dir.length() > radius:
 			continue
+
 		var power = radius / exp(dir.length())
 		dir = dir.normalized()
 		# apply force to players and objects within radius
@@ -58,10 +54,10 @@ func explode(pos):
 			body.velocity += knockback * power * dir
 		# apply damage
 		if body.is_multiplayer_authority() && body.has_method("set_health"):
-			if body != weapon.user:
+			if "pawn" not in owner || body != owner.pawn:
 				body.set_health.rpc(body.health - damage * power)
-			else: # deal less damage to self
-				body.set_health.rpc(body.health - damage * power / 5)
+			#else: # deal less damage to self
+				#body.set_health.rpc(body.health - damage * power / 4)
 
 	# hide the projectile
 	$Mesh.visible = false
@@ -73,7 +69,7 @@ func explode(pos):
 	queue_free()
 
 
-func mp_sync():
+func _on_mp_sync_frame():
 	if is_multiplayer_authority():
 		mp_send_position.rpc(position, rotation)
 

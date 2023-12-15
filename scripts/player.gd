@@ -1,5 +1,4 @@
-class_name player
-extends Node
+class_name GamePlayer extends Node
 
 # networked player data
 var data = {
@@ -7,7 +6,7 @@ var data = {
 }
 
 # networked input
-var last_input = {}
+var last_input
 var input = {
 	movement = Vector2(),
 	jump = false,
@@ -21,7 +20,7 @@ var input = {
 }
 
 # control settings
-@export var mouse_sensitivity = Vector2(5.0, 5.0)
+@export var mouse_sensitivity = Vector2(3.0, 3.0)
 @export var joy_sensitivity = Vector2(5.0, 3.5)
 @export var zoom_min = 2.0
 @export var zoom_max = 4.5
@@ -32,22 +31,13 @@ var pawn = null
 # camera
 var camera:Camera3D
 var zoom = 10.0
-var cursor_aim = false
-var last_view:Vector3
 
 
 func _init():
-	last_input = input.duplicate()
-
 	# create the camera
 	camera = Camera3D.new()
 	camera.name = "Camera"
 	add_child(camera, true)
-
-
-func _ready():
-	# multiplayer sync
-	Game.mp_sync.connect("timeout", mp_sync)
 
 
 func _process(delta):
@@ -82,31 +72,27 @@ func _physics_process(delta):
 
 
 func _unhandled_input(event):
-	if !is_multiplayer_authority() || Game.menu.visible:
+	if Player != self || Game.menu.visible:
 		return
 
 	if event is InputEventMouseMotion && Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
-		# get mouse coordinates for camera rotation
-		var angle = camera.rotation
-		angle.y -= event.relative.x * (mouse_sensitivity.x / 4096)
-		angle.x -= event.relative.y * (mouse_sensitivity.y / 4096)
-		# rotate view
-		camera.rotation = angle
+		# rotate view based on mouse coordinates
+		camera.rotation.y -= deg_to_rad(event.relative.x * mouse_sensitivity.x * 0.022)
+		camera.rotation.x -= deg_to_rad(event.relative.y * mouse_sensitivity.y * 0.022)
+		# clamp vertical rotation
 		camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-89), deg_to_rad(89))
 
 
 func read_input(delta):
-	if !is_multiplayer_authority():
+	if Player != self:
 		return
 
-	# rotate camera by angular velocity (joystick)
 	var ang_velocity = Input.get_vector("look_left", "look_right", "look_up", "look_down")
 	if ang_velocity.length_squared() != 0.0:
-		var rot = Vector3()
-		rot.x = ang_velocity.y * joy_sensitivity.y
-		rot.y = ang_velocity.x * joy_sensitivity.x
-		# rotate view
-		camera.rotation -= rot * delta
+		# rotate view based on angular velocity
+		camera.rotation.y -= ang_velocity.x * joy_sensitivity.x * delta
+		camera.rotation.x -= ang_velocity.y * joy_sensitivity.y * delta
+		# clamp vertical rotation
 		camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-89), deg_to_rad(89))
 
 	# directional movement
@@ -130,7 +116,7 @@ func read_input(delta):
 	input.in_menu = Game.menu.visible
 
 	# send input over network
-	if input != last_input:
+	if input != last_input && is_multiplayer_authority():
 		mp_send_view.rpc(camera.rotation)
 		mp_send_input.rpc(input, last_input)
 
@@ -166,34 +152,37 @@ func apply_input():
 	last_input = input.duplicate()
 
 
-@rpc("authority", "call_local", "reliable")
+@rpc("call_local", "reliable")
 func spawn():
 	if pawn:
-		remove_child(pawn)
+		# dispose of existing pawn
 		pawn.queue_free()
-
+		pawn.name += "_"
+	# create pawn
 	pawn = load(data.pawn_scene).instantiate()
 	add_child(pawn)
 	# teleport our pawn to spawn
-	pawn.global_position = Game.world.find_player_spawn().position
-	camera.global_rotation = Game.world.find_player_spawn().rotation
-	if is_multiplayer_authority():
+	var spawn_point = Game.world.find_player_spawn()
+	pawn.global_position = spawn_point.position + Vector3(0.0, pawn.collision.shape.size.y / 2, 0.0)
+	camera.rotation.x = spawn_point.rotation.x
+	camera.rotation.y = spawn_point.rotation.y
+
+	if Player == self:
 		# activate player camera and in-game menu
 		camera.make_current()
-		Game.menu.toggle_player_menu()
+		Game.menu.update_settings()
 
 
-@rpc("authority", "call_local", "reliable")
+@rpc("call_local", "reliable")
 func set_physics_parameter(property, value):
 	if "physics" in pawn:
 		pawn.physics[property] = value
 
 
-func mp_sync():
-	if is_multiplayer_authority():
-		if last_view != camera.rotation:
-			last_view = camera.rotation
-			mp_send_view.rpc(camera.rotation)
+func _on_mp_sync_frame():
+	if !is_multiplayer_authority():
+		return
+	mp_send_view.rpc(camera.rotation)
 
 @rpc("unreliable_ordered")
 func mp_send_input(new_input, old_input):

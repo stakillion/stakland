@@ -1,0 +1,14 @@
+[remap]
+
+importer="image"
+type="Image"
+uid="uid://djql3ci01c0yl"
+path="res://.godot/imported/detail.png-27f46d68d8545ecded68cf5e558295a4.image"
+
+[deps]
+
+source_file="res://resources/levels/test_level/terrain/detail.png"
+dest_files=["res://.godot/imported/detail.png-27f46d68d8545ecded68cf5e558295a4.image"]
+
+[params]
+

@@ -2,9 +2,7 @@ extends Node3D
 
 
 func _ready():
-	for node in get_children():
-		if not node is RigidBody3D:
-			continue
+	for node in find_children("*", "RigidBody3D"):
 		# save rigidbody spawn positions
 		node.set_meta("spawn_pos", node.global_position)
 		node.set_meta("spawn_ang", node.global_rotation)
@@ -12,8 +10,7 @@ func _ready():
 
 func find_player_spawn():
 	var spawn_point = $Spawns.get_children().pick_random()
-	return {position = spawn_point.global_position + Vector3(0.0, 0.75, 0.0),
-			rotation = spawn_point.global_rotation}
+	return spawn_point
 
 
 func _on_world_boundary_entered(body):
@@ -30,3 +27,19 @@ func _on_world_boundary_entered(body):
 	# delete items
 	elif body is Item:
 		body.queue_free()
+
+
+func _on_mp_sync_frame():
+	if !is_multiplayer_authority():
+		return
+	for node in find_children("*", "RigidBody3D"):
+		mp_send_body_position.rpc(node.get_path(), node.position, node.rotation, node.linear_velocity, node.angular_velocity)
+
+@rpc("unreliable_ordered")
+func mp_send_body_position(node_path, pos, ang, vel, ang_vel):
+	var body = get_node_or_null(node_path)
+	if body:
+		body.position = pos
+		body.rotation = ang
+		body.linear_velocity = vel
+		body.angular_velocity = ang_vel

@@ -3,37 +3,43 @@ extends Control
 
 func _ready():
 	$MainMenu/PlayButton.grab_focus()
-	toggle_player_menu()
+	update_settings()
 
-
-func _process(_delta):
-	if visible:
-		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-	else:
-		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	connect("visibility_changed", _on_visibility_changed)
 
 
 func _input(event):
 	if event.is_action_pressed("ui_cancel"):
 		visible = !visible
-		$MainMenu/PlayButton.grab_focus()
 
 
-func toggle_player_menu():
-	if !Player.pawn:
+func _notification(what):
+	if what == NOTIFICATION_WM_WINDOW_FOCUS_OUT:
+		visible = true
+
+
+func update_settings():
+	if Player.pawn:
+		for node in $PlayerMenu/PhysicsSettings.get_children():
+			var label = node.get_meta("label")
+			var property = node.get_meta("property")
+			var value = Player.pawn.physics.get(property)
+			if value != null:
+				node.value = value
+				node.find_child("Label").text = "%s: %f" % [label, value]
+			if !node.is_connected("value_changed", _on_physics_setting_value_changed.bind(property, label, node)):
+				node.connect("value_changed", _on_physics_setting_value_changed.bind(property, label, node))
+		$PlayerMenu.visible = true
+	else:
 		$PlayerMenu.visible = false
-		return
 
-	$PlayerMenu.visible = true
-	for node in $PlayerMenu/PhysicsSettings.get_children():
-		var label = node.get_meta("label")
-		var property = node.get_meta("property")
-		var value = Player.pawn.physics.get(property)
-		if value != null:
-			node.value = value
-			node.find_child("Label").text = "%s: %f" % [label, value]
-		if !node.is_connected("value_changed", _on_physics_setting_value_changed.bind(property, label, node)):
-			node.connect("value_changed", _on_physics_setting_value_changed.bind(property, label, node))
+
+func _on_visibility_changed():
+	if visible:
+		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+		$MainMenu/PlayButton.grab_focus()
+	else:
+		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
 
 func _on_PlayButton_pressed():
