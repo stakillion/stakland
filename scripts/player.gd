@@ -6,7 +6,7 @@ var data = {
 }
 
 # networked input
-var last_input
+var last_input = {}
 var input = {
 	movement = Vector2(),
 	jump = false,
@@ -26,11 +26,13 @@ var input = {
 @export var zoom_max = 4.5
 
 # character we are controlling
-var pawn = null
+var pawn:Pawn = null
 
 # camera
 var camera:Camera3D
-var zoom = 10.0
+var cam_follow:Node3D = null
+var cam_offset:Vector3
+var cam_zoom = 0.0
 
 
 func _init():
@@ -40,35 +42,42 @@ func _init():
 	add_child(camera, true)
 
 
-func _process(delta):
-	if !pawn:
-		return
+func _ready():
+	if Player == self:
+		var current_cam = get_viewport().get_camera_3d()
+		camera.rotation = current_cam.global_rotation
+		cam_activate(null, current_cam.global_position)
 
-	# lerp current camera zoom to desired zoom for smooth zoom effect
-	zoom = lerp(zoom, input.desired_zoom, 3 * delta)
-	# have the camera follow our pawn
-	var follow_pos = pawn.head.global_position if "head" in pawn else pawn.global_position
-	var new_pos = follow_pos + camera.global_transform.basis.z * zoom
-	if zoom > 0.1:
-		# check for collisions behind the camera to prevent it from going through walls
-		var query = PhysicsShapeQueryParameters3D.new()
-		query.transform.origin = follow_pos
-		query.shape = SphereShape3D.new()
-		query.shape.radius = 0.1
-		query.motion = new_pos - follow_pos
-		var collision = camera.get_world_3d().direct_space_state.cast_motion(query)
-		new_pos = follow_pos + query.motion * collision[0]
+
+func _process(delta):
+	var follow_pos = Vector3()
+	if cam_follow:
+		# set position to the position of our follow target
+		follow_pos = cam_follow.head.global_position if "head" in cam_follow else cam_follow.global_position
+		cam_offset = lerp(cam_offset, Vector3.ZERO, 16 * delta)
+		if "active_item" in cam_follow && cam_follow.active_item:
+			cam_follow.active_item.position = Vector3.ZERO
+			cam_follow.active_item.global_position += cam_offset
+	elif Player == self && !input.in_menu:
+		# no follow target, free cam mode
+		var dir = Vector3(input.movement.y, 0.0, input.movement.x)
+		dir = dir.rotated(Vector3.RIGHT, camera.rotation.x)
+		dir = dir.rotated(Vector3.UP, camera.rotation.y)
+		cam_offset = lerp(cam_offset, cam_offset + dir, 24 * delta)
+	follow_pos += cam_offset
+	# distance the camera from the follow position by our zoom level
+	cam_zoom = lerp(cam_zoom, input.desired_zoom, 3 * delta)
+	var zoom_vec = camera.global_basis.z * cam_zoom
+	if cam_zoom > 0.1: zoom_vec *= cam_cast_motion(follow_pos, zoom_vec)[0]
 	# update camera position
-	camera.global_position = new_pos
+	camera.position = follow_pos + zoom_vec
 
 
 func _physics_process(delta):
-	if !pawn:
-		return
-
 	# inputs
 	read_input(delta)
-	apply_input()
+	if pawn: apply_input()
+	last_input = input.duplicate()
 
 
 func _unhandled_input(event):
@@ -123,7 +132,6 @@ func read_input(delta):
 
 # tells our pawn to perform desired actions
 func apply_input():
-	# directional movement
 	if input.in_menu:
 		pawn.desired_move = Vector2()
 	elif pawn.alive:
@@ -149,8 +157,6 @@ func apply_input():
 		if input.jump && !last_input.jump || input.action && !last_input.action:
 			spawn.rpc()
 
-	last_input = input.duplicate()
-
 
 @rpc("call_local", "reliable")
 func spawn():
@@ -163,20 +169,39 @@ func spawn():
 	add_child(pawn)
 	# teleport our pawn to spawn
 	var spawn_point = Game.world.find_player_spawn()
-	pawn.global_position = spawn_point.position + Vector3(0.0, pawn.collision.shape.size.y / 2, 0.0)
-	camera.rotation.x = spawn_point.rotation.x
-	camera.rotation.y = spawn_point.rotation.y
+	pawn.set_origin(spawn_point.position)
+	pawn.set_angle(spawn_point.rotation)
+	# have the camera follow our pawn
+	cam_activate(pawn, Vector3.ZERO, 5.0)
 
 	if Player == self:
-		# activate player camera and in-game menu
-		camera.make_current()
 		Game.menu.update_settings()
 
 
 @rpc("call_local", "reliable")
 func set_physics_parameter(property, value):
-	if "physics" in pawn:
-		pawn.physics[property] = value
+	pawn.physics[property] = value
+
+
+func cam_activate(follow:Node3D = null, offset:Vector3 = Vector3.ZERO, zoom:float = 0.0):
+	cam_follow = follow
+	cam_offset = offset
+	cam_zoom = zoom
+	if follow:
+		camera.rotation.y = follow.rotation.y
+		camera.rotation.x = follow.head.rotation.x if "head" in follow else follow.rotation.x
+	if Player == self:
+		camera.make_current()
+
+
+func cam_cast_motion(start, motion):
+	var query = PhysicsShapeQueryParameters3D.new()
+	query.transform.origin = start
+	query.shape = SphereShape3D.new()
+	query.shape.radius = 0.1
+	query.motion = motion
+	query.exclude = [cam_follow] + cam_follow.find_children("*") if cam_follow else []
+	return camera.get_world_3d().direct_space_state.cast_motion(query)
 
 
 func _on_mp_sync_frame():
@@ -188,7 +213,8 @@ func _on_mp_sync_frame():
 func mp_send_input(new_input, old_input):
 	input = new_input
 	last_input = old_input
-	apply_input()
+	if pawn: apply_input()
+	last_input = input.duplicate()
 
 @rpc("unreliable_ordered")
 func mp_send_view(camera_ang):

@@ -30,11 +30,11 @@ height = 0.35
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_165mo"]
 
-[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_mhe8r"]
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_ts7m7"]
 size = Vector2(3, 3)
 
 [node name="Pawn" type="AnimatableBody3D"]
-constant_linear_velocity = Vector3(1, 1, 1)
+constant_linear_velocity = Vector3(0.1, 0.1, 0.1)
 sync_to_physics = false
 script = ExtResource("1_txe8y")
 
@@ -92,11 +92,6 @@ grow_vertical = 0
 theme_override_fonts/font = ExtResource("3_oh47t")
 theme_override_font_sizes/font_size = 32
 
-[node name="Crosshair" type="Sprite2D" parent="Hud"]
-modulate = Color(1, 0, 0, 1)
-rotation = 0.785398
-texture = SubResource("PlaceholderTexture2D_mhe8r")
-
 [node name="Info" type="Label" parent="Hud"]
 layout_mode = 1
 offset_right = 64.0
@@ -104,7 +99,13 @@ offset_bottom = 12.0
 theme_override_fonts/font = ExtResource("3_oh47t")
 theme_override_font_sizes/font_size = 12
 
+[node name="Crosshair" type="Sprite2D" parent="Hud"]
+modulate = Color(1, 0, 0, 1)
+rotation = 0.785398
+texture = SubResource("PlaceholderTexture2D_ts7m7")
+
 [node name="Timer" type="Timer" parent="Hud"]
+process_callback = 0
 wait_time = 0.05
 autostart = true
 

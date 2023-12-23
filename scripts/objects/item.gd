@@ -4,22 +4,24 @@ class_name Item extends RigidBody3D
 var last_use:int
 var user:Pawn = null
 
-var no_depth_mat = {}
+#var no_depth_mat = {}
 
 
 func _ready():
-	if Player: for mesh in find_children("*", "MeshInstance3D"):
-		no_depth_mat[mesh] = mesh.get_active_material(0).duplicate()
-		no_depth_mat[mesh].no_depth_test = true
+	#if Player: for mesh in find_children("*", "MeshInstance3D"):
+	#	no_depth_mat[mesh] = mesh.get_active_material(0).duplicate()
+	#	no_depth_mat[mesh].no_depth_test = true
+	pass
 
 
 func _process(_delta):
 	# always draw on top if we are holding this item in first-person
-	if Player: for mesh in find_children("*", "MeshInstance3D"):
-		if user && user.is_player && Player.zoom < 0.5:
-			mesh.set_surface_override_material(0, no_depth_mat[mesh])
-		else:
-			mesh.set_surface_override_material(0, null)
+	#if Player: for mesh in find_children("*", "MeshInstance3D"):
+	#	if user && user.is_player && Player.cam_zoom < 0.5:
+	#		mesh.set_surface_override_material(0, no_depth_mat[mesh])
+	#	else:
+	#		mesh.set_surface_override_material(0, null)
+	pass
 
 
 func activate(pawn:Pawn):

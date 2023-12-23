@@ -9,8 +9,7 @@ func _ready():
 
 
 func find_player_spawn():
-	var spawn_point = $Spawns.get_children().pick_random()
-	return spawn_point
+	return $Spawns.get_children().pick_random()
 
 
 func _on_world_boundary_entered(body):
@@ -18,12 +17,14 @@ func _on_world_boundary_entered(body):
 	if body is RigidBody3D && body.has_meta("spawn_pos"):
 		body.global_position = body.get_meta("spawn_pos")
 		body.global_rotation = body.get_meta("spawn_ang")
-		body.linear_velocity = Vector3()
-		body.angular_velocity = Vector3()
+		body.linear_velocity = Vector3.ZERO
+		body.angular_velocity = Vector3.ZERO
 	# teleport players to their spawn
 	elif body is Pawn && body.alive:
-		body.global_position = find_player_spawn().position
-		body.velocity = Vector3()
+		var spawn_point = Game.world.find_player_spawn()
+		body.set_origin(spawn_point.position)
+		body.set_angle(spawn_point.rotation)
+		body.velocity = Vector3.ZERO
 	# delete items
 	elif body is Item:
 		body.queue_free()

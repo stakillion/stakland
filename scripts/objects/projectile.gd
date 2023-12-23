@@ -15,7 +15,7 @@ func _ready():
 
 	# automatically explode after 60 seconds
 	await get_tree().create_timer(60).timeout
-	explode(global_position)
+	explode()
 
 
 func _physics_process(delta):
@@ -25,7 +25,7 @@ func _physics_process(delta):
 		# check for collision
 		if $RayCast.get_collider():
 			$ExplosionEffect.direction = $RayCast.get_collision_normal()
-			explode($RayCast.get_collision_point())
+			explode()
 			return
 
 		# optimization: only show trails that are near the player
@@ -36,15 +36,14 @@ func _physics_process(delta):
 			$ParticleTrail.emitting = true
 
 
-func explode(pos):
+func explode():
 	exploded = true
 	for body in $ExplosionArea.get_overlapping_bodies():
 		if body == self:
 			continue
-		var dir = body.global_position - pos
+		var dir = body.global_position - global_position
 		if dir.length() > radius:
 			continue
-
 		var power = radius / exp(dir.length())
 		dir = dir.normalized()
 		# apply force to players and objects within radius

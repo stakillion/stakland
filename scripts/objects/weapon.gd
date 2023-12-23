@@ -12,7 +12,9 @@ func action():
 	if is_multiplayer_authority():
 		var fire_pos = global_position
 		var fire_ang = global_rotation
+
 		if user:
+			fire_pos = user.inventory.global_position
 			var aim_pos = user.get_aim().position
 			if global_position.distance_squared_to(aim_pos) > 64:
 				fire_ang = global_transform.looking_at(aim_pos).basis.get_euler()
