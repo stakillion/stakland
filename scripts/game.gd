@@ -7,23 +7,23 @@ var world:
 var player_list:Node
 
 # menu
-@export var menu_scene = preload("res://scenes/ui/menu.tscn")
+@export var menu_scene: = preload("res://scenes/ui/menu.tscn")
 var menu:Control
 
 # multiplayer
-const mp_port = 26262
-const mp_sync_rate = 30
+const mp_port: = 26262
+const mp_sync_rate: = 30
 var mp_tick:int
 
 
-func _init():
+func _init() -> void:
 	# node containing the players
 	player_list = Node.new()
 	player_list.name = "Players"
 	add_sibling.call_deferred(player_list)
 
 
-func _ready():
+func _ready() -> void:
 	get_tree().connect("node_added", _on_node_added)
 
 	if OS.has_feature("dedicated_server"):
@@ -35,19 +35,19 @@ func _ready():
 		Player.set_name.call_deferred(1)
 		Player.reparent.call_deferred(player_list)
 		# load the menu
-		menu = menu_scene.instantiate()
+		menu = menu_scene.instantiate() as Control
 		add_child(menu)
 
 
-func _physics_process(delta):
+func _physics_process(delta:float) -> void:
 	mp_tick += 1
 	# sync physics at our desired sync rate
 	if mp_tick % int(1 / (delta * mp_sync_rate)) == 0:
 		get_tree().root.propagate_call.call_deferred("_on_mp_sync_frame", mp_tick, true)
 
 
-func host_game():
-	var peer = ENetMultiplayerPeer.new()
+func host_game() -> void:
+	var peer: = ENetMultiplayerPeer.new()
 	if peer.create_server(mp_port) != OK:
 		return
 	multiplayer.multiplayer_peer = peer
@@ -55,8 +55,8 @@ func host_game():
 	multiplayer.peer_disconnected.connect(_on_player_disconnected)
 
 
-func join_game(address):
-	var peer = ENetMultiplayerPeer.new()
+func join_game(address:String) -> void:
+	var peer: = ENetMultiplayerPeer.new()
 	if peer.create_client(IP.resolve_hostname(address), mp_port) != OK:
 		return
 	multiplayer.multiplayer_peer = peer
@@ -66,21 +66,21 @@ func join_game(address):
 	multiplayer.server_disconnected.connect(_on_server_disconnected)
 
 
-func _on_player_connected(id):
+func _on_player_connected(id:int) -> void:
 	request_player.rpc_id(id)
 	if is_multiplayer_authority():
 		set_mp_tick.rpc_id(id, mp_tick)
 
 
-func _on_player_disconnected(id):
-	var old_player = player_list.get_node_or_null(str(id))
+func _on_player_disconnected(id:int) -> void:
+	var old_player: = player_list.get_node_or_null(str(id)) as Player
 	if old_player:
 		get_tree().queue_delete(old_player)
 
 
-func _on_connected_to_server():
+func _on_connected_to_server() -> void:
 	# change player id to our new peer id
-	var id = multiplayer.multiplayer_peer.get_unique_id()
+	var id: = multiplayer.multiplayer_peer.get_unique_id()
 	Player.name = str(id)
 	Player.set_multiplayer_authority(id)
 	if Player.pawn:
@@ -88,11 +88,11 @@ func _on_connected_to_server():
 		Player.spawn()
 
 
-func _on_server_disconnected():
+func _on_server_disconnected() -> void:
 	multiplayer.multiplayer_peer = null
 
 
-func _on_node_added(node):
+func _on_node_added(node:Node) -> void:
 	# automatically set ownership of any nodes under a player to that player
 	for player in player_list.get_children():
 		if player.is_ancestor_of(node):
@@ -100,8 +100,8 @@ func _on_node_added(node):
 			return
 
 
-func create_player(id, data):
-	var new_player = GamePlayer.new()
+func create_player(id:int, data:Dictionary) -> Player:
+	var new_player: = GamePlayer.new()
 	new_player.name = str(id)
 	player_list.add_child(new_player)
 	new_player.set_multiplayer_authority(id)
@@ -110,23 +110,23 @@ func create_player(id, data):
 
 
 @rpc("any_peer", "call_remote", "reliable")
-func request_player():
+func request_player() -> void:
 	if !Player:
 		return
-	var peer_id = multiplayer.get_remote_sender_id()
+	var peer_id: = multiplayer.get_remote_sender_id()
 	# send player data and whether they have spawned
 	send_player.rpc_id(peer_id, Player.data, !!Player.pawn)
 
 
 @rpc("any_peer", "call_remote", "reliable")
-func send_player(player_data, spawned):
-	var peer_id = multiplayer.get_remote_sender_id()
+func send_player(player_data:Dictionary, spawned:bool) -> void:
+	var peer_id: = multiplayer.get_remote_sender_id()
 	print("recieving player: ", peer_id)
-	var new_player = create_player(peer_id, player_data)
+	var new_player: = create_player(peer_id, player_data)
 	if spawned:
 		new_player.spawn()
 
 
 @rpc("call_remote", "reliable")
-func set_mp_tick(tick):
+func set_mp_tick(tick:int) -> void:
 	mp_tick = tick

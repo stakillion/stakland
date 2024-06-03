@@ -1,13 +1,12 @@
 class_name GamePlayer extends Node
 
 # networked player data
-var data = {
+var data: = {
 	pawn_scene = "res://scenes/actors/pawn.tscn",
 }
 
 # networked input
-var last_input = {}
-var input = {
+var input: = {
 	movement = Vector2(),
 	jump = false,
 	action = false,
@@ -18,12 +17,13 @@ var input = {
 	in_menu = false,
 	desired_zoom = 0.0
 }
+var last_input: = {}
 
 # control settings
-@export var mouse_sensitivity = Vector2(3.0, 3.0)
-@export var joy_sensitivity = Vector2(5.0, 3.5)
-@export var zoom_min = 2.0
-@export var zoom_max = 4.5
+@export var mouse_sensitivity: = Vector2(3.0, 3.0)
+@export var joy_sensitivity: = Vector2(5.0, 3.5)
+@export var zoom_min: = 2.0
+@export var zoom_max: = 4.5
 
 # character we are controlling
 var pawn:Pawn = null
@@ -32,55 +32,56 @@ var pawn:Pawn = null
 var camera:Camera3D
 var cam_follow:Node3D = null
 var cam_offset:Vector3
-var cam_zoom = 0.0
+var cam_zoom: = 0.0
 
 
-func _init():
+func _init() -> void:
 	# create the camera
 	camera = Camera3D.new()
 	camera.name = "Camera"
 	add_child(camera, true)
 
 
-func _ready():
+func _ready() -> void:
 	if Player == self:
-		var current_cam = get_viewport().get_camera_3d()
+		var current_cam: = get_viewport().get_camera_3d()
 		camera.rotation = current_cam.global_rotation
 		cam_activate(null, current_cam.global_position)
 
 
-func _process(delta):
-	var follow_pos = Vector3()
+func _process(delta:float) -> void:
+	var follow_pos: = Vector3()
 	if cam_follow:
 		# set position to the position of our follow target
 		follow_pos = cam_follow.head.global_position if "head" in cam_follow else cam_follow.global_position
+		# 
 		cam_offset = lerp(cam_offset, Vector3.ZERO, 16 * delta)
 		if "active_item" in cam_follow && cam_follow.active_item:
 			cam_follow.active_item.position = Vector3.ZERO
 			cam_follow.active_item.global_position += cam_offset
 	elif Player == self && !input.in_menu:
 		# no follow target, free cam mode
-		var dir = Vector3(input.movement.y, 0.0, input.movement.x)
+		var dir: = Vector3(input.movement.y, 0.0, input.movement.x)
 		dir = dir.rotated(Vector3.RIGHT, camera.rotation.x)
 		dir = dir.rotated(Vector3.UP, camera.rotation.y)
-		cam_offset = lerp(cam_offset, cam_offset + dir, 24 * delta)
+		cam_offset += dir * 24 * delta
 	follow_pos += cam_offset
 	# distance the camera from the follow position by our zoom level
 	cam_zoom = lerp(cam_zoom, input.desired_zoom, 3 * delta)
-	var zoom_vec = camera.global_basis.z * cam_zoom
+	var zoom_vec: = camera.basis.z * cam_zoom
 	if cam_zoom > 0.1: zoom_vec *= cam_cast_motion(follow_pos, zoom_vec)[0]
 	# update camera position
 	camera.position = follow_pos + zoom_vec
 
 
-func _physics_process(delta):
+func _physics_process(delta:float) -> void:
 	# inputs
 	read_input(delta)
 	if pawn: apply_input()
 	last_input = input.duplicate()
 
 
-func _unhandled_input(event):
+func _unhandled_input(event:InputEvent) -> void:
 	if Player != self || Game.menu.visible:
 		return
 
@@ -92,11 +93,11 @@ func _unhandled_input(event):
 		camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-89), deg_to_rad(89))
 
 
-func read_input(delta):
+func read_input(delta:float) -> void:
 	if Player != self:
 		return
 
-	var ang_velocity = Input.get_vector("look_left", "look_right", "look_up", "look_down")
+	var ang_velocity: = Input.get_vector("look_left", "look_right", "look_up", "look_down")
 	if ang_velocity.length_squared() != 0.0:
 		# rotate view based on angular velocity
 		camera.rotation.y -= ang_velocity.x * joy_sensitivity.x * delta
@@ -131,7 +132,7 @@ func read_input(delta):
 
 
 # tells our pawn to perform desired actions
-func apply_input():
+func apply_input() -> void:
 	if input.in_menu:
 		pawn.desired_move = Vector2()
 	elif pawn.alive:
@@ -159,7 +160,7 @@ func apply_input():
 
 
 @rpc("call_local", "reliable")
-func spawn():
+func spawn() -> void:
 	if pawn:
 		# dispose of existing pawn
 		pawn.queue_free()
@@ -168,7 +169,7 @@ func spawn():
 	pawn = load(data.pawn_scene).instantiate()
 	add_child(pawn)
 	# teleport our pawn to spawn
-	var spawn_point = Game.world.find_player_spawn()
+	var spawn_point:Node3D = Game.world.find_player_spawn()
 	pawn.set_origin(spawn_point.position)
 	pawn.set_angle(spawn_point.rotation)
 	# have the camera follow our pawn
@@ -179,11 +180,11 @@ func spawn():
 
 
 @rpc("call_local", "reliable")
-func set_physics_parameter(property, value):
+func set_physics_parameter(property, value) -> void:
 	pawn.physics[property] = value
 
 
-func cam_activate(follow:Node3D = null, offset:Vector3 = Vector3.ZERO, zoom:float = 0.0):
+func cam_activate(follow:Node3D = null, offset: = Vector3.ZERO, zoom: = 0.0) -> void:
 	cam_follow = follow
 	cam_offset = offset
 	cam_zoom = zoom
@@ -194,8 +195,8 @@ func cam_activate(follow:Node3D = null, offset:Vector3 = Vector3.ZERO, zoom:floa
 		camera.make_current()
 
 
-func cam_cast_motion(start, motion):
-	var query = PhysicsShapeQueryParameters3D.new()
+func cam_cast_motion(start:Vector3, motion:Vector3) -> PackedFloat32Array:
+	var query: = PhysicsShapeQueryParameters3D.new()
 	query.transform.origin = start
 	query.shape = SphereShape3D.new()
 	query.shape.radius = 0.1
@@ -204,18 +205,18 @@ func cam_cast_motion(start, motion):
 	return camera.get_world_3d().direct_space_state.cast_motion(query)
 
 
-func _on_mp_sync_frame():
+func _on_mp_sync_frame() -> void:
 	if !is_multiplayer_authority():
 		return
 	mp_send_view.rpc(camera.rotation)
 
 @rpc("unreliable_ordered")
-func mp_send_input(new_input, old_input):
+func mp_send_input(new_input:Dictionary, old_input:Dictionary) -> void:
 	input = new_input
 	last_input = old_input
 	if pawn: apply_input()
 	last_input = input.duplicate()
 
 @rpc("unreliable_ordered")
-func mp_send_view(camera_ang):
+func mp_send_view(camera_ang:Vector3) -> void:
 	camera.rotation = camera_ang

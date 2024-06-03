@@ -1,15 +1,15 @@
 extends Node3D
 
-@export var speed = 25
-@export var knockback = 6
-@export var damage = 20
-@export var radius = 5
+@export var speed:float = 25
+@export var knockback:float = 6
+@export var damage:float = 20
+@export var radius:float = 5
 
-var weapon = null
-var exploded = false
+var weapon:Item = null
+var exploded: = false
 
 
-func _ready():
+func _ready() -> void:
 	if weapon: $RayCast.add_exception(weapon)
 	if "pawn" in owner: $RayCast.add_exception(owner.pawn)
 
@@ -18,7 +18,7 @@ func _ready():
 	explode()
 
 
-func _physics_process(delta):
+func _physics_process(delta:float) -> void:
 	if !exploded:
 		# move projectile forward
 		position -= transform.basis.z * speed * delta
@@ -29,22 +29,22 @@ func _physics_process(delta):
 			return
 
 		# optimization: only show trails that are near the player
-		var view_pos = get_viewport().get_camera_3d().global_position
+		var view_pos: = get_viewport().get_camera_3d().global_position
 		if view_pos.distance_squared_to(global_position) > 1024:
 			$ParticleTrail.emitting = false
 		else:
 			$ParticleTrail.emitting = true
 
 
-func explode():
+func explode() -> void:
 	exploded = true
 	for body in $ExplosionArea.get_overlapping_bodies():
 		if body == self:
 			continue
-		var dir = body.global_position - global_position
+		var dir:Vector3 = body.global_position - global_position
 		if dir.length() > radius:
 			continue
-		var power = radius / exp(dir.length())
+		var power: = radius / exp(dir.length())
 		dir = dir.normalized()
 		# apply force to players and objects within radius
 		if "linear_velocity" in body:
@@ -68,11 +68,11 @@ func explode():
 	queue_free()
 
 
-func _on_mp_sync_frame():
+func _on_mp_sync_frame() -> void:
 	if is_multiplayer_authority():
 		mp_send_position.rpc(position, rotation)
 
 @rpc("unreliable_ordered")
-func mp_send_position(pos, ang):
+func mp_send_position(pos:Vector3, ang:Vector3) -> void:
 	position = pos
 	rotation = ang

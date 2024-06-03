@@ -5,7 +5,7 @@ var is_player:
 
 # -- physics --
 # higher air acceleration enables mid-air turns and slope surfing
-@export var physics = {
+@export var physics: = {
 	ground_speed = 6.5,
 	ground_accel = 10.0,
 	ground_friction = 5.0,
@@ -18,25 +18,25 @@ var is_player:
 	max_speed = 100.0
 }
 
-var desired_move = Vector2()
-var velocity = Vector3()
-var on_ground = false
-var jump_midair_count = 0
+var desired_move: = Vector2()
+var velocity: = Vector3()
+var on_ground: = false
+var jump_midair_count: = 0
 
-@export var health = 200
+@export var health: = 200
 var alive:
 	get: return health > 0
 
-@onready var head = find_child("Head")
-@onready var inventory = find_child("Inventory")
-@onready var collider = find_children("*", "CollisionShape3D")[0]
+@onready var head:Node3D = find_child("Head")
+@onready var inventory:Node3D = find_child("Inventory")
+@onready var collider:CollisionShape3D = find_children("*", "CollisionShape3D")[0]
 
 var active_item:Item
 var grab_object:RigidBody3D
 var grab_angle:Vector3
 
 
-func _ready():
+func _ready() -> void:
 	if !head: head = self
 	if !inventory:
 		inventory = Node3D.new()
@@ -54,17 +54,17 @@ func _ready():
 		mesh.set_instance_shader_parameter("fade_enabled", true)
  
 
-func _process(_delta):
+func _process(_delta:float) -> void:
 	if alive && "camera" in owner:
 		# look where the camera is looking
 		set_angle(owner.camera.rotation)
 
 
-func _physics_process(delta):
+func _physics_process(delta:float) -> void:
 	if !alive: desired_move = Vector2.ZERO
 	# accelerate velocity based on desired movement and ground state
-	var dir = Vector3(desired_move.y, 0.0, desired_move.x).normalized()
-	var speed = desired_move.length()
+	var dir: = Vector3(desired_move.y, 0.0, desired_move.x)
+	var speed: = desired_move.length()
 
 	if on_ground:
 		# apply friction
@@ -97,12 +97,12 @@ func _physics_process(delta):
 		mesh.set_instance_shader_parameter("fade_position", position)
 
 
-func move(delta, max_slides = 6):
+func move(delta:float, max_slides: = 6) -> void:
 	on_ground = false
-	var motion = (velocity / max_slides) * delta
+	var motion: = (velocity / max_slides) * delta
 	for slide in max_slides:
 		# move and check for collision
-		var collision = move_and_collide(motion, false, 0.001, true)
+		var collision: = move_and_collide(motion, false, 0.001, true)
 		if !collision:
 			continue
 		# if we hit something and it's not too steep then we consider it ground
@@ -110,60 +110,60 @@ func move(delta, max_slides = 6):
 			on_ground = true
 			jump_midair_count = 0
 		# slide along the normal vector of the colliding body
-		var collision_norm = collision.get_normal()
+		var collision_norm: = collision.get_normal()
 		motion = motion.slide(collision_norm)
 		velocity = velocity.slide(collision_norm)
 
 
-func ground_accelerate(dir, speed, delta):
+func ground_accelerate(dir:Vector3, speed:float, delta:float) -> void:
 	# get current speed towards desired direction
-	var current_speed = velocity.length()
+	var current_speed: = velocity.length()
 	# calculate speed we need to make up to reach our desired speed
-	var new_speed = min(physics.ground_speed * speed, physics.ground_speed)
-	var add_speed = new_speed - current_speed
+	var new_speed:float = physics.ground_speed * speed
+	var add_speed: = new_speed - current_speed
 	if add_speed > 0:
 		# calculate acceleration and cap it to our desired speed
-		var accel = min(physics.ground_accel * new_speed * delta, add_speed)
+		var accel: = minf(physics.ground_accel * new_speed * delta, add_speed)
 		# apply acceleration towards our desired direction
 		velocity += accel * dir
 
 
-func air_accelerate(dir, speed, delta):
+func air_accelerate(dir:Vector3, speed:float, delta:float) -> void:
 	# get current speed towards desired direction
-	var current_speed = velocity.dot(dir)
+	var current_speed: = velocity.dot(dir)
 	# calcuate speed we need to make up to reach our desired speed
-	var new_speed = min(physics.air_speed * speed, physics.air_speed)
-	var add_speed = new_speed - current_speed
+	var new_speed:float = physics.air_speed * speed
+	var add_speed: = new_speed - current_speed
 	if add_speed > 0:
 		# calculate acceleration and cap it to our desired speed
-		var accel = min(physics.air_accel * new_speed * delta, add_speed)
+		var accel: = minf(physics.air_accel * new_speed * delta, add_speed)
 		# apply acceleration towards our desired direction
 		velocity += accel * dir
 
 
-func apply_friction(friction, delta):
-	var h_velocity = Vector3(velocity.x, 0.0, velocity.z)
-	var current_speed = h_velocity.length()
+func apply_friction(friction:float, delta:float) -> void:
+	var h_velocity: = Vector3(velocity.x, 0.0, velocity.z)
+	var current_speed: = h_velocity.length()
 	if current_speed > 0:
-		var drop = max(current_speed, 1.0) * friction * delta
-		velocity.x *= max(current_speed - drop, 0.0) / current_speed
-		velocity.z *= max(current_speed - drop, 0.0) / current_speed
+		var drop: = maxf(current_speed, 1.0) * friction * delta
+		velocity.x *= maxf(current_speed - drop, 0.0) / current_speed
+		velocity.z *= maxf(current_speed - drop, 0.0) / current_speed
 
 
-func apply_max_speed(limit):
-	var h_velocity = Vector3(velocity.x, 0.0, velocity.z)
-	var current_speed = h_velocity.length()
+func apply_max_speed(limit:float) -> void:
+	var h_velocity: = Vector3(velocity.x, 0.0, velocity.z)
+	var current_speed: = h_velocity.length()
 	if current_speed > limit:
-		var drop = current_speed - limit
-		velocity.x *= max(current_speed - drop, 0.0) / current_speed
-		velocity.z *= max(current_speed - drop, 0.0) / current_speed
+		var drop: = current_speed - limit
+		velocity.x *= maxf(current_speed - drop, 0.0) / current_speed
+		velocity.z *= maxf(current_speed - drop, 0.0) / current_speed
 
 
-func try_stair_step(delta, step_size = 0.4):
-	var step_vec = Vector3(0.0, step_size, 0.0)
+func try_stair_step(delta:float, step_size: = 0.5) -> void:
+	var step_vec: = Vector3(0.0, step_size, 0.0)
 	# cast up to the max step height and limit our motion to the ceiling
 	step_vec *= cast_motion(position, step_vec, true).fraction[0]
-	var desired_pos = position + step_vec
+	var desired_pos: = position + step_vec
 	# cast down to the height of any steps in front of us
 	step_vec *= cast_motion(desired_pos + velocity * delta, -step_vec, true).fraction[0]
 	desired_pos -= step_vec
@@ -173,13 +173,13 @@ func try_stair_step(delta, step_size = 0.4):
 	position = desired_pos
 
 
-func get_aim(distance = 32768.0, exclude = []):
-	var ray_start = head.global_position
-	var ray_end = head.global_position - head.global_transform.basis.z * distance
-	var query = PhysicsRayQueryParameters3D.create(ray_start, ray_end)
+func get_aim(distance: = 32768.0, exclude: = []) -> Dictionary:
+	var ray_start: = head.global_position
+	var ray_end: = head.global_position - head.global_transform.basis.z * distance
+	var query: = PhysicsRayQueryParameters3D.create(ray_start, ray_end)
 	query.exclude = [self] + find_children("*") + exclude
 	# check for collision
-	var collision = get_world_3d().direct_space_state.intersect_ray(query)
+	var collision: = get_world_3d().direct_space_state.intersect_ray(query)
 	if !collision:
 		# if we missed, set position to end position anyway
 		collision.position = ray_end
@@ -188,7 +188,7 @@ func get_aim(distance = 32768.0, exclude = []):
 	return collision
 
 
-func jump(midair = true):
+func jump(midair: = true) -> void:
 	if on_ground:
 		velocity.y = physics.jump_power
 		jump_midair_count = 0
@@ -199,8 +199,8 @@ func jump(midair = true):
 	on_ground = false
 
 
-func interact():
-	var target
+func interact() -> void:
+	var target:PhysicsBody3D
 	if active_item && active_item.get_parent() != inventory:
 		target = active_item
 	else:
@@ -212,7 +212,7 @@ func interact():
 			toggle_grab(target)
 
 
-func action():
+func action() -> void:
 	if grab_object:
 		toggle_grab(grab_object)
 	elif active_item:
@@ -224,8 +224,8 @@ func action():
 		interact()
 
 
-func item_next():
-	var next_item = false
+func item_next() -> void:
+	var next_item: = false
 	# loop through inventory items
 	for item in inventory.get_children():
 		if item == active_item:
@@ -235,10 +235,10 @@ func item_next():
 			return
 
 
-func item_prev():
-	var next_item = false
+func item_prev() -> void:
+	var next_item: = false
 	# loop through inventory items in reverse
-	var items = inventory.get_children()
+	var items: = inventory.get_children()
 	for i in range(items.size() - 1, -1, -1):
 		if items[i] == active_item:
 			next_item = true
@@ -247,14 +247,14 @@ func item_prev():
 			return
 
 
-func item_drop():
+func item_drop() -> void:
 	if !active_item || active_item.user != self:
 		set_active_item(null)
 	else:
 		active_item.drop()
 
 
-func set_active_item(item:Item):
+func set_active_item(item:Item) -> void:
 	for inv_item in inventory.get_children():
 		if item == null:
 			item = inv_item
@@ -269,7 +269,7 @@ func set_active_item(item:Item):
 	active_item = item
 
 
-func toggle_grab(object:RigidBody3D):
+func toggle_grab(object:RigidBody3D) -> void:
 	if object != grab_object:
 		# start grab
 		object.add_collision_exception_with(self)
@@ -278,15 +278,15 @@ func toggle_grab(object:RigidBody3D):
 	else:
 		# stop grab
 		object.remove_collision_exception_with(self)
-		object.angular_velocity = Vector3()
+		object.angular_velocity = Vector3.ZERO
 		grab_object = null
 
 	if active_item:
 		active_item.last_use = Time.get_ticks_msec()
 
 
-func update_grab_pos(object:RigidBody3D, delta):
-	var new_pos = get_aim(2.0, [self, object]).position
+func update_grab_pos(object:RigidBody3D, delta:float) -> void:
+	var new_pos:Vector3 = get_aim(2.0, [self, object]).position
 	object.linear_velocity = (new_pos - object.global_position) * (4096 * delta)
 
 	# set rotation relative to where we're looking
@@ -294,20 +294,20 @@ func update_grab_pos(object:RigidBody3D, delta):
 	object.global_rotation = head.global_rotation + grab_angle
 
 
-func cast_motion(start:Vector3, motion:Vector3, fraction_only = false, exclude = []):
-	var query = PhysicsShapeQueryParameters3D.new()
+func cast_motion(start:Vector3, motion:Vector3, fraction_only: = false, exclude: = []) -> Dictionary:
+	var query: = PhysicsShapeQueryParameters3D.new()
 	query.transform.origin = start
 	query.transform.basis = collider.global_basis
 	query.motion = motion
 	query.shape = collider.shape
 	query.exclude = [self] + find_children("*") + exclude
 
-	var fraction = get_world_3d().direct_space_state.cast_motion(query)
+	var fraction: = get_world_3d().direct_space_state.cast_motion(query)
 	if fraction_only:
 		return {fraction = fraction}
 
 	query.transform.origin = start + motion * fraction[1]
-	var cast = get_world_3d().direct_space_state.get_rest_info(query)
+	var cast: = get_world_3d().direct_space_state.get_rest_info(query)
 	if cast.is_empty():
 		return {fraction = fraction, hit = false}
 
@@ -316,19 +316,20 @@ func cast_motion(start:Vector3, motion:Vector3, fraction_only = false, exclude =
 	return cast
 
 
-func set_origin(pos:Vector3):
-	position = pos + Vector3(0.0, collider.shape.size.y / 2, 0.0)
+func set_origin(pos:Vector3) -> void:
+	pos.y += collider.shape.size.y / 2
+	position = pos
 
 
-func set_angle(ang:Vector3):
+func set_angle(ang:Vector3) -> void:
 	rotation = Vector3(0.0, ang.y, 0.0)
 	head.rotation = Vector3(ang.x, 0.0, 0.0)
 	collider.global_rotation = Vector3.ZERO
 
 
 @rpc("call_local", "reliable")
-func set_health(value):
-	value = max(int(value), 0)
+func set_health(value:int) -> void:
+	value = max(value, 0)
 	if health == value:
 		return
 	if value <= 0: # dead
@@ -343,11 +344,11 @@ func set_health(value):
 	health = value
 
 
-func _on_mp_sync_frame():
+func _on_mp_sync_frame() -> void:
 	if is_multiplayer_authority():
 		mp_send_position.rpc(position, velocity)
 
 @rpc("unreliable_ordered")
-func mp_send_position(pos, vel):
+func mp_send_position(pos:Vector3, vel:Vector3) -> void:
 	position = pos
 	velocity = vel
