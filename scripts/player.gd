@@ -54,8 +54,8 @@ func _process(delta:float) -> void:
 	if cam_follow:
 		# set position to the position of our follow target
 		follow_pos = cam_follow.head.global_position if "head" in cam_follow else cam_follow.global_position
-		# 
-		cam_offset = lerp(cam_offset, Vector3.ZERO, 16 * delta)
+		# smooth camera movement for stairs/etc.
+		cam_offset = lerp(cam_offset, Vector3.ZERO, 32 * delta)
 		if "active_item" in cam_follow && cam_follow.active_item:
 			cam_follow.active_item.position = Vector3.ZERO
 			cam_follow.active_item.global_position += cam_offset

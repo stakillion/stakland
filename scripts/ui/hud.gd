@@ -4,7 +4,7 @@ extends Control
 
 
 func _process(_delta:float) -> void:
-	visible = pawn.is_player
+	visible = Player.pawn == pawn
 
 	# crosshair
 	var camera: = get_viewport().get_camera_3d()
@@ -19,5 +19,4 @@ func _process(_delta:float) -> void:
 func _on_timer_timeout() -> void:
 	# info display
 	var fps: = Performance.get_monitor(Performance.TIME_FPS)
-	var h_velocity: = Vector3(pawn.velocity.x, 0.0, pawn.velocity.z)
-	$Info.text = "FPS:%d\nSpeed:%f\nH.Speed:%f\nV.Speed:%f\nPOS:%v\nOn Ground:%s" % [fps, pawn.velocity.length(), h_velocity.length(), abs(pawn.velocity.y), pawn.position, pawn.on_ground]
+	$Info.text = "FPS:%d\nPOS:%v\nANG:%v\nVEL:%v\nSpeed:%f\nOn Ground:%s\nOn Ledge:%s" % [fps, pawn.global_position, pawn.head.global_rotation, pawn.velocity, pawn.velocity.length(), pawn.on_ground, pawn.on_ledge]

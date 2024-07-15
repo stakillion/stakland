@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://bicei8k7eppb3"]
+[gd_scene load_steps=15 format=3 uid="uid://cr5r7mjrcl1qd"]
 
 [ext_resource type="Script" path="res://scripts/actors/pawn.gd" id="1_txe8y"]
 [ext_resource type="PackedScene" uid="uid://ds3wnxy8jxm8d" path="res://scenes/objects/rocket_launcher.tscn" id="2_4ktkv"]
@@ -6,7 +6,11 @@
 [ext_resource type="Shader" path="res://materials/shaders/pawn.gdshader" id="2_gydwv"]
 [ext_resource type="FontFile" uid="uid://cpb8liw262yah" path="res://resources/ui/fonts/PressStart2P-Regular.ttf" id="3_oh47t"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_wiir4"]
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_q0jnf"]
+radius = 0.3
+height = 1.5
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_x0yhv"]
 render_priority = 0
 shader = ExtResource("2_gydwv")
 shader_parameter/albedo = Color(1, 1, 1, 1)
@@ -15,20 +19,32 @@ shader_parameter/uv_offset = null
 shader_parameter/fade_min = 1.0
 shader_parameter/fade_max = 1.5
 
-[sub_resource type="CylinderMesh" id="2"]
-material = SubResource("ShaderMaterial_wiir4")
-top_radius = 0.25
-height = 1.25
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_vc84k"]
+material = SubResource("ShaderMaterial_x0yhv")
+radius = 0.3
+height = 1.0
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_4ajxh"]
-size = Vector3(0.7, 1.5, 0.7)
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_7s0i5"]
+render_priority = 0
+shader = ExtResource("2_gydwv")
+shader_parameter/albedo = Color(1, 1, 1, 1)
+shader_parameter/uv_scale = null
+shader_parameter/uv_offset = null
+shader_parameter/fade_min = 1.0
+shader_parameter/fade_max = 1.5
 
-[sub_resource type="CylinderMesh" id="CylinderMesh_vbkiy"]
-material = SubResource("ShaderMaterial_wiir4")
-bottom_radius = 0.15
-height = 0.35
+[sub_resource type="SphereMesh" id="SphereMesh_axx00"]
+material = SubResource("ShaderMaterial_7s0i5")
+radius = 0.3
+height = 0.6
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fbb8o"]
+rim_enabled = true
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_165mo"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_h784r"]
+rim_enabled = true
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_ts7m7"]
 size = Vector2(3, 3)
@@ -38,12 +54,12 @@ constant_linear_velocity = Vector3(0.1, 0.1, 0.1)
 sync_to_physics = false
 script = ExtResource("1_txe8y")
 
-[node name="BodyMesh" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.125, 0)
-mesh = SubResource("2")
-
 [node name="Collision" type="CollisionShape3D" parent="."]
-shape = SubResource("BoxShape3D_4ajxh")
+shape = SubResource("CapsuleShape3D_q0jnf")
+
+[node name="BodyMesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
+mesh = SubResource("CapsuleMesh_vc84k")
 
 [node name="Head" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0.000523597, 0, -0.000523597, 1, 0, 0.625, 0)
@@ -54,18 +70,18 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.42, -0.175, -0.25)
 [node name="RocketLauncher" parent="Head/Inventory" instance=ExtResource("2_4ktkv")]
 
 [node name="HeadMesh" type="MeshInstance3D" parent="Head"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.05, 0)
-mesh = SubResource("CylinderMesh_vbkiy")
+mesh = SubResource("SphereMesh_axx00")
 
 [node name="LeftEye" type="Sprite3D" parent="Head/HeadMesh"]
-transform = Transform3D(-1, 0, -8.74228e-08, -5.89806e-17, 1, 0, 8.74229e-08, 0, -1, -0.1, 0.0500783, -0.399586)
-modulate = Color(1, 0, 0, 1)
+transform = Transform3D(-1, 0, -8.74228e-08, -5.89806e-17, 1, 0, 8.74229e-08, 0, -1, -0.1, 0.05, -0.3)
+material_override = SubResource("StandardMaterial3D_fbb8o")
 pixel_size = 0.1
 double_sided = false
 texture = SubResource("PlaceholderTexture2D_165mo")
 
 [node name="RightEye" type="Sprite3D" parent="Head/HeadMesh"]
-transform = Transform3D(-1, 0, -8.74228e-08, -1.04083e-17, 1, 0, 8.74228e-08, 0, -1, 0.1, 0.05, -0.4)
+transform = Transform3D(-1, 0, -8.74228e-08, -1.04083e-17, 1, 0, 8.74228e-08, 0, -1, 0.102801, 0.0499988, -0.297629)
+material_override = SubResource("StandardMaterial3D_h784r")
 modulate = Color(0, 0, 1, 1)
 pixel_size = 0.1
 double_sided = false

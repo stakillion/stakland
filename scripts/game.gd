@@ -36,7 +36,7 @@ func _ready() -> void:
 		Player.reparent.call_deferred(player_list)
 		# load the menu
 		menu = menu_scene.instantiate() as Control
-		add_child(menu)
+		add_sibling.call_deferred(menu)
 
 
 func _physics_process(delta:float) -> void:

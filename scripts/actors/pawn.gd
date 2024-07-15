@@ -1,16 +1,13 @@
 class_name Pawn extends PhysicsBody3D
 
-var is_player:
-	get: return Player.pawn == self
-
 # -- physics --
 # higher air acceleration enables mid-air turns and slope surfing
 @export var physics: = {
-	ground_speed = 6.5,
+	ground_speed = 8.0,
 	ground_accel = 10.0,
 	ground_friction = 5.0,
-	air_speed = 1.0,
-	air_accel = 20.0,
+	air_speed = 8.0,
+	air_accel = 1.0,
 	air_friction = 0.0,
 	jump_power = 7.0,
 	jump_midair = 1,
@@ -21,6 +18,7 @@ var is_player:
 var desired_move: = Vector2()
 var velocity: = Vector3()
 var on_ground: = false
+var on_ledge: = false
 var jump_midair_count: = 0
 
 @export var health: = 200
@@ -50,7 +48,7 @@ func _ready() -> void:
 	inventory.look_at(head.position - head.basis.z * 12)
 
 	# enable proximity fade if we are the player
-	if is_player: for mesh in find_children("*", "MeshInstance3D"):
+	if Player.pawn == self: for mesh in find_children("*", "MeshInstance3D"):
 		mesh.set_instance_shader_parameter("fade_enabled", true)
  
 
@@ -66,13 +64,13 @@ func _physics_process(delta:float) -> void:
 	var dir: = Vector3(desired_move.y, 0.0, desired_move.x)
 	var speed: = desired_move.length()
 
-	if on_ground:
+	if on_ground || on_ledge:
 		# apply friction
 		apply_friction(physics.ground_friction, delta)
 		# apply acceleration
 		ground_accelerate(dir, speed, delta)
-		# go up stairs
-		try_stair_step(delta)
+		# step up stairs/ledges
+		try_step_up(delta)
 	else:
 		# apply gravity
 		velocity.y -= physics.gravity * delta
@@ -93,7 +91,7 @@ func _physics_process(delta:float) -> void:
 		update_grab_pos(grab_object, delta)
 
 	# update shader fade position
-	if is_player: for mesh in find_children("*", "MeshInstance3D"):
+	if Player.pawn == self: for mesh in find_children("*", "MeshInstance3D"):
 		mesh.set_instance_shader_parameter("fade_position", position)
 
 
@@ -112,7 +110,8 @@ func move(delta:float, max_slides: = 6) -> void:
 		# slide along the normal vector of the colliding body
 		var collision_norm: = collision.get_normal()
 		motion = motion.slide(collision_norm)
-		velocity = velocity.slide(collision_norm)
+		if !on_ledge:
+			velocity = velocity.slide(collision_norm)
 
 
 func ground_accelerate(dir:Vector3, speed:float, delta:float) -> void:
@@ -159,18 +158,34 @@ func apply_max_speed(limit:float) -> void:
 		velocity.z *= maxf(current_speed - drop, 0.0) / current_speed
 
 
-func try_stair_step(delta:float, step_size: = 0.5) -> void:
-	var step_vec: = Vector3(0.0, step_size, 0.0)
-	# cast up to the max step height and limit our motion to the ceiling
-	step_vec *= cast_motion(position, step_vec, true).fraction[0]
-	var desired_pos: = position + step_vec
-	# cast down to the height of any steps in front of us
-	step_vec *= cast_motion(desired_pos + velocity * delta, -step_vec, true).fraction[0]
-	desired_pos -= step_vec
-	# move us to the height of the step
-	if "cam_offset" in owner:
-		owner.cam_offset += position - desired_pos
-	position = desired_pos
+func try_step_up(delta:float, max_height: = 0.5) -> void:
+	on_ledge = false
+	var forward: = Vector3(velocity.x, 0.0, velocity.z) * delta
+	var motion: = Vector3(0.0, max_height, 0.0)
+	# trace upward to the max step height and limit our motion to the ceiling
+	var collision: = KinematicCollision3D.new()
+	test_move(global_transform, motion, collision)
+	motion -= collision.get_remainder()
+	# trace downward to the height of any ledge in front of us
+	var new_transform: = global_transform.translated(motion + forward)
+	test_move(new_transform, -motion, collision)
+	motion = -collision.get_remainder()
+	if motion.is_zero_approx():
+		# didn't find a ledge
+		return
+	# compare angle of collision with the next frame to determine if we've truly found a ledge
+	var ledge_angle: = collision.get_angle()
+	new_transform = global_transform.translated(motion + forward)
+	if !test_move(new_transform, forward, collision) || ledge_angle > collision.get_angle():
+		on_ledge = true
+		# move up to the height of the ledge
+		position += motion
+		# snap to the ground
+		if velocity.y > 0:
+			velocity.y = 0
+		# smooth camera movement
+		if "cam_offset" in owner:
+			owner.cam_offset -= motion
 
 
 func get_aim(distance: = 32768.0, exclude: = []) -> Dictionary:
@@ -294,30 +309,11 @@ func update_grab_pos(object:RigidBody3D, delta:float) -> void:
 	object.global_rotation = head.global_rotation + grab_angle
 
 
-func cast_motion(start:Vector3, motion:Vector3, fraction_only: = false, exclude: = []) -> Dictionary:
-	var query: = PhysicsShapeQueryParameters3D.new()
-	query.transform.origin = start
-	query.transform.basis = collider.global_basis
-	query.motion = motion
-	query.shape = collider.shape
-	query.exclude = [self] + find_children("*") + exclude
-
-	var fraction: = get_world_3d().direct_space_state.cast_motion(query)
-	if fraction_only:
-		return {fraction = fraction}
-
-	query.transform.origin = start + motion * fraction[1]
-	var cast: = get_world_3d().direct_space_state.get_rest_info(query)
-	if cast.is_empty():
-		return {fraction = fraction, hit = false}
-
-	cast.fraction = fraction
-	cast.hit = true
-	return cast
-
-
 func set_origin(pos:Vector3) -> void:
-	pos.y += collider.shape.size.y / 2
+	if "size" in collider.shape:
+		pos.y += (collider.shape.size.y / 2) - collider.position.y
+	elif "height" in collider.shape:
+		pos.y += (collider.shape.height / 2) - collider.position.y
 	position = pos
 
 
@@ -338,7 +334,7 @@ func set_health(value:int) -> void:
 			item_drop()
 		head.rotation = Vector3()
 		rotation += Vector3(0.0, 0.0, deg_to_rad(90.0))
-		if is_player:
+		if Player.pawn == self:
 			Player.cam_activate(null, head.global_position)
 
 	health = value

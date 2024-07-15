@@ -20,7 +20,7 @@ frequency = 0.002
 fractal_type = 3
 fractal_octaves = 10
 
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_gy5yw"]
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_kapre"]
 width = 1024
 height = 1024
 color_ramp = SubResource("Gradient_r4md3")
@@ -32,17 +32,18 @@ mie_eccentricity = 0.95
 mie_color = Color(1, 0.729412, 0.466667, 1)
 turbidity = 20.0
 ground_color = Color(1, 1, 1, 1)
-energy_multiplier = 2.0
-night_sky = SubResource("NoiseTexture2D_gy5yw")
+energy_multiplier = 1.5
+night_sky = SubResource("NoiseTexture2D_kapre")
 
-[sub_resource type="Sky" id="Sky_advgi"]
+[sub_resource type="Sky" id="Sky_yfuus"]
 sky_material = SubResource("PhysicalSkyMaterial_41g3y")
 
 [sub_resource type="Environment" id="Environment_ifkfe"]
 background_mode = 2
-sky = SubResource("Sky_advgi")
-tonemap_white = 16.0
+sky = SubResource("Sky_yfuus")
 ssao_enabled = true
+glow_intensity = 8.0
+glow_strength = 0.5
 
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_2e1en"]
 
@@ -54,17 +55,17 @@ uv1_triplanar = true
 texture_filter = 5
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kj4aw"]
-albedo_color = Color(0, 0, 0.607843, 1)
+albedo_color = Color(0.607843, 0.607843, 1, 1)
 albedo_texture = ExtResource("2_yrh1y")
-metallic_specular = 1.0
+metallic = 1.0
 roughness = 0.75
 uv1_triplanar = true
 uv1_triplanar_sharpness = 150.0
 texture_filter = 5
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nlhrf"]
-albedo_color = Color(0.862745, 0.862745, 0.862745, 1)
 albedo_texture = ExtResource("2_yrh1y")
+roughness = 0.75
 uv1_triplanar = true
 uv1_triplanar_sharpness = 150.0
 texture_filter = 5
@@ -415,6 +416,111 @@ material = SubResource("StandardMaterial3D_nlhrf")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, -1.25, -25.25)
 use_collision = true
 size = Vector3(100, 3.5, 0.5)
+material = SubResource("StandardMaterial3D_nlhrf")
+
+[node name="Staircase" type="CSGBox3D" parent="Obstacles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.5, 9.5, -21.75)
+use_collision = true
+size = Vector3(3, 1, 3)
+material = SubResource("StandardMaterial3D_nlhrf")
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="Obstacles/Staircase"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.75003, -0.5, 0)
+size = Vector3(0.5, 1, 3)
+material = SubResource("StandardMaterial3D_nlhrf")
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="Obstacles/Staircase/CSGBox3D3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.5, 0)
+size = Vector3(0.5, 1, 3)
+material = SubResource("StandardMaterial3D_nlhrf")
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="Obstacles/Staircase/CSGBox3D3/CSGBox3D2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.5, 0)
+size = Vector3(0.5, 1, 3)
+material = SubResource("StandardMaterial3D_nlhrf")
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="Obstacles/Staircase/CSGBox3D3/CSGBox3D2/CSGBox3D3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.5, 0)
+use_collision = true
+size = Vector3(0.5, 1, 3)
+material = SubResource("StandardMaterial3D_nlhrf")
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="Obstacles/Staircase/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.5, 0)
+size = Vector3(0.5, 1, 3)
+material = SubResource("StandardMaterial3D_nlhrf")
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="Obstacles/Staircase/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.5, 0)
+size = Vector3(0.5, 1, 3)
+material = SubResource("StandardMaterial3D_nlhrf")
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="Obstacles/Staircase/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.5, 0)
+size = Vector3(0.5, 1, 3)
+material = SubResource("StandardMaterial3D_nlhrf")
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="Obstacles/Staircase/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.5, 0)
+use_collision = true
+size = Vector3(0.5, 1, 3)
+material = SubResource("StandardMaterial3D_nlhrf")
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="Obstacles/Staircase/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.5, 0)
+size = Vector3(0.5, 1, 3)
+material = SubResource("StandardMaterial3D_nlhrf")
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="Obstacles/Staircase/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.5, 0)
+size = Vector3(0.5, 1, 3)
+material = SubResource("StandardMaterial3D_nlhrf")
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="Obstacles/Staircase/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.5, 0)
+size = Vector3(0.5, 1, 3)
+material = SubResource("StandardMaterial3D_nlhrf")
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="Obstacles/Staircase/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.5, 0)
+use_collision = true
+size = Vector3(0.5, 1, 3)
+material = SubResource("StandardMaterial3D_nlhrf")
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="Obstacles/Staircase/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.5, 0)
+size = Vector3(0.5, 1, 3)
+material = SubResource("StandardMaterial3D_nlhrf")
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="Obstacles/Staircase/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.5, 0)
+size = Vector3(0.5, 1, 3)
+material = SubResource("StandardMaterial3D_nlhrf")
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="Obstacles/Staircase/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.5, 0)
+size = Vector3(0.5, 1, 3)
+material = SubResource("StandardMaterial3D_nlhrf")
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="Obstacles/Staircase/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.5, 0)
+use_collision = true
+size = Vector3(0.5, 1, 3)
+material = SubResource("StandardMaterial3D_nlhrf")
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="Obstacles/Staircase/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.5, 0)
+size = Vector3(0.5, 1, 3)
+material = SubResource("StandardMaterial3D_nlhrf")
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="Obstacles/Staircase/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.5, 0)
+size = Vector3(0.5, 1, 3)
+material = SubResource("StandardMaterial3D_nlhrf")
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="Obstacles/Staircase/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.5, 0)
+size = Vector3(0.5, 1, 3)
 material = SubResource("StandardMaterial3D_nlhrf")
 
 [node name="BlueLamp" type="RigidBody3D" parent="."]
