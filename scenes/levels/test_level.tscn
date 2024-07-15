@@ -1,9 +1,10 @@
-[gd_scene load_steps=32 format=3 uid="uid://o70p27l476fn"]
+[gd_scene load_steps=36 format=3 uid="uid://o70p27l476fn"]
 
 [ext_resource type="Texture2D" uid="uid://loxh1icksh70" path="res://materials/textures/grass1.png" id="1_24n2b"]
 [ext_resource type="Script" path="res://scripts/levels/test_level.gd" id="1_nkfo3"]
-[ext_resource type="Texture2D" uid="uid://dnltefpxixakc" path="res://materials/textures/dev_tile.png" id="2_yrh1y"]
+[ext_resource type="Texture2D" uid="uid://cbyftbmoksg3p" path="res://addons/kenney_prototype_textures/light/texture_02.png" id="3_rkube"]
 [ext_resource type="Script" path="res://addons/zylann.hterrain/hterrain.gd" id="4_4523p"]
+[ext_resource type="Texture2D" uid="uid://cyekuk5ux8d44" path="res://addons/kenney_prototype_textures/dark/texture_03.png" id="4_g08os"]
 [ext_resource type="Resource" path="res://resources/levels/test_level/terrain/data.hterrain" id="5_83pfn"]
 [ext_resource type="Shader" path="res://materials/shaders/grass.gdshader" id="6_airvd"]
 [ext_resource type="Script" path="res://addons/zylann.hterrain/hterrain_texture_set.gd" id="7_leogj"]
@@ -56,7 +57,7 @@ texture_filter = 5
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kj4aw"]
 albedo_color = Color(0.607843, 0.607843, 1, 1)
-albedo_texture = ExtResource("2_yrh1y")
+albedo_texture = ExtResource("3_rkube")
 metallic = 1.0
 roughness = 0.75
 uv1_triplanar = true
@@ -64,7 +65,28 @@ uv1_triplanar_sharpness = 150.0
 texture_filter = 5
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nlhrf"]
-albedo_texture = ExtResource("2_yrh1y")
+albedo_texture = ExtResource("3_rkube")
+roughness = 0.75
+uv1_triplanar = true
+uv1_triplanar_sharpness = 150.0
+texture_filter = 5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ygekp"]
+albedo_texture = ExtResource("4_g08os")
+roughness = 0.75
+uv1_triplanar = true
+uv1_triplanar_sharpness = 150.0
+texture_filter = 5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_76jkt"]
+albedo_texture = ExtResource("4_g08os")
+roughness = 0.75
+uv1_triplanar = true
+uv1_triplanar_sharpness = 150.0
+texture_filter = 5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_i2v1g"]
+albedo_texture = ExtResource("4_g08os")
 roughness = 0.75
 uv1_triplanar = true
 uv1_triplanar_sharpness = 150.0
@@ -216,21 +238,21 @@ material = SubResource("StandardMaterial3D_nlhrf")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -48.5, -1.5, 0)
 operation = 2
 size = Vector3(32, 10, 35)
-material = SubResource("StandardMaterial3D_nlhrf")
+material = SubResource("StandardMaterial3D_ygekp")
 
 [node name="DoorCarve" type="CSGPolygon3D" parent="Land2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -32.5, -6.5, 5)
 operation = 2
 polygon = PackedVector2Array(0, 0, 0, 9, 10.385, 9, 0, 0)
 depth = 10.0
-material = SubResource("StandardMaterial3D_nlhrf")
+material = SubResource("StandardMaterial3D_76jkt")
 
 [node name="DoorCarve2" type="CSGPolygon3D" parent="Land2"]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, -64.5, -6.5, -5)
 operation = 2
 polygon = PackedVector2Array(0, 0, 0, 9, 10.385, 9, 0, 0)
 depth = 10.0
-material = SubResource("StandardMaterial3D_nlhrf")
+material = SubResource("StandardMaterial3D_i2v1g")
 
 [node name="CSGBox3D" type="CSGBox3D" parent="Land2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -33, 4.501, 11)
@@ -295,7 +317,7 @@ size = Vector3(3, 0.25, 3)
 material = SubResource("StandardMaterial3D_nlhrf")
 
 [node name="Platform2" type="CSGBox3D" parent="Obstacles"]
-transform = Transform3D(-1, 3.5558e-08, 7.98647e-08, 2.8026e-08, 0.995721, -0.0924054, -8.28087e-08, -0.0924053, -0.995722, -31.3346, -0.137273, -9.63373)
+transform = Transform3D(-1, 3.5558e-08, 7.98647e-08, 2.8026e-08, 0.995721, -0.0924054, -8.28087e-08, -0.0924053, -0.995722, -29.9013, -0.137273, -9.63373)
 use_collision = true
 size = Vector3(5, 0.25, 5)
 material = SubResource("StandardMaterial3D_nlhrf")

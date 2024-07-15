@@ -3,9 +3,9 @@ class_name Pawn extends PhysicsBody3D
 # -- physics --
 # higher air acceleration enables mid-air turns and slope surfing
 @export var physics: = {
-	ground_speed = 8.0,
-	ground_accel = 10.0,
-	ground_friction = 5.0,
+	run_speed = 8.0,
+	run_accel = 10.0,
+	run_friction = 5.0,
 	air_speed = 8.0,
 	air_accel = 1.0,
 	air_friction = 0.0,
@@ -17,8 +17,9 @@ class_name Pawn extends PhysicsBody3D
 
 var desired_move: = Vector2()
 var velocity: = Vector3()
-var on_ground: = false
+var in_air: = false
 var on_ledge: = false
+var crouching: = false
 var jump_midair_count: = 0
 
 @export var health: = 200
@@ -27,6 +28,9 @@ var alive:
 
 @onready var head:Node3D = find_child("Head")
 @onready var inventory:Node3D = find_child("Inventory")
+var head_position: = Vector3()
+var head_offset: = Vector3()
+
 @onready var collider:CollisionShape3D = find_children("*", "CollisionShape3D")[0]
 
 var active_item:Item
@@ -36,6 +40,7 @@ var grab_angle:Vector3
 
 func _ready() -> void:
 	if !head: head = self
+	head_position = head.position
 	if !inventory:
 		inventory = Node3D.new()
 		inventory.name = "Inventory"
@@ -45,14 +50,14 @@ func _ready() -> void:
 	for item in inventory.get_children():
 		item.pick_up(self)
 	# aim towards the center of our view
-	inventory.look_at(head.position - head.basis.z * 12)
+	inventory.look_at(head_position - head.basis.z * 12)
 
 	# enable proximity fade if we are the player
 	if Player.pawn == self: for mesh in find_children("*", "MeshInstance3D"):
 		mesh.set_instance_shader_parameter("fade_enabled", true)
  
 
-func _process(_delta:float) -> void:
+func _process(delta:float) -> void:
 	if alive && "camera" in owner:
 		# look where the camera is looking
 		set_angle(owner.camera.rotation)
@@ -60,15 +65,16 @@ func _process(_delta:float) -> void:
 
 func _physics_process(delta:float) -> void:
 	if !alive: desired_move = Vector2.ZERO
-	# accelerate velocity based on desired movement and ground state
+	# accelerate velocity based on desired movement and movement state
 	var dir: = Vector3(desired_move.y, 0.0, desired_move.x)
 	var speed: = desired_move.length()
 
-	if on_ground || on_ledge:
+	if !in_air:
+		if crouching: speed /= 2
 		# apply friction
-		apply_friction(physics.ground_friction, delta)
+		apply_friction(physics.run_friction, delta)
 		# apply acceleration
-		ground_accelerate(dir, speed, delta)
+		accelerate(dir, physics.run_speed * speed, delta)
 		# step up stairs/ledges
 		try_step_up(delta)
 	else:
@@ -77,7 +83,7 @@ func _physics_process(delta:float) -> void:
 		# apply friction
 		apply_friction(physics.air_friction, delta)
 		# apply acceleration
-		air_accelerate(dir, speed, delta)
+		air_accelerate(dir, physics.air_speed * speed, delta)
 
 	if physics.max_speed > 0:
 		# enforce speed limit
@@ -85,6 +91,10 @@ func _physics_process(delta:float) -> void:
 
 	# do move based on our new velocity
 	move(delta)
+
+	# smooth head movement for stairs/crouching/etc.
+	head.position = head_position + head_offset
+	head_offset = lerp(head_offset, Vector3.ZERO, 32 * delta)
 
 	# update position of object we're grabbing
 	if grab_object:
@@ -96,7 +106,7 @@ func _physics_process(delta:float) -> void:
 
 
 func move(delta:float, max_slides: = 6) -> void:
-	on_ground = false
+	in_air = !on_ledge
 	var motion: = (velocity / max_slides) * delta
 	for slide in max_slides:
 		# move and check for collision
@@ -105,7 +115,7 @@ func move(delta:float, max_slides: = 6) -> void:
 			continue
 		# if we hit something and it's not too steep then we consider it ground
 		if collision.get_angle() < PI/4:
-			on_ground = true
+			in_air = false
 			jump_midair_count = 0
 		# slide along the normal vector of the colliding body
 		var collision_norm: = collision.get_normal()
@@ -114,15 +124,14 @@ func move(delta:float, max_slides: = 6) -> void:
 			velocity = velocity.slide(collision_norm)
 
 
-func ground_accelerate(dir:Vector3, speed:float, delta:float) -> void:
+func accelerate(dir:Vector3, speed:float, delta:float) -> void:
 	# get current speed towards desired direction
 	var current_speed: = velocity.length()
 	# calculate speed we need to make up to reach our desired speed
-	var new_speed:float = physics.ground_speed * speed
-	var add_speed: = new_speed - current_speed
+	var add_speed: = speed - current_speed
 	if add_speed > 0:
 		# calculate acceleration and cap it to our desired speed
-		var accel: = minf(physics.ground_accel * new_speed * delta, add_speed)
+		var accel: = minf(physics.run_accel * speed * delta, add_speed)
 		# apply acceleration towards our desired direction
 		velocity += accel * dir
 
@@ -131,11 +140,10 @@ func air_accelerate(dir:Vector3, speed:float, delta:float) -> void:
 	# get current speed towards desired direction
 	var current_speed: = velocity.dot(dir)
 	# calcuate speed we need to make up to reach our desired speed
-	var new_speed:float = physics.air_speed * speed
-	var add_speed: = new_speed - current_speed
+	var add_speed: = speed - current_speed
 	if add_speed > 0:
 		# calculate acceleration and cap it to our desired speed
-		var accel: = minf(physics.air_accel * new_speed * delta, add_speed)
+		var accel: = minf(physics.air_accel * speed * delta, add_speed)
 		# apply acceleration towards our desired direction
 		velocity += accel * dir
 
@@ -164,10 +172,10 @@ func try_step_up(delta:float, max_height: = 0.5) -> void:
 	var motion: = Vector3(0.0, max_height, 0.0)
 	# trace upward to the max step height and limit our motion to the ceiling
 	var collision: = KinematicCollision3D.new()
-	test_move(global_transform, motion, collision)
+	test_move(transform, motion, collision)
 	motion -= collision.get_remainder()
 	# trace downward to the height of any ledge in front of us
-	var new_transform: = global_transform.translated(motion + forward)
+	var new_transform: = transform.translated(motion + forward)
 	test_move(new_transform, -motion, collision)
 	motion = -collision.get_remainder()
 	if motion.is_zero_approx():
@@ -175,17 +183,16 @@ func try_step_up(delta:float, max_height: = 0.5) -> void:
 		return
 	# compare angle of collision with the next frame to determine if we've truly found a ledge
 	var ledge_angle: = collision.get_angle()
-	new_transform = global_transform.translated(motion + forward)
+	new_transform = transform.translated(motion + forward)
 	if !test_move(new_transform, forward, collision) || ledge_angle > collision.get_angle():
 		on_ledge = true
 		# move up to the height of the ledge
 		position += motion
-		# snap to the ground
+		# snap to the floor
 		if velocity.y > 0:
 			velocity.y = 0
-		# smooth camera movement
-		if "cam_offset" in owner:
-			owner.cam_offset -= motion
+		# smooth head movement
+		head_offset -= motion
 
 
 func get_aim(distance: = 32768.0, exclude: = []) -> Dictionary:
@@ -204,14 +211,26 @@ func get_aim(distance: = 32768.0, exclude: = []) -> Dictionary:
 
 
 func jump(midair: = true) -> void:
-	if on_ground:
+	if !in_air:
 		velocity.y = physics.jump_power
 		jump_midair_count = 0
 	elif midair && jump_midair_count < physics.jump_midair:
 		velocity.y = physics.jump_power
 		jump_midair_count += 1
-	# no longer on ground
-	on_ground = false
+	# no longer on floor
+	in_air = true
+
+
+func crouch(state:bool) -> void:
+	var motion: = Vector3.ZERO
+	if state == true:
+		crouching = true
+		motion.y -= .5
+	else:
+		crouching = false
+		motion.y += .5
+	head_position += motion
+	head_offset -= motion
 
 
 func interact() -> void:
@@ -219,7 +238,7 @@ func interact() -> void:
 	if active_item && active_item.get_parent() != inventory:
 		target = active_item
 	else:
-		target = get_aim(2.0).collider
+		target = get_aim(2.0).collider as PhysicsBody3D
 	if target:
 		if target.has_method("activate"):
 			target.activate(self)

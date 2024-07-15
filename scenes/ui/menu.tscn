@@ -84,8 +84,8 @@ step = 0.5
 allow_greater = true
 allow_lesser = true
 tick_count = 10
-metadata/property = "ground_speed"
-metadata/label = "Ground Speed"
+metadata/property = "run_speed"
+metadata/label = "Run Speed"
 
 [node name="Label" type="Label" parent="PlayerMenu/PhysicsSettings/GroundSpeed"]
 layout_mode = 2
@@ -93,7 +93,7 @@ offset_top = -23.0
 offset_right = 420.0
 offset_bottom = -4.0
 theme_override_fonts/font = ExtResource("2_wmh1k")
-text = "Ground Speed:"
+text = "Run Speed:"
 
 [node name="GroundAccel" type="HSlider" parent="PlayerMenu/PhysicsSettings"]
 layout_mode = 2
@@ -103,8 +103,8 @@ step = 0.5
 allow_greater = true
 allow_lesser = true
 tick_count = 10
-metadata/property = "ground_accel"
-metadata/label = "Ground Accel"
+metadata/property = "run_accel"
+metadata/label = "Run Accel"
 
 [node name="Label" type="Label" parent="PlayerMenu/PhysicsSettings/GroundAccel"]
 layout_mode = 2
@@ -112,7 +112,7 @@ offset_top = -23.0
 offset_right = 420.0
 offset_bottom = -4.0
 theme_override_fonts/font = ExtResource("2_wmh1k")
-text = "Ground Accel:"
+text = "Run Accel:"
 
 [node name="GroundFriction" type="HSlider" parent="PlayerMenu/PhysicsSettings"]
 layout_mode = 2
@@ -122,8 +122,8 @@ step = 0.1
 allow_greater = true
 allow_lesser = true
 tick_count = 10
-metadata/property = "ground_friction"
-metadata/label = "Ground Friction"
+metadata/property = "run_friction"
+metadata/label = "Run Friction"
 
 [node name="Label" type="Label" parent="PlayerMenu/PhysicsSettings/GroundFriction"]
 layout_mode = 2
@@ -131,7 +131,7 @@ offset_top = -23.0
 offset_right = 420.0
 offset_bottom = -4.0
 theme_override_fonts/font = ExtResource("2_wmh1k")
-text = "Ground Friction:"
+text = "Run Friction:"
 
 [node name="AirSpeed" type="HSlider" parent="PlayerMenu/PhysicsSettings"]
 layout_mode = 2

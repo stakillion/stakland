@@ -9,6 +9,7 @@ var data: = {
 var input: = {
 	movement = Vector2(),
 	jump = false,
+	crouch = false,
 	action = false,
 	interact = false,
 	next_item = false,
@@ -54,11 +55,6 @@ func _process(delta:float) -> void:
 	if cam_follow:
 		# set position to the position of our follow target
 		follow_pos = cam_follow.head.global_position if "head" in cam_follow else cam_follow.global_position
-		# smooth camera movement for stairs/etc.
-		cam_offset = lerp(cam_offset, Vector3.ZERO, 32 * delta)
-		if "active_item" in cam_follow && cam_follow.active_item:
-			cam_follow.active_item.position = Vector3.ZERO
-			cam_follow.active_item.global_position += cam_offset
 	elif Player == self && !input.in_menu:
 		# no follow target, free cam mode
 		var dir: = Vector3(input.movement.y, 0.0, input.movement.x)
@@ -107,8 +103,9 @@ func read_input(delta:float) -> void:
 
 	# directional movement
 	input.movement = Input.get_vector("move_forward", "move_back", "move_left", "move_right")
-	# jumping
+	# jumping, crouching
 	input.jump = Input.is_action_pressed("jump")
+	input.crouch = Input.is_action_pressed("crouch")
 	# interaction
 	input.action = Input.is_action_pressed("action")
 	input.interact = Input.is_action_pressed("interact")
@@ -137,11 +134,15 @@ func apply_input() -> void:
 		pawn.desired_move = Vector2()
 	elif pawn.alive:
 		pawn.desired_move = input.movement.rotated(camera.rotation.y)
-		# jumping
+		# jumping, crouching
 		if input.jump && !last_input.jump:
 			pawn.jump()
 		elif input.jump:
 			pawn.jump(false)
+		if input.crouch && !last_input.crouch:
+			pawn.crouch(true)
+		elif !input.crouch && last_input.crouch:
+			pawn.crouch(false)
 		# interaction
 		if input.action:
 			pawn.action()
