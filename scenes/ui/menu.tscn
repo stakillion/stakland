@@ -76,7 +76,7 @@ scale = Vector2(0.75, 0.75)
 custom_minimum_size = Vector2(0, 400)
 layout_mode = 2
 
-[node name="GroundSpeed" type="HSlider" parent="PlayerMenu/PhysicsSettings"]
+[node name="RunSpeed" type="HSlider" parent="PlayerMenu/PhysicsSettings"]
 layout_mode = 2
 size_flags_vertical = 2
 max_value = 40.0
@@ -87,7 +87,7 @@ tick_count = 10
 metadata/property = "run_speed"
 metadata/label = "Run Speed"
 
-[node name="Label" type="Label" parent="PlayerMenu/PhysicsSettings/GroundSpeed"]
+[node name="Label" type="Label" parent="PlayerMenu/PhysicsSettings/RunSpeed"]
 layout_mode = 2
 offset_top = -23.0
 offset_right = 420.0
@@ -95,7 +95,7 @@ offset_bottom = -4.0
 theme_override_fonts/font = ExtResource("2_wmh1k")
 text = "Run Speed:"
 
-[node name="GroundAccel" type="HSlider" parent="PlayerMenu/PhysicsSettings"]
+[node name="RunAccel" type="HSlider" parent="PlayerMenu/PhysicsSettings"]
 layout_mode = 2
 size_flags_vertical = 2
 max_value = 20.0
@@ -106,7 +106,7 @@ tick_count = 10
 metadata/property = "run_accel"
 metadata/label = "Run Accel"
 
-[node name="Label" type="Label" parent="PlayerMenu/PhysicsSettings/GroundAccel"]
+[node name="Label" type="Label" parent="PlayerMenu/PhysicsSettings/RunAccel"]
 layout_mode = 2
 offset_top = -23.0
 offset_right = 420.0
@@ -114,10 +114,10 @@ offset_bottom = -4.0
 theme_override_fonts/font = ExtResource("2_wmh1k")
 text = "Run Accel:"
 
-[node name="GroundFriction" type="HSlider" parent="PlayerMenu/PhysicsSettings"]
+[node name="RunFriction" type="HSlider" parent="PlayerMenu/PhysicsSettings"]
 layout_mode = 2
 size_flags_vertical = 2
-max_value = 10.0
+max_value = 20.0
 step = 0.1
 allow_greater = true
 allow_lesser = true
@@ -125,7 +125,7 @@ tick_count = 10
 metadata/property = "run_friction"
 metadata/label = "Run Friction"
 
-[node name="Label" type="Label" parent="PlayerMenu/PhysicsSettings/GroundFriction"]
+[node name="Label" type="Label" parent="PlayerMenu/PhysicsSettings/RunFriction"]
 layout_mode = 2
 offset_top = -23.0
 offset_right = 420.0

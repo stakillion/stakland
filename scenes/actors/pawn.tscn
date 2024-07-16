@@ -1,10 +1,11 @@
-[gd_scene load_steps=15 format=3 uid="uid://cr5r7mjrcl1qd"]
+[gd_scene load_steps=16 format=3 uid="uid://cr5r7mjrcl1qd"]
 
 [ext_resource type="Script" path="res://scripts/actors/pawn.gd" id="1_txe8y"]
 [ext_resource type="PackedScene" uid="uid://ds3wnxy8jxm8d" path="res://scenes/objects/rocket_launcher.tscn" id="2_4ktkv"]
 [ext_resource type="Script" path="res://scripts/ui/hud.gd" id="2_ebipa"]
 [ext_resource type="Shader" path="res://materials/shaders/pawn.gdshader" id="2_gydwv"]
 [ext_resource type="FontFile" uid="uid://cpb8liw262yah" path="res://resources/ui/fonts/PressStart2P-Regular.ttf" id="3_oh47t"]
+[ext_resource type="PackedScene" uid="uid://bkctgmbv0wouu" path="res://scenes/objects/grenade_launcher.tscn" id="4_hleln"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_q0jnf"]
 radius = 0.3
@@ -66,6 +67,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0.000523597, 0, -0.000523597, 1, 0, 0.625
 
 [node name="Inventory" type="Node3D" parent="Head"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.42, -0.175, -0.25)
+
+[node name="GrenadeLauncher" parent="Head/Inventory" instance=ExtResource("4_hleln")]
 
 [node name="RocketLauncher" parent="Head/Inventory" instance=ExtResource("2_4ktkv")]
 

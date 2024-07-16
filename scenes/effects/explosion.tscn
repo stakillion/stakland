@@ -1,0 +1,42 @@
+[gd_scene load_steps=5 format=3 uid="uid://xqw3ilrmgjel"]
+
+[ext_resource type="Script" path="res://scripts/effects/effect.gd" id="1_7uk5l"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0cm6m"]
+transparency = 3
+alpha_hash_scale = 1.0
+alpha_antialiasing_mode = 0
+vertex_color_use_as_albedo = true
+point_size = 27.2
+proximity_fade_distance = 1024.0
+distance_fade_max_distance = 1024.0
+
+[sub_resource type="SphereMesh" id="SphereMesh_qkhaa"]
+material = SubResource("StandardMaterial3D_0cm6m")
+radius = 0.05
+height = 0.1
+
+[sub_resource type="Gradient" id="Gradient_y7bmr"]
+offsets = PackedFloat32Array(0.25, 1)
+colors = PackedColorArray(0.666667, 0.666667, 0.666667, 0.666667, 0, 0, 0, 0)
+
+[node name="Explosion" type="Node3D"]
+script = ExtResource("1_7uk5l")
+render_distance = 0
+
+[node name="ExplosionEffect" type="CPUParticles3D" parent="."]
+emitting = false
+amount = 16
+lifetime = 0.5
+one_shot = true
+explosiveness = 0.5
+mesh = SubResource("SphereMesh_qkhaa")
+emission_shape = 1
+emission_sphere_radius = 0.1
+flatness = 0.5
+gravity = Vector3(0, 0, 0)
+initial_velocity_min = 1.0
+initial_velocity_max = 2.0
+scale_amount_min = 2.5
+scale_amount_max = 10.0
+color_ramp = SubResource("Gradient_y7bmr")

@@ -1,44 +1,55 @@
-extends Node3D
+extends PhysicsBody3D
 
-@export var speed:float = 25
-@export var knockback:float = 6
-@export var damage:float = 20
-@export var radius:float = 5
+@export var speed: = 25.0
+@export var launch_velocity: = 0.0
+@export var knockback: = 6.0
+@export var damage: = 20.0
+@export var radius: = 5.0
+@export var lifetime: = 60.0
+@export var trigger_on_contact: = true
+
+@export var trigger_effect = preload("res://scenes/effects/explosion.tscn")
+@export var trail_effect = preload("res://scenes/effects/rocket_trail.tscn")
+
+@onready var effect_area: = find_children("*", "Area3D")[0] as Area3D
 
 var weapon:Item = null
-var exploded: = false
+var triggered: = false
 
 
 func _ready() -> void:
-	if weapon: $RayCast.add_exception(weapon)
-	if "pawn" in owner: $RayCast.add_exception(owner.pawn)
+	if weapon: add_collision_exception_with(weapon)
+	if "pawn" in owner && owner.pawn: add_collision_exception_with(owner.pawn)
 
-	# automatically explode after 60 seconds
-	await get_tree().create_timer(60).timeout
-	explode()
+	if trigger_effect && trigger_effect.can_instantiate():
+		trigger_effect = trigger_effect.instantiate()
+		add_child(trigger_effect)
+	if trail_effect && trail_effect.can_instantiate():
+		trail_effect = trail_effect.instantiate()
+		add_child(trail_effect)
+	
+	if "linear_velocity" in self:
+		self.linear_velocity += -transform.basis.z * launch_velocity
+
+	# automatically explode after x seconds
+	await get_tree().create_timer(lifetime).timeout
+	trigger()
 
 
 func _physics_process(delta:float) -> void:
-	if !exploded:
-		# move projectile forward
-		position -= transform.basis.z * speed * delta
-		# check for collision
-		if $RayCast.get_collider():
-			$ExplosionEffect.direction = $RayCast.get_collision_normal()
-			explode()
-			return
-
-		# optimization: only show trails that are near the player
-		var view_pos: = get_viewport().get_camera_3d().global_position
-		if view_pos.distance_squared_to(global_position) > 1024:
-			$ParticleTrail.emitting = false
-		else:
-			$ParticleTrail.emitting = true
+	if !triggered:
+		# move projectile forward, check for collision
+		var collision: = move_and_collide(-transform.basis.z * speed * delta, false, 0.001, true)
+		if collision && trigger_on_contact:
+			if trigger_effect:
+				trigger_effect.set_direction(collision.get_normal())
+			trigger()
 
 
-func explode() -> void:
-	exploded = true
-	for body in $ExplosionArea.get_overlapping_bodies():
+func trigger() -> void:
+	triggered = true
+
+	for body in effect_area.get_overlapping_bodies():
 		if body == self:
 			continue
 		var dir:Vector3 = body.global_position - global_position
@@ -60,9 +71,9 @@ func explode() -> void:
 
 	# hide the projectile
 	$Mesh.visible = false
-	$ParticleTrail.emitting = false
+	if trail_effect: trail_effect.activated = false
 	# explosion effect
-	$ExplosionEffect.emitting = true
+	if trigger_effect: trigger_effect.activate()
 	# dispose of ourself after delay
 	await get_tree().create_timer(1).timeout
 	queue_free()

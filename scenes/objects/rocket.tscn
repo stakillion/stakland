@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://c42y4yit3mem3"]
+[gd_scene load_steps=7 format=3 uid="uid://c42y4yit3mem3"]
 
 [ext_resource type="Script" path="res://scripts/objects/projectile.gd" id="1_87xn5"]
 
@@ -18,28 +18,12 @@ sections = 2
 section_length = 0.5
 curve = SubResource("Curve_qleey")
 
+[sub_resource type="SeparationRayShape3D" id="SeparationRayShape3D_iknxk"]
+
 [sub_resource type="BoxShape3D" id="BoxShape3D_a3a1d"]
-size = Vector3(20, 20, 20)
+size = Vector3(30, 30, 30)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0cm6m"]
-transparency = 3
-alpha_hash_scale = 1.0
-alpha_antialiasing_mode = 0
-vertex_color_use_as_albedo = true
-point_size = 27.2
-proximity_fade_distance = 1024.0
-distance_fade_max_distance = 1024.0
-
-[sub_resource type="SphereMesh" id="SphereMesh_gsu8w"]
-material = SubResource("StandardMaterial3D_0cm6m")
-radius = 0.05
-height = 0.1
-
-[sub_resource type="Gradient" id="Gradient_12a1w"]
-offsets = PackedFloat32Array(0.25, 1)
-colors = PackedColorArray(0.666667, 0.666667, 0.666667, 0.666667, 0, 0, 0, 0)
-
-[node name="Rocket" type="Node3D"]
+[node name="Rocket" type="AnimatableBody3D"]
 top_level = true
 script = ExtResource("1_87xn5")
 
@@ -47,43 +31,11 @@ script = ExtResource("1_87xn5")
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
 mesh = SubResource("TubeTrailMesh_jg7lg")
 
-[node name="RayCast" type="RayCast3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.5)
-target_position = Vector3(0, 0, -1)
-hit_from_inside = true
+[node name="Collision" type="CollisionShape3D" parent="."]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0.5)
+shape = SubResource("SeparationRayShape3D_iknxk")
 
-[node name="ExplosionArea" type="Area3D" parent="."]
+[node name="EffectArea" type="Area3D" parent="."]
 
-[node name="Collision" type="CollisionShape3D" parent="ExplosionArea"]
+[node name="Collision" type="CollisionShape3D" parent="EffectArea"]
 shape = SubResource("BoxShape3D_a3a1d")
-
-[node name="ParticleTrail" type="CPUParticles3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.5)
-amount = 64
-lifetime = 0.4
-mesh = SubResource("SphereMesh_gsu8w")
-emission_shape = 1
-emission_sphere_radius = 0.1
-spread = 180.0
-gravity = Vector3(0, 0, 0)
-initial_velocity_max = 0.25
-scale_amount_min = 0.5
-scale_amount_max = 1.25
-color_ramp = SubResource("Gradient_12a1w")
-
-[node name="ExplosionEffect" type="CPUParticles3D" parent="."]
-emitting = false
-amount = 16
-lifetime = 0.5
-one_shot = true
-explosiveness = 0.5
-mesh = SubResource("SphereMesh_gsu8w")
-emission_shape = 1
-emission_sphere_radius = 0.1
-flatness = 0.5
-gravity = Vector3(0, 0, 0)
-initial_velocity_min = 1.0
-initial_velocity_max = 2.0
-scale_amount_min = 2.5
-scale_amount_max = 10.0
-color_ramp = SubResource("Gradient_12a1w")

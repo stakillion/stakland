@@ -137,9 +137,9 @@ func read_input(delta:float) -> void:
 	if Input.is_action_just_pressed("zoom_out"):
 		input.desired_zoom = zoom_min if input.desired_zoom + 0.5 <= zoom_min else clamp(input.desired_zoom + 0.5, 0.0, zoom_max)
 
-	input.in_menu = Game.menu.visible
-
 	input.alt_look = Input.is_action_pressed("alt_look")
+
+	input.in_menu = Game.menu.visible
 
 	# send input over network
 	if input != last_input && is_multiplayer_authority():

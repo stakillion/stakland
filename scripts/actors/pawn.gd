@@ -5,7 +5,7 @@ class_name Pawn extends PhysicsBody3D
 @export var physics: = {
 	run_speed = 8.0,
 	run_accel = 10.0,
-	run_friction = 5.0,
+	run_friction = 8.0,
 	air_speed = 8.0,
 	air_accel = 1.0,
 	air_friction = 0.0,
@@ -63,7 +63,7 @@ func _physics_process(delta:float) -> void:
 	var dir: = Vector3(desired_move.y, 0.0, desired_move.x)
 	var speed: = desired_move.length()
 
-	if !in_air:
+	if !in_air || on_ledge:
 		if crouching: speed /= 2
 		# apply friction
 		apply_friction(physics.run_friction, delta)
@@ -100,7 +100,7 @@ func _physics_process(delta:float) -> void:
 
 
 func move(delta:float, max_slides: = 6) -> void:
-	in_air = !on_ledge
+	in_air = true
 	var motion: = (velocity / max_slides) * delta
 	for slide in max_slides:
 		# move and check for collision
