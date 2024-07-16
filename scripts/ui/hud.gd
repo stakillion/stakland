@@ -8,7 +8,7 @@ func _process(_delta:float) -> void:
 
 	# crosshair
 	var camera: = get_viewport().get_camera_3d()
-	var aim_pos:Vector3 = pawn.get_aim().position + Player.cam_offset
+	var aim_pos:Vector3 = pawn.get_aim().position
 	$Crosshair.visible = !camera.is_position_behind(aim_pos)
 	$Crosshair.position = camera.unproject_position(aim_pos)
 

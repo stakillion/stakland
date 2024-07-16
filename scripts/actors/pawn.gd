@@ -55,12 +55,6 @@ func _ready() -> void:
 	# enable proximity fade if we are the player
 	if Player.pawn == self: for mesh in find_children("*", "MeshInstance3D"):
 		mesh.set_instance_shader_parameter("fade_enabled", true)
- 
-
-func _process(delta:float) -> void:
-	if alive && "camera" in owner:
-		# look where the camera is looking
-		set_angle(owner.camera.rotation)
 
 
 func _physics_process(delta:float) -> void:
@@ -93,8 +87,8 @@ func _physics_process(delta:float) -> void:
 	move(delta)
 
 	# smooth head movement for stairs/crouching/etc.
-	head.position = head_position + head_offset
 	head_offset = lerp(head_offset, Vector3.ZERO, 32 * delta)
+	head.position = head_position + head_offset
 
 	# update position of object we're grabbing
 	if grab_object:

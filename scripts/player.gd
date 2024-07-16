@@ -16,6 +16,7 @@ var input: = {
 	prev_item = false,
 	drop_item = false,
 	in_menu = false,
+	alt_look = false,
 	desired_zoom = 0.0
 }
 var last_input: = {}
@@ -34,6 +35,7 @@ var camera:Camera3D
 var cam_follow:Node3D = null
 var cam_offset:Vector3
 var cam_zoom: = 0.0
+var aim_position:Vector3
 
 
 func _init() -> void:
@@ -68,6 +70,21 @@ func _process(delta:float) -> void:
 	if cam_zoom > 0.1: zoom_vec *= cam_cast_motion(follow_pos, zoom_vec)[0]
 	# update camera position
 	camera.position = follow_pos + zoom_vec
+
+	if is_multiplayer_authority():
+		if !input.alt_look && !input.in_menu:
+			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+		else:
+			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+		if input.alt_look && !input.in_menu:
+			aim_position = get_aim().position
+	# have the pawn look where the camera is looking
+	if pawn && pawn.alive && "set_angle" in pawn:
+		if input.alt_look:
+			var angle: = camera.global_transform.looking_at(aim_position).basis.get_euler()
+			pawn.set_angle(angle)
+		else:
+			pawn.set_angle(camera.rotation)
 
 
 func _physics_process(delta:float) -> void:
@@ -122,9 +139,14 @@ func read_input(delta:float) -> void:
 
 	input.in_menu = Game.menu.visible
 
+	input.alt_look = Input.is_action_pressed("alt_look")
+
 	# send input over network
 	if input != last_input && is_multiplayer_authority():
-		mp_send_view.rpc(camera.rotation)
+		if input.alt_look:
+			mp_send_view.rpc(camera.rotation, aim_position)
+		else:
+			mp_send_view.rpc(camera.rotation)
 		mp_send_input.rpc(input, last_input)
 
 
@@ -206,10 +228,32 @@ func cam_cast_motion(start:Vector3, motion:Vector3) -> PackedFloat32Array:
 	return camera.get_world_3d().direct_space_state.cast_motion(query)
 
 
+func get_aim(distance: = 32768.0, exclude: = []) -> Dictionary:
+	var ray_start: = camera.global_position
+	var ray_end:Vector3
+	if input.alt_look:
+		ray_end = camera.project_position(get_viewport().get_mouse_position(), distance)
+	else:
+		ray_end = camera.global_position - camera.global_transform.basis.z * distance
+	var query: = PhysicsRayQueryParameters3D.create(ray_start, ray_end)
+	query.exclude = [self] + find_children("*") + exclude
+	# check for collision
+	var collision: = camera.get_world_3d().direct_space_state.intersect_ray(query)
+	if !collision:
+		# if we missed, set position to end position anyway
+		collision.position = ray_end
+		collision.collider = null
+
+	return collision
+
+
 func _on_mp_sync_frame() -> void:
 	if !is_multiplayer_authority():
 		return
-	mp_send_view.rpc(camera.rotation)
+	if input.alt_look:
+		mp_send_view.rpc(camera.rotation, aim_position)
+	else:
+		mp_send_view.rpc(camera.rotation)
 
 @rpc("unreliable_ordered")
 func mp_send_input(new_input:Dictionary, old_input:Dictionary) -> void:
@@ -219,5 +263,6 @@ func mp_send_input(new_input:Dictionary, old_input:Dictionary) -> void:
 	last_input = input.duplicate()
 
 @rpc("unreliable_ordered")
-func mp_send_view(camera_ang:Vector3) -> void:
+func mp_send_view(camera_ang:Vector3, aim_pos: = Vector3.ZERO) -> void:
 	camera.rotation = camera_ang
+	aim_position = aim_pos

@@ -1,0 +1,253 @@
+[gd_scene load_steps=28 format=3 uid="uid://bpno38eekusja"]
+
+[ext_resource type="Script" path="res://scripts/levels/test_level.gd" id="1_g1djm"]
+[ext_resource type="Texture2D" uid="uid://cbyftbmoksg3p" path="res://addons/kenney_prototype_textures/light/texture_02.png" id="3_aop5o"]
+[ext_resource type="Texture2D" uid="uid://cg3i8qoa6wue8" path="res://addons/kenney_prototype_textures/orange/texture_10.png" id="4_7hdri"]
+[ext_resource type="Texture2D" uid="uid://cyekuk5ux8d44" path="res://addons/kenney_prototype_textures/dark/texture_03.png" id="4_ilwyj"]
+
+[sub_resource type="Gradient" id="Gradient_r4md3"]
+interpolation_mode = 2
+interpolation_color_space = 2
+offsets = PackedFloat32Array(0.62987, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_qpsgd"]
+noise_type = 3
+seed = 1031
+frequency = 0.002
+fractal_type = 3
+fractal_octaves = 10
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_kapre"]
+width = 1024
+height = 1024
+color_ramp = SubResource("Gradient_r4md3")
+noise = SubResource("FastNoiseLite_qpsgd")
+
+[sub_resource type="PhysicalSkyMaterial" id="PhysicalSkyMaterial_41g3y"]
+rayleigh_coefficient = 1.0
+mie_eccentricity = 0.95
+mie_color = Color(1, 0.729412, 0.466667, 1)
+turbidity = 20.0
+ground_color = Color(1, 1, 1, 1)
+energy_multiplier = 1.5
+night_sky = SubResource("NoiseTexture2D_kapre")
+
+[sub_resource type="Sky" id="Sky_yfuus"]
+sky_material = SubResource("PhysicalSkyMaterial_41g3y")
+
+[sub_resource type="Environment" id="Environment_ifkfe"]
+background_mode = 2
+sky = SubResource("Sky_yfuus")
+ssao_enabled = true
+glow_intensity = 8.0
+glow_strength = 0.5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_it2hi"]
+albedo_texture = ExtResource("3_aop5o")
+roughness = 0.75
+uv1_triplanar = true
+uv1_triplanar_sharpness = 150.0
+texture_filter = 5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_esays"]
+albedo_texture = ExtResource("4_ilwyj")
+roughness = 0.75
+uv1_triplanar = true
+uv1_triplanar_sharpness = 150.0
+texture_filter = 5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7shoq"]
+albedo_texture = ExtResource("4_7hdri")
+roughness = 0.75
+uv1_triplanar = true
+uv1_triplanar_sharpness = 150.0
+texture_filter = 5
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_2e1en"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lns3j"]
+transparency = 1
+albedo_color = Color(0, 0, 1, 0.607843)
+rim_enabled = true
+rim = 0.1
+
+[sub_resource type="SphereMesh" id="SphereMesh_xhmdm"]
+material = SubResource("StandardMaterial3D_lns3j")
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_8psvk"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rqnt2"]
+transparency = 1
+albedo_color = Color(1, 0, 0, 0.607843)
+rim_enabled = true
+rim = 0.1
+
+[sub_resource type="SphereMesh" id="SphereMesh_sqmsl"]
+material = SubResource("StandardMaterial3D_rqnt2")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5n0si"]
+transparency = 1
+albedo_color = Color(0, 1, 0, 0.607843)
+rim_enabled = true
+rim = 0.1
+
+[sub_resource type="SphereMesh" id="SphereMesh_xdasw"]
+material = SubResource("StandardMaterial3D_5n0si")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_1136q"]
+viewport_path = NodePath("Viewport")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lc8p0"]
+albedo_color = Color(0.501961, 0.501961, 0.501961, 1)
+metallic = 1.0
+metallic_specular = 0.0
+roughness = 0.2
+
+[sub_resource type="BoxMesh" id="BoxMesh_e8hpv"]
+material = SubResource("StandardMaterial3D_lc8p0")
+size = Vector3(0.5, 0.5, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_3odnp"]
+material = SubResource("StandardMaterial3D_lc8p0")
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_x688r"]
+size = Vector3(0.5, 0.5, 1)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_yqspg"]
+
+[node name="City" type="Node3D"]
+script = ExtResource("1_g1djm")
+
+[node name="Spawns" type="Node3D" parent="."]
+
+[node name="1" type="Node3D" parent="Spawns"]
+transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, -12.5, 0, 12.5)
+
+[node name="2" type="Node3D" parent="Spawns"]
+transform = Transform3D(-0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, -0.707107, -12.5, 0, -12.5)
+
+[node name="3" type="Node3D" parent="Spawns"]
+transform = Transform3D(-0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, -0.707107, 12.5, 0, -12.5)
+
+[node name="4" type="Node3D" parent="Spawns"]
+transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 12.5, 0, 12.5)
+
+[node name="MainCamera" type="Camera3D" parent="."]
+transform = Transform3D(0.707107, 0.122788, -0.696364, 0, 0.984808, 0.173648, 0.707107, -0.122788, 0.696364, -25, 10, 25)
+current = true
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.838671, -0.385118, 0.385118, 0, 0.707107, 0.707107, -0.544639, -0.593029, 0.59303, 0, 10, 0)
+light_bake_mode = 0
+shadow_enabled = true
+directional_shadow_blend_splits = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_ifkfe")
+
+[node name="Ground" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -5, 0)
+use_collision = true
+size = Vector3(500, 10, 500)
+material = SubResource("StandardMaterial3D_it2hi")
+
+[node name="Street" type="CSGBox3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.75, 0)
+operation = 2
+size = Vector3(20, 0.5, 500)
+material = SubResource("StandardMaterial3D_esays")
+
+[node name="Street2" type="CSGBox3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.75, 0)
+operation = 2
+size = Vector3(500, 0.5, 20)
+material = SubResource("StandardMaterial3D_esays")
+
+[node name="Building" type="CSGBox3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30, 20, -30)
+use_collision = true
+size = Vector3(30, 30, 30)
+material = SubResource("StandardMaterial3D_7shoq")
+
+[node name="Boundary" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -256, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Boundary"]
+shape = SubResource("WorldBoundaryShape3D_2e1en")
+
+[node name="BlueLamp" type="RigidBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, 0.704286, -3)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="BlueLamp"]
+mesh = SubResource("SphereMesh_xhmdm")
+skeleton = NodePath("../..")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="BlueLamp"]
+shape = SubResource("SphereShape3D_8psvk")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="BlueLamp"]
+light_color = Color(0, 0, 1, 1)
+light_energy = 5.0
+
+[node name="RedLamp" type="RigidBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, 0.704286, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="RedLamp"]
+mesh = SubResource("SphereMesh_sqmsl")
+skeleton = NodePath("../..")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RedLamp"]
+shape = SubResource("SphereShape3D_8psvk")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="RedLamp"]
+light_color = Color(1, 0, 0, 1)
+light_energy = 5.0
+
+[node name="GreenLamp" type="RigidBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, 0.704286, 3)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="GreenLamp"]
+mesh = SubResource("SphereMesh_xdasw")
+skeleton = NodePath("../..")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="GreenLamp"]
+shape = SubResource("SphereShape3D_8psvk")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="GreenLamp"]
+light_color = Color(0, 1, 0, 1)
+light_energy = 5.0
+
+[node name="Viewport" type="SubViewport" parent="."]
+size = Vector2i(1024, 512)
+render_target_update_mode = 4
+
+[node name="Monitor" type="Sprite3D" parent="Viewport"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 14.9, 6, -25)
+pixel_size = 0.015
+texture = SubResource("ViewportTexture_1136q")
+
+[node name="Camera" type="RigidBody3D" parent="Viewport"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -42.5, 0.407256, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Viewport/Camera"]
+mesh = SubResource("BoxMesh_e8hpv")
+skeleton = NodePath("../../..")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="Viewport/Camera"]
+transform = Transform3D(0.05, 0, 0, 0, 0.3, 0, 0, 0, 0.05, -0.15, 0.4, 0)
+mesh = SubResource("BoxMesh_3odnp")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Viewport/Camera"]
+shape = SubResource("BoxShape3D_x688r")
+
+[node name="Camera" type="Camera3D" parent="Viewport/Camera"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.4)
+current = true
+
+[node name="Sprite3D" type="Sprite3D" parent="Viewport/Camera"]
+transform = Transform3D(-20, 0, -1.74846e-06, 0, 20, 0, 1.74846e-06, 0, -20, 0, 0, -0.500999)
+modulate = Color(1, 0, 0, 1)
+double_sided = false
+texture = SubResource("PlaceholderTexture2D_yqspg")
+
+[connection signal="body_entered" from="Boundary" to="." method="_on_world_boundary_entered"]
