@@ -32,7 +32,7 @@ radius = 0.15
 size = Vector3(0.1, 0.5, 0.1)
 
 [node name="GrenadeLauncher" type="RigidBody3D" node_paths=PackedStringArray("launch_effect")]
-collision_layer = 6
+collision_layer = 4
 collision_mask = 3
 continuous_cd = true
 max_contacts_reported = 10
@@ -60,7 +60,7 @@ shape = SubResource("BoxShape3D_ase61")
 [node name="LaunchEffect" parent="." instance=ExtResource("3_djtcb")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.625)
 
-[node name="AudioStreamPlayer3D" parent="LaunchEffect" index="1"]
+[node name="AudioStreamPlayer3D" parent="LaunchEffect" index="0"]
 pitch_scale = 0.75
 
 [editable path="LaunchEffect"]

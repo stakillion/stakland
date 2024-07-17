@@ -32,13 +32,16 @@ func _ready() -> void:
 func _physics_process(delta:float) -> void:
 	if !triggered:
 		# move projectile forward, check for collision
-		var collision: = move_and_collide(-basis.z * speed * delta, false, 0.001, true)
+		var collision: = move_and_collide(-basis.z * speed * delta, false, 0.1, true)
 		if collision:
+			var normal: = collision.get_normal()
+			if "linear_velocity" in self:
+				self.linear_velocity = self.linear_velocity.slide(normal)
 			var layer: = PhysicsServer3D.body_get_collision_layer(collision.get_collider_rid())
 			if trigger_on_contact & layer == 0:
 				return
 			if trigger_effect:
-				trigger_effect.set_direction(collision.get_normal())
+				trigger_effect.set_direction(normal)
 			trigger()
 
 

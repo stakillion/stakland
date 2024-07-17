@@ -4,24 +4,30 @@ class_name Item extends RigidBody3D
 var last_use:int
 var user:Pawn = null
 
-#var no_depth_mat = {}
-
 
 func _ready() -> void:
-	#if Player: for mesh in find_children("*", "MeshInstance3D"):
-	#	no_depth_mat[mesh] = mesh.get_active_material(0).duplicate()
-	#	no_depth_mat[mesh].no_depth_test = true
-	pass
+	if Player: for mesh in find_children("*", "MeshInstance3D"):
+		# create a duplicate mesh with no depth for first-person perspectives
+		var no_depth_mesh: = mesh.duplicate() as MeshInstance3D
+		var no_depth_mat: = mesh.get_active_material(0).duplicate() as StandardMaterial3D
+		no_depth_mat.no_depth_test = true
+		no_depth_mesh.set_surface_override_material(0, no_depth_mat)
+		no_depth_mesh.name = "NoDepth"
+		mesh.add_child(no_depth_mesh)
+		no_depth_mesh.position = Vector3.ZERO
+		no_depth_mesh.rotation = Vector3.ZERO
 
 
 func _process(_delta:float) -> void:
 	# always draw on top if we are holding this item in first-person
-	#if Player: for mesh in find_children("*", "MeshInstance3D"):
-	#	if user && user.is_player && Player.cam_zoom < 0.5:
-	#		mesh.set_surface_override_material(0, no_depth_mat[mesh])
-	#	else:
-	#		mesh.set_surface_override_material(0, null)
-	pass
+	if Player: for mesh in find_children("*", "MeshInstance3D"):
+		var no_depth_mesh: = mesh.find_child("NoDepth") as MeshInstance3D
+		if !no_depth_mesh:
+			continue
+		if user && user == Player.pawn && Player.cam_zoom < 0.5:
+			no_depth_mesh.visible = true
+		else:
+			no_depth_mesh.visible = false
 
 
 func activate(pawn:Pawn) -> void:
