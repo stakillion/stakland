@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://drg6lr8hle0nh"]
+
+[ext_resource type="Script" path="res://scripts/effects/effect.gd" id="1_qrwqn"]
+[ext_resource type="AudioStream" uid="uid://c87nvypp86fh4" path="res://sounds/tube_launch.wav" id="2_kl3cp"]
+
+[node name="LaunchEffect" type="Node3D"]
+script = ExtResource("1_qrwqn")
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource("2_kl3cp")
+volume_db = -42.0
+unit_size = 100.0
+pitch_scale = 0.5

@@ -159,7 +159,23 @@ alt_look={
 ]
 }
 
+[layer_names]
+
+3d_physics/layer_1="world"
+3d_physics/layer_2="objects"
+3d_physics/layer_3="items"
+3d_physics/layer_4="projectiles"
+3d_physics/layer_9="team1"
+3d_physics/layer_10="team2"
+3d_physics/layer_11="team3"
+3d_physics/layer_12="team4"
+3d_physics/layer_13="team5"
+3d_physics/layer_14="team6"
+3d_physics/layer_15="team7"
+3d_physics/layer_16="team8"
+
 [physics]
 
 common/physics_ticks_per_second=120
 common/max_physics_steps_per_frame=16
+3d/default_gravity=20.0

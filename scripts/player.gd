@@ -19,7 +19,7 @@ var input: = {
 	alt_look = false,
 	desired_zoom = 0.0
 }
-var last_input: = {}
+var last_input: = input
 
 # control settings
 @export var mouse_sensitivity: = Vector2(3.0, 3.0)
@@ -36,6 +36,9 @@ var cam_follow:Node3D = null
 var cam_offset:Vector3
 var cam_zoom: = 0.0
 var aim_position:Vector3
+
+# effects
+@export var spawn_effect = preload("res://scenes/effects/player_spawn.tscn")
 
 
 func _init() -> void:
@@ -197,9 +200,14 @@ func spawn() -> void:
 	pawn.set_angle(spawn_point.rotation)
 	# have the camera follow our pawn
 	cam_activate(pawn, Vector3.ZERO, 5.0)
-
+	# update menu
 	if Player == self:
 		Game.menu.update_settings()
+	# spawn effect
+	if spawn_effect && spawn_effect.can_instantiate():
+		var effect: = spawn_effect.instantiate()
+		effect.position = pawn.position
+		add_child(effect, true)
 
 
 @rpc("call_local", "reliable")

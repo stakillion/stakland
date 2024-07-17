@@ -6,6 +6,9 @@ var world:
 # players
 var player_list:Node
 
+# effects
+var effects:Node
+
 # menu
 @export var menu_scene: = preload("res://scenes/ui/menu.tscn")
 var menu:Control
@@ -21,6 +24,11 @@ func _init() -> void:
 	player_list = Node.new()
 	player_list.name = "Players"
 	add_sibling.call_deferred(player_list)
+	
+	# node containing effects
+	effects = Node.new()
+	effects.name = "Effects"
+	add_child.call_deferred(effects)
 
 
 func _ready() -> void:
@@ -36,7 +44,7 @@ func _ready() -> void:
 		Player.reparent.call_deferred(player_list)
 		# load the menu
 		menu = menu_scene.instantiate() as Control
-		add_sibling.call_deferred(menu)
+		add_child.call_deferred(menu)
 
 
 func _physics_process(delta:float) -> void:

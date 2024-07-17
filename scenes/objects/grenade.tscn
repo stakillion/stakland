@@ -1,14 +1,16 @@
-[gd_scene load_steps=6 format=3 uid="uid://cr67rwg27h0cj"]
+[gd_scene load_steps=8 format=3 uid="uid://cr67rwg27h0cj"]
 
 [ext_resource type="Script" path="res://scripts/objects/projectile.gd" id="1_p46tw"]
+[ext_resource type="PackedScene" uid="uid://cjhnm40nssdjr" path="res://scenes/effects/rocket_trail.tscn" id="2_ahthp"]
+[ext_resource type="PackedScene" uid="uid://xqw3ilrmgjel" path="res://scenes/effects/explosion.tscn" id="3_ou4is"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_omrmm"]
-albedo_color = Color(0.752941, 0, 0, 1)
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jlot1"]
+albedo_color = Color(0.501961, 0, 0, 1)
 roughness = 0.5
 uv1_triplanar_sharpness = 150.0
 
 [sub_resource type="SphereMesh" id="SphereMesh_ctqoy"]
-material = SubResource("StandardMaterial3D_omrmm")
+material = SubResource("StandardMaterial3D_jlot1")
 radius = 0.15
 height = 0.3
 
@@ -18,14 +20,18 @@ radius = 0.15
 [sub_resource type="BoxShape3D" id="BoxShape3D_a3a1d"]
 size = Vector3(30, 30, 30)
 
-[node name="Grenade" type="RigidBody3D"]
+[node name="Grenade" type="RigidBody3D" node_paths=PackedStringArray("trigger_effect", "trail_effect")]
 top_level = true
+collision_layer = 10
+collision_mask = 65291
 linear_damp = 0.5
 script = ExtResource("1_p46tw")
-speed = -3.0
-launch_velocity = 25.0
+speed = 3.0
+launch_velocity = Vector3(0, 5, -25)
 lifetime = 3.0
-trigger_on_contact = false
+trigger_on_contact = 65280
+trigger_effect = NodePath("ExplosionEffect")
+trail_effect = NodePath("TrailEffect")
 
 [node name="Mesh" type="MeshInstance3D" parent="."]
 mesh = SubResource("SphereMesh_ctqoy")
@@ -34,6 +40,12 @@ mesh = SubResource("SphereMesh_ctqoy")
 shape = SubResource("SphereShape3D_s274n")
 
 [node name="EffectArea" type="Area3D" parent="."]
+collision_layer = 8
+collision_mask = 65282
 
 [node name="Collision" type="CollisionShape3D" parent="EffectArea"]
 shape = SubResource("BoxShape3D_a3a1d")
+
+[node name="TrailEffect" parent="." instance=ExtResource("2_ahthp")]
+
+[node name="ExplosionEffect" parent="." instance=ExtResource("3_ou4is")]

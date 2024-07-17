@@ -194,7 +194,7 @@ shape = SubResource("WorldBoundaryShape3D_2e1en")
 
 [node name="MainLand" type="CSGCombiner3D" parent="."]
 use_collision = true
-collision_layer = 3
+collision_mask = 0
 
 [node name="Grass" type="CSGBox3D" parent="MainLand"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.5, -1.5, 0)
@@ -221,7 +221,7 @@ material = SubResource("StandardMaterial3D_kj4aw")
 
 [node name="Land2" type="CSGCombiner3D" parent="."]
 use_collision = true
-collision_layer = 3
+collision_mask = 0
 
 [node name="Ground" type="CSGBox3D" parent="Land2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, -5, 0)
@@ -266,7 +266,7 @@ material = SubResource("StandardMaterial3D_nlhrf")
 
 [node name="Obstacles" type="CSGCombiner3D" parent="."]
 use_collision = true
-collision_layer = 3
+collision_mask = 0
 
 [node name="ShortWall" type="CSGBox3D" parent="Obstacles"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.5, 0.5, -2.5)
@@ -547,6 +547,8 @@ material = SubResource("StandardMaterial3D_nlhrf")
 
 [node name="BlueLamp" type="RigidBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, -5.97, -3)
+collision_layer = 2
+collision_mask = 15
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="BlueLamp"]
 mesh = SubResource("SphereMesh_xhmdm")
@@ -561,6 +563,8 @@ light_energy = 5.0
 
 [node name="RedLamp" type="RigidBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, -5.97, 0)
+collision_layer = 2
+collision_mask = 15
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="RedLamp"]
 mesh = SubResource("SphereMesh_sqmsl")
@@ -575,6 +579,8 @@ light_energy = 5.0
 
 [node name="GreenLamp" type="RigidBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, -5.97, 3)
+collision_layer = 2
+collision_mask = 15
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="GreenLamp"]
 mesh = SubResource("SphereMesh_xdasw")
@@ -598,6 +604,8 @@ texture = SubResource("ViewportTexture_1136q")
 
 [node name="Camera" type="RigidBody3D" parent="Viewport"]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -42.5, -5.97, 0)
+collision_layer = 2
+collision_mask = 15
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Viewport/Camera"]
 mesh = SubResource("BoxMesh_e8hpv")

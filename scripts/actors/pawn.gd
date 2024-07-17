@@ -57,7 +57,7 @@ func _ready() -> void:
 		mesh.set_instance_shader_parameter("fade_enabled", true)
 
 
-func _physics_process(delta:float) -> void:
+func _physics_process(delta) -> void:
 	if !alive: desired_move = Vector2.ZERO
 	# accelerate velocity based on desired movement and movement state
 	var dir: = Vector3(desired_move.y, 0.0, desired_move.x)
@@ -65,8 +65,11 @@ func _physics_process(delta:float) -> void:
 
 	if !in_air || on_ledge:
 		if crouching: speed /= 2
+		var friction = physics.run_friction
+		if velocity.length() > physics.run_speed:
+			friction /= 3
 		# apply friction
-		apply_friction(physics.run_friction, delta)
+		apply_friction(friction, delta)
 		# apply acceleration
 		accelerate(dir, physics.run_speed * speed, delta)
 		# step up stairs/ledges

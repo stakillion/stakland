@@ -1,6 +1,7 @@
 extends Item
 
 @export var projectile_scene: = preload("res://scenes/objects/rocket.tscn")
+@export var launch_effect:Effect
 
 
 func action() -> void:
@@ -30,3 +31,5 @@ func fire(pos:Vector3, ang:Vector3) -> void:
 	projectile.position = pos
 	projectile.rotation = ang
 	owner.add_child(projectile, true)
+	# launch effect
+	if launch_effect: launch_effect.activate()

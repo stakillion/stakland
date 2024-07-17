@@ -1,6 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://c42y4yit3mem3"]
+[gd_scene load_steps=9 format=3 uid="uid://c42y4yit3mem3"]
 
 [ext_resource type="Script" path="res://scripts/objects/projectile.gd" id="1_87xn5"]
+[ext_resource type="PackedScene" uid="uid://xqw3ilrmgjel" path="res://scenes/effects/explosion.tscn" id="2_8xd4p"]
+[ext_resource type="PackedScene" uid="uid://cjhnm40nssdjr" path="res://scenes/effects/rocket_trail.tscn" id="3_hfeho"]
 
 [sub_resource type="Curve" id="Curve_qleey"]
 _data = [Vector2(0, 0), 0.0, 3.41809, 0, 0, Vector2(0.251724, 0.347368), 0.0, 0.0, 0, 0, Vector2(0.548276, 0.2), 0.0, 0.0, 0, 0]
@@ -23,9 +25,14 @@ curve = SubResource("Curve_qleey")
 [sub_resource type="BoxShape3D" id="BoxShape3D_a3a1d"]
 size = Vector3(30, 30, 30)
 
-[node name="Rocket" type="AnimatableBody3D"]
+[node name="Rocket" type="AnimatableBody3D" node_paths=PackedStringArray("trigger_effect", "trail_effect")]
 top_level = true
+collision_layer = 8
+collision_mask = 65291
 script = ExtResource("1_87xn5")
+trigger_on_contact = 65291
+trigger_effect = NodePath("ExplosionEffect")
+trail_effect = NodePath("TrailEffect")
 
 [node name="Mesh" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
@@ -36,6 +43,12 @@ transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 
 shape = SubResource("SeparationRayShape3D_iknxk")
 
 [node name="EffectArea" type="Area3D" parent="."]
+collision_layer = 8
+collision_mask = 65282
 
 [node name="Collision" type="CollisionShape3D" parent="EffectArea"]
 shape = SubResource("BoxShape3D_a3a1d")
+
+[node name="ExplosionEffect" parent="." instance=ExtResource("2_8xd4p")]
+
+[node name="TrailEffect" parent="." instance=ExtResource("3_hfeho")]

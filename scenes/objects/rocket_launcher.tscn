@@ -1,6 +1,7 @@
-[gd_scene load_steps=7 format=3 uid="uid://ds3wnxy8jxm8d"]
+[gd_scene load_steps=8 format=3 uid="uid://ds3wnxy8jxm8d"]
 
 [ext_resource type="Script" path="res://scripts/objects/weapon.gd" id="1_lfcrf"]
+[ext_resource type="PackedScene" uid="uid://drg6lr8hle0nh" path="res://scenes/effects/rocket_launch.tscn" id="2_m8y5s"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jgj6e"]
 albedo_color = Color(0.156863, 0.156863, 0.156863, 1)
@@ -24,11 +25,14 @@ radius = 0.15
 [sub_resource type="BoxShape3D" id="BoxShape3D_ase61"]
 size = Vector3(0.1, 0.5, 0.1)
 
-[node name="RocketLauncher" type="RigidBody3D"]
+[node name="RocketLauncher" type="RigidBody3D" node_paths=PackedStringArray("launch_effect")]
+collision_layer = 6
+collision_mask = 3
 continuous_cd = true
 max_contacts_reported = 10
 contact_monitor = true
 script = ExtResource("1_lfcrf")
+launch_effect = NodePath("LaunchEffect")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
@@ -45,3 +49,6 @@ shape = SubResource("CylinderShape3D_qrgpn")
 [node name="CollisionShape3D2" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.15, -0.4)
 shape = SubResource("BoxShape3D_ase61")
+
+[node name="LaunchEffect" parent="." instance=ExtResource("2_m8y5s")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.625)

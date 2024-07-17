@@ -1,17 +1,18 @@
-[gd_scene load_steps=9 format=3 uid="uid://bkctgmbv0wouu"]
+[gd_scene load_steps=10 format=3 uid="uid://bkctgmbv0wouu"]
 
 [ext_resource type="Script" path="res://scripts/objects/weapon.gd" id="1_l4ftp"]
 [ext_resource type="PackedScene" uid="uid://cr67rwg27h0cj" path="res://scenes/objects/grenade.tscn" id="2_on8ph"]
+[ext_resource type="PackedScene" uid="uid://drg6lr8hle0nh" path="res://scenes/effects/rocket_launch.tscn" id="3_djtcb"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_48ex5"]
-albedo_color = Color(0.294118, 0, 0, 1)
+albedo_color = Color(0.501961, 0, 0, 1)
 roughness = 0.5
 uv1_triplanar_sharpness = 150.0
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_jxy7x"]
 material = SubResource("StandardMaterial3D_48ex5")
-top_radius = 0.15
-bottom_radius = 0.15
+top_radius = 0.1
+bottom_radius = 0.2
 height = 1.25
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jgj6e"]
@@ -30,15 +31,18 @@ radius = 0.15
 [sub_resource type="BoxShape3D" id="BoxShape3D_ase61"]
 size = Vector3(0.1, 0.5, 0.1)
 
-[node name="GrenadeLauncher" type="RigidBody3D"]
+[node name="GrenadeLauncher" type="RigidBody3D" node_paths=PackedStringArray("launch_effect")]
+collision_layer = 6
+collision_mask = 3
 continuous_cd = true
 max_contacts_reported = 10
 contact_monitor = true
 script = ExtResource("1_l4ftp")
 projectile_scene = ExtResource("2_on8ph")
+launch_effect = NodePath("LaunchEffect")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
+transform = Transform3D(1, 0, 0, 0, -0.0871558, -0.996195, 0, 0.996195, -0.0871558, 0, 0, 0)
 mesh = SubResource("CylinderMesh_jxy7x")
 
 [node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
@@ -52,3 +56,11 @@ shape = SubResource("CylinderShape3D_qrgpn")
 [node name="CollisionShape3D2" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.15, -0.4)
 shape = SubResource("BoxShape3D_ase61")
+
+[node name="LaunchEffect" parent="." instance=ExtResource("3_djtcb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.625)
+
+[node name="AudioStreamPlayer3D" parent="LaunchEffect" index="1"]
+pitch_scale = 0.75
+
+[editable path="LaunchEffect"]

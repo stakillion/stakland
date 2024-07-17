@@ -13,9 +13,9 @@ func _input(event:InputEvent) -> void:
 		visible = !visible
 
 
-#func _notification(what:int) -> void:
-#	if what == NOTIFICATION_WM_WINDOW_FOCUS_OUT:
-#		visible = true
+func _notification(what:int) -> void:
+	if what == NOTIFICATION_WM_WINDOW_FOCUS_OUT:
+		visible = true
 
 
 func update_settings() -> void:

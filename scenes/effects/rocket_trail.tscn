@@ -20,11 +20,11 @@ height = 0.1
 offsets = PackedFloat32Array(0.25, 1)
 colors = PackedColorArray(0.666667, 0.666667, 0.666667, 0.666667, 0, 0, 0, 0)
 
-[node name="RocketTrail" type="Node3D"]
+[node name="TrailEffect" type="Node3D"]
 script = ExtResource("1_xbe8w")
-start_activated = true
+start_active = true
 
-[node name="ParticleTrail" type="CPUParticles3D" parent="."]
+[node name="CPUParticles3D" type="CPUParticles3D" parent="."]
 emitting = false
 amount = 64
 lifetime = 0.4

@@ -1,7 +1,7 @@
-[gd_scene load_steps=6 format=3 uid="uid://xqw3ilrmgjel"]
+[gd_scene load_steps=6 format=3 uid="uid://bapgd722fyaht"]
 
-[ext_resource type="Script" path="res://scripts/effects/effect.gd" id="1_7uk5l"]
-[ext_resource type="AudioStream" uid="uid://0sfoaydafym1" path="res://sounds/detonate.wav" id="2_bvts8"]
+[ext_resource type="Script" path="res://scripts/effects/effect.gd" id="1_3r1id"]
+[ext_resource type="AudioStream" uid="uid://xhwf35322jsb" path="res://sounds/friend_join.wav" id="2_ft1lv"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0cm6m"]
 transparency = 3
@@ -21,10 +21,11 @@ height = 0.1
 offsets = PackedFloat32Array(0.25, 1)
 colors = PackedColorArray(0.666667, 0.666667, 0.666667, 0.666667, 0, 0, 0, 0)
 
-[node name="ExplosionEffect" type="Node3D"]
-script = ExtResource("1_7uk5l")
+[node name="SpawnEffect" type="Node3D"]
+script = ExtResource("1_3r1id")
 timeout = 1.0
-pitch_range = 0.1
+destroy_on_timeout = true
+start_active = true
 
 [node name="CPUParticles3D" type="CPUParticles3D" parent="."]
 emitting = false
@@ -35,16 +36,14 @@ explosiveness = 0.5
 mesh = SubResource("SphereMesh_qkhaa")
 emission_shape = 1
 emission_sphere_radius = 0.1
+direction = Vector3(0, 1, 0)
 flatness = 0.5
 gravity = Vector3(0, 0, 0)
-initial_velocity_min = 1.0
-initial_velocity_max = 2.0
-scale_amount_min = 2.5
-scale_amount_max = 10.0
+initial_velocity_max = 0.5
+scale_amount_min = 0.5
+scale_amount_max = 1.25
 color_ramp = SubResource("Gradient_y7bmr")
 
 [node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="."]
-stream = ExtResource("2_bvts8")
-volume_db = -36.0
-unit_size = 100.0
-pitch_scale = 0.9
+stream = ExtResource("2_ft1lv")
+volume_db = -32.0

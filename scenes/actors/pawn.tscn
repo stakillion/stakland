@@ -51,6 +51,8 @@ rim_enabled = true
 size = Vector2(3, 3)
 
 [node name="Pawn" type="AnimatableBody3D"]
+collision_layer = 256
+collision_mask = 65283
 constant_linear_velocity = Vector3(0.1, 0.1, 0.1)
 sync_to_physics = false
 script = ExtResource("1_txe8y")
