@@ -1,6 +1,8 @@
 class_name Item extends RigidBody3D
 
 @export var cooldown: = 500
+@onready var _collision_layer: = collision_layer
+
 var last_use:int
 var user:Pawn = null
 
@@ -19,12 +21,15 @@ func _ready() -> void:
 
 
 func _process(_delta:float) -> void:
-	# always draw on top if we are holding this item in first-person
-	if Player: for mesh in find_children("*", "MeshInstance3D"):
+	if !Player:
+		return
+	# true if the local player is holding this in first person
+	var use_no_depth:bool = (user && Player.cam_follow_node == user.get_path() && Player.cam_zoom < 0.5)
+	for mesh in find_children("*", "MeshInstance3D"):
 		var no_depth_mesh: = mesh.find_child("NoDepth") as MeshInstance3D
 		if !no_depth_mesh:
 			continue
-		if user && user == Player.pawn && Player.cam_zoom < 0.5:
+		if use_no_depth:
 			no_depth_mesh.visible = true
 		else:
 			no_depth_mesh.visible = false
@@ -46,7 +51,7 @@ func pick_up(pawn:Pawn) -> void:
 	get_parent().remove_child(self)
 	pawn.inventory.add_child(self, true)
 	# set physics and position
-	add_collision_exception_with(pawn)
+	collision_layer = 0
 	position = Vector3()
 	rotation = Vector3()
 	freeze = true
@@ -61,8 +66,8 @@ func drop() -> void:
 	get_parent().remove_child(self)
 	user.owner.add_child(self, true)
 	# set physics and collision
-	remove_collision_exception_with(user)
-	global_position = user.get_aim(2.0, [user, self]).position
+	collision_layer = _collision_layer
+	global_position = user.get_aim(2, [self]).position
 	angular_velocity = Vector3()
 	freeze = false
 	# tell the user to stop holding this if they are

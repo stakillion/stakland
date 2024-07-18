@@ -1,5 +1,8 @@
 class_name Pawn extends PhysicsBody3D
 
+var is_player:
+	get: return (Player && Player.pawn == self)
+
 # -- physics --
 # higher air acceleration enables mid-air turns and slope surfing
 @export var physics: = {
@@ -53,7 +56,7 @@ func _ready() -> void:
 	inventory.look_at(head_position - head.basis.z * 12)
 
 	# enable proximity fade if we are the player
-	if Player.pawn == self: for mesh in find_children("*", "MeshInstance3D"):
+	if is_player: for mesh in find_children("*", "MeshInstance3D"):
 		mesh.set_instance_shader_parameter("fade_enabled", true)
 
 
@@ -98,7 +101,7 @@ func _physics_process(delta) -> void:
 		update_grab_pos(grab_object, delta)
 
 	# update shader fade position
-	if Player.pawn == self: for mesh in find_children("*", "MeshInstance3D"):
+	if is_player: for mesh in find_children("*", "MeshInstance3D"):
 		mesh.set_instance_shader_parameter("fade_position", position)
 
 
@@ -235,7 +238,7 @@ func interact() -> void:
 	if active_item && active_item.get_parent() != inventory:
 		target = active_item
 	else:
-		target = get_aim(2.0).collider as PhysicsBody3D
+		target = get_aim(2).collider as PhysicsBody3D
 	if target:
 		if target.has_method("activate"):
 			target.activate(self)
@@ -317,7 +320,7 @@ func toggle_grab(object:RigidBody3D) -> void:
 
 
 func update_grab_pos(object:RigidBody3D, delta:float) -> void:
-	var new_pos:Vector3 = get_aim(2.0, [self, object]).position
+	var new_pos:Vector3 = get_aim(2, [object]).position
 	object.linear_velocity = (new_pos - object.global_position) * (4096 * delta)
 
 	# set rotation relative to where we're looking
@@ -350,8 +353,6 @@ func set_health(value:int) -> void:
 			item_drop()
 		head.rotation = Vector3()
 		rotation += Vector3(0.0, 0.0, deg_to_rad(90.0))
-		if Player.pawn == self:
-			Player.cam_activate(null, head.global_position)
 
 	health = value
 

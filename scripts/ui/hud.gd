@@ -4,7 +4,7 @@ extends Control
 
 
 func _process(_delta:float) -> void:
-	visible = Player.pawn == pawn
+	visible = pawn.is_player
 
 	# crosshair
 	var camera: = get_viewport().get_camera_3d()

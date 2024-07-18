@@ -300,6 +300,6 @@ text = "Toggle Fullscreen"
 [connection signal="pressed" from="MainMenu/SettingsButton" to="." method="_on_settings_button_pressed"]
 [connection signal="pressed" from="MainMenu/QuitButton" to="." method="_on_QuitButton_pressed"]
 [connection signal="pressed" from="PlayerMenu/RespawnButton" to="." method="_on_respawn_button_pressed"]
-[connection signal="text_changed" from="MultiplayerMenu/AddressField" to="." method="_on_address_field_text_changed"]
+[connection signal="text_changed" from="MultiplayerMenu/AddressField" to="." method="update_mp_menu"]
 [connection signal="pressed" from="MultiplayerMenu/ConnectButton" to="." method="_on_connect_button_pressed"]
 [connection signal="pressed" from="FullscreenButton" to="." method="_on_fullscreen_button_pressed"]

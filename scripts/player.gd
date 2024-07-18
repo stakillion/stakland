@@ -32,8 +32,7 @@ var pawn:Pawn = null
 
 # camera
 var camera:Camera3D
-var cam_follow:Node3D = null
-var cam_offset:Vector3
+var cam_follow_node:NodePath = ""
 var cam_zoom: = 0.0
 var aim_position:Vector3
 
@@ -48,31 +47,25 @@ func _init() -> void:
 	add_child(camera, true)
 
 
-func _ready() -> void:
-	if Player == self:
-		var current_cam: = get_viewport().get_camera_3d()
-		camera.rotation = current_cam.global_rotation
-		cam_activate(null, current_cam.global_position)
-
-
 func _process(delta:float) -> void:
-	var follow_pos: = Vector3()
+	var cam_follow:Node3D
+	if !cam_follow_node.is_empty():
+		cam_follow = get_node_or_null(cam_follow_node)
+		if !cam_follow:
+			# find a player to spectate
+			for player in Game.players.get_children():
+				if player.pawn:
+					cam_follow = player.pawn
+					cam_activate(player.pawn)
+		if !cam_follow: cam_activate(null)
 	if cam_follow:
-		# set position to the position of our follow target
-		follow_pos = cam_follow.head.global_position if "head" in cam_follow else cam_follow.global_position
-	elif Player == self && !input.in_menu:
-		# no follow target, free cam mode
-		var dir: = Vector3(input.movement.y, 0.0, input.movement.x)
-		dir = dir.rotated(Vector3.RIGHT, camera.rotation.x)
-		dir = dir.rotated(Vector3.UP, camera.rotation.y)
-		cam_offset += dir * 24 * delta
-	follow_pos += cam_offset
-	# distance the camera from the follow position by our zoom level
-	cam_zoom = lerp(cam_zoom, input.desired_zoom, 3 * delta)
-	var zoom_vec: = camera.basis.z * cam_zoom
-	if cam_zoom > 0.1: zoom_vec *= cam_cast_motion(follow_pos, zoom_vec)[0]
-	# update camera position
-	camera.position = follow_pos + zoom_vec
+		var follow_pos:Vector3 = cam_follow.head.global_position if "head" in cam_follow else cam_follow.global_position
+		# distance the camera from the follow position by our zoom level
+		cam_zoom = lerp(cam_zoom, input.desired_zoom, 3 * delta)
+		var zoom_vec: = camera.basis.z * cam_zoom
+		if cam_zoom > 0.1: zoom_vec *= cam_cast_motion(follow_pos, zoom_vec)[0]
+		# update camera position
+		camera.position = follow_pos + zoom_vec
 
 	if is_multiplayer_authority():
 		if !input.alt_look && !input.in_menu:
@@ -80,7 +73,8 @@ func _process(delta:float) -> void:
 		else:
 			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 		if input.alt_look && !input.in_menu:
-			aim_position = get_aim().position
+			aim_position = camera.project_position(get_viewport().get_mouse_position(), 32768.0)
+
 	# have the pawn look where the camera is looking
 	if pawn && pawn.alive && "set_angle" in pawn:
 		if input.alt_look:
@@ -187,10 +181,7 @@ func apply_input() -> void:
 
 @rpc("call_local", "reliable")
 func spawn() -> void:
-	if pawn:
-		# dispose of existing pawn
-		pawn.queue_free()
-		pawn.name += "_"
+	remove_pawn()
 	# create pawn
 	pawn = load(data.pawn_scene).instantiate()
 	add_child(pawn)
@@ -199,7 +190,7 @@ func spawn() -> void:
 	pawn.set_origin(spawn_point.position)
 	pawn.set_angle(spawn_point.rotation)
 	# have the camera follow our pawn
-	cam_activate(pawn, Vector3.ZERO, 5.0)
+	cam_activate(pawn, 5.0)
 	# update menu
 	if Player == self:
 		Game.menu.update_settings()
@@ -210,23 +201,35 @@ func spawn() -> void:
 		add_child(effect, true)
 
 
+func remove_pawn() -> void:
+	if pawn:
+		pawn.queue_free()
+		pawn.name += "_"
+		pawn = null
+	if Player == self:
+		Game.menu.update_settings()
+
+
 @rpc("call_local", "reliable")
 func set_physics_parameter(property, value) -> void:
 	pawn.physics[property] = value
 
 
-func cam_activate(follow:Node3D = null, offset: = Vector3.ZERO, zoom: = 0.0) -> void:
-	cam_follow = follow
-	cam_offset = offset
-	cam_zoom = zoom
+func cam_activate(follow:Node3D = null, zoom: = 0.0) -> void:
 	if follow:
+		cam_follow_node = follow.get_path()
 		camera.rotation.y = follow.rotation.y
 		camera.rotation.x = follow.head.rotation.x if "head" in follow else follow.rotation.x
-	if Player == self:
-		camera.make_current()
+		if Player == self:
+			camera.make_current()
+		cam_zoom = zoom
+	else:
+		cam_follow_node = ""
+		camera.current = false
 
 
 func cam_cast_motion(start:Vector3, motion:Vector3) -> PackedFloat32Array:
+	var cam_follow: = get_node_or_null(cam_follow_node)
 	var query: = PhysicsShapeQueryParameters3D.new()
 	query.transform.origin = start
 	query.shape = SphereShape3D.new()
@@ -234,25 +237,6 @@ func cam_cast_motion(start:Vector3, motion:Vector3) -> PackedFloat32Array:
 	query.motion = motion
 	query.exclude = [cam_follow] + cam_follow.find_children("*") if cam_follow else []
 	return camera.get_world_3d().direct_space_state.cast_motion(query)
-
-
-func get_aim(distance: = 32768.0, exclude: = []) -> Dictionary:
-	var ray_start: = camera.global_position
-	var ray_end:Vector3
-	if input.alt_look:
-		ray_end = camera.project_position(get_viewport().get_mouse_position(), distance)
-	else:
-		ray_end = camera.global_position - camera.global_transform.basis.z * distance
-	var query: = PhysicsRayQueryParameters3D.create(ray_start, ray_end)
-	query.exclude = [self] + find_children("*") + exclude
-	# check for collision
-	var collision: = camera.get_world_3d().direct_space_state.intersect_ray(query)
-	if !collision:
-		# if we missed, set position to end position anyway
-		collision.position = ray_end
-		collision.collider = null
-
-	return collision
 
 
 func _on_mp_sync_frame() -> void:

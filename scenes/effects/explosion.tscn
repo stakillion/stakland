@@ -45,6 +45,7 @@ color_ramp = SubResource("Gradient_y7bmr")
 
 [node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="."]
 stream = ExtResource("2_bvts8")
-volume_db = -36.0
+attenuation_model = 2
+volume_db = -48.0
 unit_size = 100.0
 pitch_scale = 0.9

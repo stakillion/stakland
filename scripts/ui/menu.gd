@@ -34,6 +34,20 @@ func update_settings() -> void:
 		$PlayerMenu.visible = false
 
 
+func update_mp_menu(host_ip: = "") -> void:
+	if !Game.mp_status:
+		$MultiplayerMenu/AddressField.editable = true
+		if $MultiplayerMenu/AddressField.text.is_empty():
+			$MultiplayerMenu/ConnectButton.text = "Host"
+		else:
+			$MultiplayerMenu/ConnectButton.text = "Connect"
+	else:
+		$MultiplayerMenu/AddressField.editable = false
+		$MultiplayerMenu/ConnectButton.text = "Disconnect"
+		if !host_ip.is_empty():
+			$MultiplayerMenu/AddressField.text = host_ip
+
+
 func _on_visibility_changed() -> void:
 	if visible:
 		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
@@ -53,10 +67,13 @@ func _on_respawn_button_pressed() -> void:
 
 
 func _on_connect_button_pressed() -> void:
-	if $MultiplayerMenu/AddressField.text.is_empty():
-		Game.host_game()
+	if !Game.mp_status:
+		if $MultiplayerMenu/AddressField.text.is_empty():
+			Game.host_game()
+		else:
+			Game.join_game($MultiplayerMenu/AddressField.text)
 	else:
-		Game.join_game($MultiplayerMenu/AddressField.text)
+		Game.leave_game()
 
 
 func _on_QuitButton_pressed() -> void:
@@ -73,10 +90,3 @@ func _on_fullscreen_button_pressed() -> void:
 func _on_physics_setting_value_changed(value:float, property:String, label:String, node:Node) -> void:
 	Player.set_physics_parameter.rpc(property, value)
 	node.find_child("Label").text = "%s: %f" % [label, value]
-
-
-func _on_address_field_text_changed() -> void:
-	if $MultiplayerMenu/AddressField.text.is_empty():
-		$MultiplayerMenu/ConnectButton.text = "Host"
-	else:
-		$MultiplayerMenu/ConnectButton.text = "Connect"
