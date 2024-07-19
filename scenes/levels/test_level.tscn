@@ -1,4 +1,4 @@
-[gd_scene load_steps=36 format=3 uid="uid://o70p27l476fn"]
+[gd_scene load_steps=37 format=3 uid="uid://o70p27l476fn"]
 
 [ext_resource type="Texture2D" uid="uid://loxh1icksh70" path="res://materials/textures/grass1.png" id="1_24n2b"]
 [ext_resource type="Script" path="res://scripts/levels/test_level.gd" id="1_nkfo3"]
@@ -6,6 +6,7 @@
 [ext_resource type="Script" path="res://addons/zylann.hterrain/hterrain.gd" id="4_4523p"]
 [ext_resource type="Texture2D" uid="uid://cyekuk5ux8d44" path="res://addons/kenney_prototype_textures/dark/texture_03.png" id="4_g08os"]
 [ext_resource type="Resource" path="res://resources/levels/test_level/terrain/data.hterrain" id="5_83pfn"]
+[ext_resource type="PackedScene" uid="uid://brhlexkymlrda" path="res://scenes/objects/skateboard.tscn" id="5_oqf6j"]
 [ext_resource type="Shader" path="res://materials/shaders/grass.gdshader" id="6_airvd"]
 [ext_resource type="Script" path="res://addons/zylann.hterrain/hterrain_texture_set.gd" id="7_leogj"]
 
@@ -592,6 +593,9 @@ shape = SubResource("SphereShape3D_8psvk")
 [node name="OmniLight3D" type="OmniLight3D" parent="GreenLamp"]
 light_color = Color(0, 1, 0, 1)
 light_energy = 5.0
+
+[node name="Skateboard" parent="." instance=ExtResource("5_oqf6j")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30.5036, 0.130846, 7.28395)
 
 [node name="Viewport" type="SubViewport" parent="."]
 size = Vector2i(1024, 512)

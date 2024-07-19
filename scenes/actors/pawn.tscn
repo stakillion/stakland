@@ -71,6 +71,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0.000523597, 0, -0.000523597, 1, 0, 0.625
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.42, -0.175, -0.25)
 
 [node name="GrenadeLauncher" parent="Head/Inventory" instance=ExtResource("4_hleln")]
+visible = false
 
 [node name="RocketLauncher" parent="Head/Inventory" instance=ExtResource("2_4ktkv")]
 

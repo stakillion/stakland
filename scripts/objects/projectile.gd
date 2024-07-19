@@ -32,7 +32,7 @@ func _ready() -> void:
 func _physics_process(delta:float) -> void:
 	if !triggered:
 		# move projectile forward, check for collision
-		var collision: = move_and_collide(-basis.z * speed * delta, false, 0.1, true)
+		var collision: = move_and_collide(-basis.z * speed * delta, false, 0.001, true)
 		if collision:
 			var normal: = collision.get_normal()
 			if "linear_velocity" in self:

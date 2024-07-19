@@ -23,7 +23,7 @@ func update_settings() -> void:
 		for node in $PlayerMenu/PhysicsSettings.get_children():
 			var label: = node.get_meta("label") as String
 			var property: = node.get_meta("property") as String
-			var value: = Player.pawn.physics.get(property) as float
+			var value: = Player.pawn.get(property) as float
 			if value != null:
 				node.value = value
 				node.find_child("Label").text = "%s: %f" % [label, value]
