@@ -6,7 +6,7 @@ class_name KinematicBody extends PhysicsBody3D
 @export var air_speed: = 8.0
 @export var air_accel: = 1.0
 @export var air_friction: = 0.0
-@export var gravity: = ProjectSettings.get_setting("physics/3d/default_gravity") as float
+@export var gravity: = 20.0
 @export var max_speed: = 200.0
 
 var velocity: = Vector3()
@@ -18,13 +18,12 @@ func _physics_process(delta):
 	apply_kinematics(delta)
 
 
-func apply_kinematics(delta:float, desired_move: = Vector2.ZERO):
-	var dir: = Vector3(desired_move.y, 0.0, desired_move.x)
+func apply_kinematics(delta:float, dir: = Vector3.ZERO):
 	if !in_air || on_ledge:
 		# apply friction
 		apply_friction(run_friction, delta)
 		# apply acceleration
-		accelerate(dir, run_speed, delta)
+		accelerate(dir, run_speed, run_accel, delta, true)
 		# step up stairs/ledges
 		try_step_up(delta)
 	else:
@@ -33,7 +32,7 @@ func apply_kinematics(delta:float, desired_move: = Vector2.ZERO):
 		# apply friction
 		apply_friction(air_friction, delta)
 		# apply acceleration
-		air_accelerate(dir, air_speed, delta)
+		accelerate(dir, air_speed, air_accel, delta)
 
 	if max_speed > 0:
 		# enforce speed limit
@@ -60,28 +59,14 @@ func move(delta:float, max_slides: = 6) -> void:
 			velocity = velocity.slide(collision_norm)
 
 
-func accelerate(dir:Vector3, speed:float, delta:float) -> void:
+func accelerate(dir:Vector3, speed:float, accel:float, delta:float, flat: = false) -> void:
 	# get current speed towards desired direction
-	var current_speed: = velocity.length()
+	var current_speed: = velocity.length() if flat else velocity.dot(dir)
 	# calculate speed we need to make up to reach our desired speed
 	var add_speed: = speed - current_speed
 	if add_speed > 0:
-		# calculate acceleration and cap it to our desired speed
-		var accel: = minf(run_accel * speed * delta, add_speed)
-		# apply acceleration towards our desired direction
-		velocity += accel * dir
-
-
-func air_accelerate(dir:Vector3, speed:float, delta:float) -> void:
-	# get current speed towards desired direction
-	var current_speed: = velocity.dot(dir)
-	# calcuate speed we need to make up to reach our desired speed
-	var add_speed: = speed - current_speed
-	if add_speed > 0:
-		# calculate acceleration and cap it to our desired speed
-		var accel: = minf(air_accel * speed * delta, add_speed)
-		# apply acceleration towards our desired direction
-		velocity += accel * dir
+		# cap acceleration to our desired speed and apply towards our desired direction
+		velocity += minf(accel * speed * delta, add_speed) * dir
 
 
 func apply_friction(friction:float, delta:float) -> void:

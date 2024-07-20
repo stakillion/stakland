@@ -624,6 +624,7 @@ shape = SubResource("BoxShape3D_x688r")
 
 [node name="Camera" type="Camera3D" parent="Viewport/Camera"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.4)
+cull_mask = 1
 current = true
 
 [node name="Sprite3D" type="Sprite3D" parent="Viewport/Camera"]

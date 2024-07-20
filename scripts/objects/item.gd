@@ -14,6 +14,7 @@ func _ready() -> void:
 		var no_depth_mat: = mesh.get_active_material(0).duplicate() as StandardMaterial3D
 		no_depth_mat.no_depth_test = true
 		no_depth_mesh.set_surface_override_material(0, no_depth_mat)
+		no_depth_mesh.set_layer_mask(2)
 		no_depth_mesh.name = "NoDepth"
 		mesh.add_child(no_depth_mesh)
 		no_depth_mesh.position = Vector3.ZERO

@@ -172,6 +172,8 @@ sync_debug={
 
 [layer_names]
 
+3d_render/layer_1="world"
+3d_render/layer_2="viewmodel"
 3d_physics/layer_1="world"
 3d_physics/layer_2="objects"
 3d_physics/layer_3="items"

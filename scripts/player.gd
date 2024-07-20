@@ -212,7 +212,7 @@ func remove_pawn() -> void:
 
 @rpc("call_local", "reliable")
 func set_physics_parameter(property, value) -> void:
-	pawn.physics[property] = value
+	pawn[property] = value
 
 
 func cam_activate(follow:Node3D = null, zoom: = 0.0) -> void:

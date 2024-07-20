@@ -47,23 +47,21 @@ func _ready() -> void:
 
 
 func _physics_process(delta) -> void:
-	if !alive: desired_move = Vector2.ZERO
+	if !alive:
+		desired_move = Vector2.ZERO
 	if !vehicle:
-		apply_kinematics(delta, desired_move)
-	else:
-		vehicle.desired_move = desired_move
-
+		var dir: = Vector3(desired_move.y, 0.0, desired_move.x)
+		if crouching:
+			dir /= 3
+		apply_kinematics(delta, dir)
 	if !in_air:
 		jump_midair_count = 0
-
 	# smooth head movement for stairs/crouching/etc.
 	head_offset = lerp(head_offset, Vector3.ZERO, 32 * delta)
 	head.position = head_position + head_offset
-
 	# update position of object we're grabbing
 	if grab_object:
 		update_grab_pos(grab_object, delta)
-
 	# update shader fade position
 	if is_player: for mesh in find_children("*", "MeshInstance3D"):
 		mesh.set_instance_shader_parameter("fade_position", position)
@@ -85,6 +83,9 @@ func get_aim(distance: = 32768.0, exclude: = []) -> Dictionary:
 
 
 func jump(midair: = true) -> void:
+	if vehicle:
+		if "jump" in vehicle: vehicle.jump()
+		return
 	if !in_air:
 		velocity.y = jump_power
 		jump_midair_count = 0
@@ -183,8 +184,7 @@ func toggle_grab(object:RigidBody3D) -> void:
 	if object != grab_object:
 		# start grab
 		object.add_collision_exception_with(self)
-		#grab_angle = Quaternion(object.quaternion * head.quaternion).normalized().get_euler()
-		grab_angle = head.global_rotation - object.global_rotation
+		grab_angle = Basis(head.global_basis.inverse() * object.basis).get_euler()
 		grab_object = object
 	else:
 		# stop grab
@@ -199,10 +199,7 @@ func toggle_grab(object:RigidBody3D) -> void:
 func update_grab_pos(object:RigidBody3D, delta:float) -> void:
 	var new_pos:Vector3 = get_aim(1.90, [object]).position
 	object.linear_velocity = (new_pos - object.global_position) * (4096 * delta)
-
 	# set rotation relative to where we're looking
-	# TODO - figure out a better way to do this
-	#object.global_rotation = head.global_rotation + grab_angle
 	object.global_rotation = Basis(head.global_basis * Basis.from_euler(grab_angle)).get_euler()
 
 
