@@ -1,4 +1,4 @@
-[gd_scene load_steps=37 format=3 uid="uid://o70p27l476fn"]
+[gd_scene load_steps=47 format=3 uid="uid://o70p27l476fn"]
 
 [ext_resource type="Texture2D" uid="uid://loxh1icksh70" path="res://materials/textures/grass1.png" id="1_24n2b"]
 [ext_resource type="Script" path="res://scripts/levels/test_level.gd" id="1_nkfo3"]
@@ -9,6 +9,15 @@
 [ext_resource type="PackedScene" uid="uid://brhlexkymlrda" path="res://scenes/objects/skateboard.tscn" id="5_oqf6j"]
 [ext_resource type="Shader" path="res://materials/shaders/grass.gdshader" id="6_airvd"]
 [ext_resource type="Script" path="res://addons/zylann.hterrain/hterrain_texture_set.gd" id="7_leogj"]
+[ext_resource type="PackedScene" uid="uid://da2u54tp3s50n" path="res://scenes/props/nature_pack/tree1.tscn" id="10_dtkmb"]
+[ext_resource type="PackedScene" uid="uid://cid0734twy2j4" path="res://scenes/props/nature_pack/tree2.tscn" id="10_gmrkv"]
+[ext_resource type="PackedScene" uid="uid://dhwuq6egogve0" path="res://scenes/props/nature_pack/tree3.tscn" id="10_qev2m"]
+[ext_resource type="PackedScene" uid="uid://cwnw8hdrrbtli" path="res://scenes/props/nature_pack/aspen tree.tscn" id="13_5d11k"]
+[ext_resource type="PackedScene" uid="uid://7soyqw7d5lnx" path="res://scenes/props/nature_pack/tree_stump.tscn" id="14_rwpk5"]
+[ext_resource type="PackedScene" uid="uid://ddfpm56n5j8ol" path="res://scenes/props/radio_antenna.tscn" id="15_0uqk1"]
+[ext_resource type="PackedScene" uid="uid://4s4qqcobw3hn" path="res://scenes/props/nature_pack/bare_tree1.tscn" id="16_2qqka"]
+[ext_resource type="PackedScene" uid="uid://b8yk2lmx78r37" path="res://scenes/props/nature_pack/bare_tree2.tscn" id="17_dgenj"]
+[ext_resource type="PackedScene" uid="uid://c8t4bqn501db6" path="res://scenes/props/nature_pack/bush.tscn" id="18_aixp8"]
 
 [sub_resource type="Gradient" id="Gradient_r4md3"]
 interpolation_mode = 2
@@ -34,7 +43,6 @@ mie_eccentricity = 0.95
 mie_color = Color(1, 0.729412, 0.466667, 1)
 turbidity = 20.0
 ground_color = Color(1, 1, 1, 1)
-energy_multiplier = 1.5
 night_sky = SubResource("NoiseTexture2D_kapre")
 
 [sub_resource type="Sky" id="Sky_yfuus"]
@@ -56,17 +64,17 @@ uv1_scale = Vector3(0.1, 0.1, 0.1)
 uv1_triplanar = true
 texture_filter = 5
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kj4aw"]
-albedo_color = Color(0.607843, 0.607843, 1, 1)
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nlhrf"]
 albedo_texture = ExtResource("3_rkube")
-metallic = 1.0
 roughness = 0.75
 uv1_triplanar = true
 uv1_triplanar_sharpness = 150.0
 texture_filter = 5
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nlhrf"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kj4aw"]
+albedo_color = Color(0.607843, 0.607843, 1, 1)
 albedo_texture = ExtResource("3_rkube")
+metallic = 1.0
 roughness = 0.75
 uv1_triplanar = true
 uv1_triplanar_sharpness = 150.0
@@ -115,11 +123,14 @@ material = SubResource("StandardMaterial3D_rqnt2")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5n0si"]
 transparency = 1
-albedo_color = Color(0, 1, 0, 0.607843)
+albedo_color = Color(1, 1, 1, 0.25098)
 rim_enabled = true
 rim = 0.1
 
 [sub_resource type="SphereMesh" id="SphereMesh_xdasw"]
+material = SubResource("StandardMaterial3D_5n0si")
+
+[sub_resource type="SphereMesh" id="SphereMesh_fmfip"]
 material = SubResource("StandardMaterial3D_5n0si")
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_1136q"]
@@ -174,6 +185,9 @@ transform = Transform3D(-0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, -0.707107
 [node name="7" type="Node3D" parent="Spawns"]
 transform = Transform3D(-0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, -0.707107, 20, 0, -20)
 
+[node name="8" type="Node3D" parent="Spawns"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, -8.5, 10, -21.5)
+
 [node name="MainCamera" type="Camera3D" parent="."]
 transform = Transform3D(0.707107, 0.122788, -0.696364, 0, 0.984808, 0.173648, 0.707107, -0.122788, 0.696364, -25, 10, 25)
 current = true
@@ -189,6 +203,7 @@ environment = SubResource("Environment_ifkfe")
 
 [node name="Boundary" type="Area3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -256, 0)
+collision_mask = 65535
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Boundary"]
 shape = SubResource("WorldBoundaryShape3D_2e1en")
@@ -198,25 +213,38 @@ use_collision = true
 collision_mask = 0
 
 [node name="Grass" type="CSGBox3D" parent="MainLand"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.5, -1.5, 0)
-size = Vector3(35, 3, 50)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.5, -4, 0)
+size = Vector3(35, 8, 50)
 material = SubResource("StandardMaterial3D_04url")
 
 [node name="Grass2" type="CSGBox3D" parent="MainLand"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.5, -1.5, -7.5)
-size = Vector3(15, 3, 35)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.5, -4, -7.5)
+size = Vector3(15, 8, 35)
 material = SubResource("StandardMaterial3D_04url")
 
 [node name="Grass3" type="CSGBox3D" parent="MainLand"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.5, -1.5, 17.5)
-size = Vector3(15, 3, 15)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.5, -4, 17.5)
+size = Vector3(15, 8, 15)
 material = SubResource("StandardMaterial3D_04url")
+
+[node name="RoomCarve" type="CSGBox3D" parent="MainLand"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -5.24, 0)
+operation = 2
+size = Vector3(50, 4.48, 50)
+material = SubResource("StandardMaterial3D_nlhrf")
+
+[node name="PitRim" type="CSGCylinder3D" parent="MainLand"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.5, 0, 17.5)
+radius = 4.5
+height = 1.0
+sides = 32
+material = SubResource("StandardMaterial3D_nlhrf")
 
 [node name="PitCarve" type="CSGSphere3D" parent="MainLand"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.5, 0.5, 17.5)
 operation = 2
 radius = 4.0
-radial_segments = 64
+radial_segments = 32
 rings = 2
 material = SubResource("StandardMaterial3D_kj4aw")
 
@@ -225,14 +253,14 @@ use_collision = true
 collision_mask = 0
 
 [node name="Ground" type="CSGBox3D" parent="Land2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, -5, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, -8, 0)
 use_collision = true
-size = Vector3(50, 10, 50)
+size = Vector3(50, 16, 50)
 material = SubResource("StandardMaterial3D_nlhrf")
 
 [node name="Box" type="CSGBox3D" parent="Land2/Ground"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 7, 0)
-size = Vector3(33, 4, 36)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 9, 0)
+size = Vector3(33, 6, 36)
 material = SubResource("StandardMaterial3D_nlhrf")
 
 [node name="RoomCarve" type="CSGBox3D" parent="Land2"]
@@ -285,7 +313,7 @@ material = SubResource("StandardMaterial3D_nlhrf")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, -20)
 use_collision = true
 size = Vector3(20, 10, 0.5)
-material = SubResource("StandardMaterial3D_nlhrf")
+material = SubResource("StandardMaterial3D_76jkt")
 
 [node name="Platform" type="CSGBox3D" parent="Obstacles"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.5, 0.125, 17.5)
@@ -418,133 +446,229 @@ depth = 35.99
 material = SubResource("StandardMaterial3D_kj4aw")
 
 [node name="NorthEdge" type="CSGBox3D" parent="Obstacles"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25.25, -1.25, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25.25, -7, 0)
 use_collision = true
-size = Vector3(0.5, 3.5, 50)
-material = SubResource("StandardMaterial3D_nlhrf")
+size = Vector3(0.5, 16, 50)
+material = SubResource("StandardMaterial3D_76jkt")
+
+[node name="DoorCarve" type="CSGBox3D" parent="Obstacles/NorthEdge"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
+operation = 2
+size = Vector3(1, 5, 6)
+material = SubResource("StandardMaterial3D_76jkt")
 
 [node name="EastEdge" type="CSGBox3D" parent="Obstacles"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, -1.25, 25.25)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, -7, 25.25)
 use_collision = true
-size = Vector3(100, 3.5, 0.5)
-material = SubResource("StandardMaterial3D_nlhrf")
+size = Vector3(100, 16, 0.5)
+material = SubResource("StandardMaterial3D_76jkt")
 
 [node name="SouthEdge" type="CSGBox3D" parent="Obstacles"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -75.25, -1.25, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -75.25, -7, 0)
 use_collision = true
-size = Vector3(0.5, 3.5, 50)
-material = SubResource("StandardMaterial3D_nlhrf")
+size = Vector3(0.5, 16, 50)
+material = SubResource("StandardMaterial3D_76jkt")
 
 [node name="WestEdge" type="CSGBox3D" parent="Obstacles"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, -1.25, -25.25)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, -7, -25.25)
 use_collision = true
-size = Vector3(100, 3.5, 0.5)
-material = SubResource("StandardMaterial3D_nlhrf")
+size = Vector3(100, 16, 0.5)
+material = SubResource("StandardMaterial3D_76jkt")
 
 [node name="Staircase" type="CSGBox3D" parent="Obstacles"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.5, 9.5, -21.75)
 use_collision = true
 size = Vector3(3, 1, 3)
-material = SubResource("StandardMaterial3D_nlhrf")
+material = SubResource("StandardMaterial3D_76jkt")
 
 [node name="CSGBox3D3" type="CSGBox3D" parent="Obstacles/Staircase"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.75003, -0.5, 0)
 size = Vector3(0.5, 1, 3)
-material = SubResource("StandardMaterial3D_nlhrf")
+material = SubResource("StandardMaterial3D_76jkt")
 
 [node name="CSGBox3D2" type="CSGBox3D" parent="Obstacles/Staircase/CSGBox3D3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.5, 0)
 size = Vector3(0.5, 1, 3)
-material = SubResource("StandardMaterial3D_nlhrf")
+material = SubResource("StandardMaterial3D_76jkt")
 
 [node name="CSGBox3D3" type="CSGBox3D" parent="Obstacles/Staircase/CSGBox3D3/CSGBox3D2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.5, 0)
 size = Vector3(0.5, 1, 3)
-material = SubResource("StandardMaterial3D_nlhrf")
+material = SubResource("StandardMaterial3D_76jkt")
 
 [node name="CSGBox3D2" type="CSGBox3D" parent="Obstacles/Staircase/CSGBox3D3/CSGBox3D2/CSGBox3D3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.5, 0)
 use_collision = true
 size = Vector3(0.5, 1, 3)
-material = SubResource("StandardMaterial3D_nlhrf")
+material = SubResource("StandardMaterial3D_76jkt")
 
 [node name="CSGBox3D3" type="CSGBox3D" parent="Obstacles/Staircase/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.5, 0)
 size = Vector3(0.5, 1, 3)
-material = SubResource("StandardMaterial3D_nlhrf")
+material = SubResource("StandardMaterial3D_76jkt")
 
 [node name="CSGBox3D2" type="CSGBox3D" parent="Obstacles/Staircase/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.5, 0)
 size = Vector3(0.5, 1, 3)
-material = SubResource("StandardMaterial3D_nlhrf")
+material = SubResource("StandardMaterial3D_76jkt")
 
 [node name="CSGBox3D3" type="CSGBox3D" parent="Obstacles/Staircase/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.5, 0)
 size = Vector3(0.5, 1, 3)
-material = SubResource("StandardMaterial3D_nlhrf")
+material = SubResource("StandardMaterial3D_76jkt")
 
 [node name="CSGBox3D2" type="CSGBox3D" parent="Obstacles/Staircase/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.5, 0)
 use_collision = true
 size = Vector3(0.5, 1, 3)
-material = SubResource("StandardMaterial3D_nlhrf")
+material = SubResource("StandardMaterial3D_76jkt")
 
 [node name="CSGBox3D3" type="CSGBox3D" parent="Obstacles/Staircase/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.5, 0)
 size = Vector3(0.5, 1, 3)
-material = SubResource("StandardMaterial3D_nlhrf")
+material = SubResource("StandardMaterial3D_76jkt")
 
 [node name="CSGBox3D2" type="CSGBox3D" parent="Obstacles/Staircase/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.5, 0)
 size = Vector3(0.5, 1, 3)
-material = SubResource("StandardMaterial3D_nlhrf")
+material = SubResource("StandardMaterial3D_76jkt")
 
 [node name="CSGBox3D3" type="CSGBox3D" parent="Obstacles/Staircase/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.5, 0)
 size = Vector3(0.5, 1, 3)
-material = SubResource("StandardMaterial3D_nlhrf")
+material = SubResource("StandardMaterial3D_76jkt")
 
 [node name="CSGBox3D2" type="CSGBox3D" parent="Obstacles/Staircase/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.5, 0)
 use_collision = true
 size = Vector3(0.5, 1, 3)
-material = SubResource("StandardMaterial3D_nlhrf")
+material = SubResource("StandardMaterial3D_76jkt")
 
 [node name="CSGBox3D3" type="CSGBox3D" parent="Obstacles/Staircase/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.5, 0)
 size = Vector3(0.5, 1, 3)
-material = SubResource("StandardMaterial3D_nlhrf")
+material = SubResource("StandardMaterial3D_76jkt")
 
 [node name="CSGBox3D2" type="CSGBox3D" parent="Obstacles/Staircase/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.5, 0)
 size = Vector3(0.5, 1, 3)
-material = SubResource("StandardMaterial3D_nlhrf")
+material = SubResource("StandardMaterial3D_76jkt")
 
 [node name="CSGBox3D3" type="CSGBox3D" parent="Obstacles/Staircase/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.5, 0)
 size = Vector3(0.5, 1, 3)
-material = SubResource("StandardMaterial3D_nlhrf")
+material = SubResource("StandardMaterial3D_76jkt")
 
 [node name="CSGBox3D2" type="CSGBox3D" parent="Obstacles/Staircase/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.5, 0)
 use_collision = true
 size = Vector3(0.5, 1, 3)
-material = SubResource("StandardMaterial3D_nlhrf")
+material = SubResource("StandardMaterial3D_76jkt")
 
 [node name="CSGBox3D3" type="CSGBox3D" parent="Obstacles/Staircase/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.5, 0)
 size = Vector3(0.5, 1, 3)
-material = SubResource("StandardMaterial3D_nlhrf")
+material = SubResource("StandardMaterial3D_76jkt")
 
 [node name="CSGBox3D2" type="CSGBox3D" parent="Obstacles/Staircase/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.5, 0)
 size = Vector3(0.5, 1, 3)
-material = SubResource("StandardMaterial3D_nlhrf")
+material = SubResource("StandardMaterial3D_76jkt")
 
 [node name="CSGBox3D3" type="CSGBox3D" parent="Obstacles/Staircase/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.5, 0)
 size = Vector3(0.5, 1, 3)
-material = SubResource("StandardMaterial3D_nlhrf")
+material = SubResource("StandardMaterial3D_76jkt")
+
+[node name="Staircase2" type="CSGBox3D" parent="Obstacles"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 27, 0.5, 16)
+use_collision = true
+size = Vector3(3, 1, 3)
+material = SubResource("StandardMaterial3D_76jkt")
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="Obstacles/Staircase2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.75003, -0.5, 0)
+size = Vector3(0.5, 1, 3)
+material = SubResource("StandardMaterial3D_76jkt")
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="Obstacles/Staircase2/CSGBox3D3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.5, 0)
+size = Vector3(0.5, 1, 3)
+material = SubResource("StandardMaterial3D_76jkt")
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="Obstacles/Staircase2/CSGBox3D3/CSGBox3D2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.5, 0)
+size = Vector3(0.5, 1, 3)
+material = SubResource("StandardMaterial3D_76jkt")
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="Obstacles/Staircase2/CSGBox3D3/CSGBox3D2/CSGBox3D3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.5, 0)
+use_collision = true
+size = Vector3(0.5, 1, 3)
+material = SubResource("StandardMaterial3D_76jkt")
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="Obstacles/Staircase2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.5, 0)
+size = Vector3(0.5, 1, 3)
+material = SubResource("StandardMaterial3D_76jkt")
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="Obstacles/Staircase2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.5, 0)
+size = Vector3(0.5, 1, 3)
+material = SubResource("StandardMaterial3D_76jkt")
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="Obstacles/Staircase2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.5, 0)
+size = Vector3(0.5, 1, 3)
+material = SubResource("StandardMaterial3D_76jkt")
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="Obstacles/Staircase2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.5, 0)
+use_collision = true
+size = Vector3(0.5, 1, 3)
+material = SubResource("StandardMaterial3D_76jkt")
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="Obstacles/Staircase2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.5, 0)
+size = Vector3(0.5, 1, 3)
+material = SubResource("StandardMaterial3D_76jkt")
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="Obstacles/Staircase2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.5, 0)
+size = Vector3(0.5, 1, 3)
+material = SubResource("StandardMaterial3D_76jkt")
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="Obstacles/Staircase2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.5, 0)
+size = Vector3(0.5, 1, 3)
+material = SubResource("StandardMaterial3D_76jkt")
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="Obstacles/Staircase2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.5, 0)
+use_collision = true
+size = Vector3(0.5, 1, 3)
+material = SubResource("StandardMaterial3D_76jkt")
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="Obstacles/Staircase2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.5, 0)
+size = Vector3(0.5, 1, 3)
+material = SubResource("StandardMaterial3D_76jkt")
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="Obstacles/Staircase2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.5, 0)
+size = Vector3(0.5, 1, 3)
+material = SubResource("StandardMaterial3D_76jkt")
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="Obstacles/Staircase2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.5, 0)
+size = Vector3(0.5, 1, 3)
+material = SubResource("StandardMaterial3D_76jkt")
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="Obstacles/Staircase2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3/CSGBox3D2/CSGBox3D3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.5, 0)
+use_collision = true
+size = Vector3(0.5, 1, 3)
+material = SubResource("StandardMaterial3D_76jkt")
 
 [node name="BlueLamp" type="RigidBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, -5.97, -3)
@@ -594,6 +718,21 @@ shape = SubResource("SphereShape3D_8psvk")
 light_color = Color(0, 1, 0, 1)
 light_energy = 5.0
 
+[node name="WhiteLamp" type="RigidBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, -7, -20)
+collision_layer = 2
+collision_mask = 15
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="WhiteLamp"]
+mesh = SubResource("SphereMesh_fmfip")
+skeleton = NodePath("../..")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WhiteLamp"]
+shape = SubResource("SphereShape3D_8psvk")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="WhiteLamp"]
+light_energy = 5.0
+
 [node name="Skateboard" parent="." instance=ExtResource("5_oqf6j")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30.5036, 0.130846, 7.28395)
 
@@ -636,12 +775,13 @@ texture = SubResource("PlaceholderTexture2D_yqspg")
 [node name="HTerrain" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -7.5, 0)
 script = ExtResource("4_4523p")
+ambient_wind = 0.1
 centered = true
 _terrain_data = ExtResource("5_83pfn")
 chunk_size = 32
 collision_enabled = true
 collision_layer = 1
-collision_mask = 1
+collision_mask = 65535
 shader_type = "Custom"
 custom_shader = ExtResource("6_airvd")
 custom_globalmap_shader = null
@@ -653,4 +793,110 @@ shader_params/u_depth_blending = true
 shader_params/u_triplanar = null
 shader_params/u_tile_reduction = null
 
+[node name="Tree1" parent="." instance=ExtResource("10_dtkmb")]
+transform = Transform3D(2.8269, 0, -2.82996, 0, 4, 0, 2.82996, 0, 2.8269, 42.0214, -6.8403, 48.7885)
+
+[node name="Skeleton3D" parent="Tree1/RootNode/Armature" index="0"]
+bones/0/position = Vector3(-0.0812583, 2.92884, 3.03592)
+bones/2/position = Vector3(0.11387, -3.67346, 3.09329)
+bones/4/position = Vector3(0.378589, -0.0291327, 5.27217)
+bones/6/position = Vector3(7.63211e-16, -1.72922, 4.64448)
+bones/8/position = Vector3(6.14531e-16, 1.57316, 4.39948)
+bones/10/position = Vector3(2.89018, -1.24903, 3.26242)
+bones/12/position = Vector3(1.71871, 1.56699, 4.57589)
+bones/14/position = Vector3(1.94457, 2.72813, 2.99443)
+bones/16/position = Vector3(0.512982, -2.64282, 2.52963)
+bones/18/position = Vector3(-1.44902, -2.42728, 3.43001)
+bones/20/position = Vector3(-1.39541, 0.533795, 3.88077)
+bones/22/position = Vector3(2.52804, 0.0859832, 4.61354)
+
+[node name="Tree2" parent="." instance=ExtResource("10_gmrkv")]
+transform = Transform3D(-1.84434, 0, 2.36609, 0, 3, 0, -2.36609, 0, -1.84434, 21.6032, -11.3023, 66.8189)
+
+[node name="CollisionShape3D" parent="Tree2" index="0"]
+transform = Transform3D(1, -2.98023e-08, 0, 0, -1.19209e-07, 1, -2.98023e-08, -1, -1.19209e-07, 0, 0, 0)
+
+[node name="Skeleton3D" parent="Tree2/RootNode/Armature" index="0"]
+bones/0/position = Vector3(-0.897728, 2.48318, 2.61147)
+bones/2/position = Vector3(-0.732291, -3.1145, 2.65976)
+bones/4/position = Vector3(-0.507852, -0.0246998, 4.52277)
+bones/6/position = Vector3(-0.828834, -1.46609, 3.96572)
+bones/8/position = Vector3(-0.828834, 1.33379, 3.73167)
+bones/10/position = Vector3(1.62157, -1.05898, 2.81151)
+bones/12/position = Vector3(0.628349, 1.32855, 3.94331)
+bones/14/position = Vector3(0.819848, 2.31301, 2.54902)
+bones/16/position = Vector3(-0.393909, -2.24068, 2.26424)
+bones/18/position = Vector3(-2.05737, -2.05794, 2.90024)
+bones/20/position = Vector3(-2.01192, 0.452571, 3.32114)
+bones/22/position = Vector3(1.31453, 0.0728997, 3.96488)
+
+[node name="Tree3" parent="." instance=ExtResource("10_qev2m")]
+transform = Transform3D(-2.40345, 0, -1.79539, 0, 3, 0, 1.79539, 0, -2.40345, 58.6219, -6.50627, 23.754)
+
+[node name="Skeleton3D" parent="Tree3/RootNode/Armature" index="0"]
+bones/0/position = Vector3(-1.37492, 2.40365, 3.6989)
+bones/2/position = Vector3(-0.0960314, -3.57579, 3.70351)
+bones/4/position = Vector3(-0.126096, 0.213898, 5.55983)
+bones/6/position = Vector3(-1.86276, -0.591235, 4.62538)
+bones/8/position = Vector3(-0.828834, 1.33379, 4.79969)
+bones/10/position = Vector3(2.00332, -1.77477, 3.85674)
+bones/12/position = Vector3(1.0101, 1.4558, 4.97048)
+bones/14/position = Vector3(1.37657, 2.5357, 3.59786)
+bones/16/position = Vector3(0.210538, -1.90664, 4.26951)
+bones/18/position = Vector3(-2.45503, -1.56483, 3.987)
+bones/20/position = Vector3(-3.04584, 0.54801, 3.62168)
+bones/22/position = Vector3(2.26892, 0.518282, 4.21285)
+
+[node name="AspenTree1" parent="." instance=ExtResource("13_5d11k")]
+transform = Transform3D(1.25, 0, 0, 0, 1.25, 0, 0, 0, 1.25, 22, 0, -22)
+
+[node name="AspenTree2" parent="." instance=ExtResource("13_5d11k")]
+transform = Transform3D(0.468258, 0, 1.15898, 0, 1.25, 0, -1.15898, 0, 0.468258, -22, 0, -22)
+
+[node name="AspenTree3" parent="." instance=ExtResource("13_5d11k")]
+transform = Transform3D(-1.48352, 0, -0.221714, 0, 1.5, 0, 0.221714, 0, -1.48352, 6.54966, -7.56248, -45.4062)
+
+[node name="AspenTree4" parent="." instance=ExtResource("13_5d11k")]
+transform = Transform3D(0.764121, 0, 1.05172, 0, 1.3, 0, -1.05172, 0, 0.764121, 18.5136, -7.56248, -35.8339)
+
+[node name="AspenTree5" parent="." instance=ExtResource("13_5d11k")]
+transform = Transform3D(-0.903056, 0, -0.935142, 0, 1.3, 0, 0.935142, 0, -0.903056, 13.8009, 9.05179, -62.3514)
+
+[node name="AspenTree6" parent="." instance=ExtResource("13_5d11k")]
+transform = Transform3D(0.598124, 0, 1.37559, 0, 1.5, 0, -1.37559, 0, 0.598124, 34.994, 10.7573, -52.8251)
+
+[node name="AspenTree7" parent="." instance=ExtResource("13_5d11k")]
+transform = Transform3D(0.439801, 0, -1.1165, 0, 1.2, 0, 1.1165, 0, 0.439801, -10.4972, 3.55515, -67.8907)
+
+[node name="AspenTree8" parent="." instance=ExtResource("13_5d11k")]
+transform = Transform3D(0.677873, 0, 1.559, 0, 1.7, 0, -1.559, 0, 0.677873, 26.3259, 10.7573, -58.1805)
+
+[node name="TreeStump" parent="." instance=ExtResource("14_rwpk5")]
+transform = Transform3D(0.235377, 0, -2.99075, 0, 3, 0, 2.99075, 0, 0.235377, -17.2562, -17.8722, 106.707)
+
+[node name="RadioAntenna" parent="." instance=ExtResource("15_0uqk1")]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 76.8778, 31.643, -84.4864)
+
+[node name="BareTree1" parent="." instance=ExtResource("16_2qqka")]
+transform = Transform3D(-4.68507, 0, 3.74835, 0, 6, 0, -3.74835, 0, -4.68507, -79.6628, -1.47577, -73.0652)
+
+[node name="BareTree2" parent="." instance=ExtResource("17_dgenj")]
+transform = Transform3D(1.93909, 0, -2.28909, 0, 3, 0, 2.28909, 0, 1.93909, -51.1729, -0.261215, -86.4023)
+
+[node name="Bush" parent="." instance=ExtResource("18_aixp8")]
+transform = Transform3D(-2.16557, 0, 2.07613, 0, 3, 0, -2.07613, 0, -2.16557, -82.6524, -2.27711, -61.2934)
+
+[node name="Bush2" parent="." instance=ExtResource("18_aixp8")]
+transform = Transform3D(-2.38324, 0, 1.82213, 0, 3, 0, -1.82213, 0, -2.38324, -45.1789, -0.997595, -76.5517)
+
+[node name="Bush3" parent="." instance=ExtResource("18_aixp8")]
+transform = Transform3D(2.30898, 0, -2.21554, 0, 3.2, 0, 2.21554, 0, 2.30898, -78.2912, -2.93896, -50.8782)
+
+[node name="Bush4" parent="." instance=ExtResource("18_aixp8")]
+transform = Transform3D(1.77539, 0, 2.16517, 0, 2.8, 0, -2.16517, 0, 1.77539, -59.4281, 0.346802, -81.8277)
+
 [connection signal="body_entered" from="Boundary" to="." method="_on_world_boundary_entered"]
+
+[editable path="Tree1"]
+[editable path="Tree2"]
+[editable path="Tree3"]

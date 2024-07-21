@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://cr5r7mjrcl1qd"]
+[gd_scene load_steps=20 format=3 uid="uid://cr5r7mjrcl1qd"]
 
 [ext_resource type="Script" path="res://scripts/actors/pawn.gd" id="1_txe8y"]
 [ext_resource type="PackedScene" uid="uid://ds3wnxy8jxm8d" path="res://scenes/objects/rocket_launcher.tscn" id="2_4ktkv"]
@@ -24,6 +24,30 @@ shader_parameter/fade_max = 1.5
 material = SubResource("ShaderMaterial_x0yhv")
 radius = 0.3
 height = 1.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_bgw1u"]
+render_priority = 0
+shader = ExtResource("2_gydwv")
+shader_parameter/albedo = Color(1, 1, 1, 1)
+shader_parameter/uv_scale = null
+shader_parameter/uv_offset = null
+shader_parameter/fade_min = 1.0
+shader_parameter/fade_max = 1.5
+
+[sub_resource type="BoxMesh" id="BoxMesh_emr3e"]
+material = SubResource("ShaderMaterial_bgw1u")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_babvj"]
+render_priority = 0
+shader = ExtResource("2_gydwv")
+shader_parameter/albedo = Color(0.156863, 0.156863, 0.156863, 1)
+shader_parameter/uv_scale = null
+shader_parameter/uv_offset = null
+shader_parameter/fade_min = 1.0
+shader_parameter/fade_max = 1.5
+
+[sub_resource type="BoxMesh" id="BoxMesh_5uyur"]
+material = SubResource("ShaderMaterial_babvj")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_7s0i5"]
 render_priority = 0
@@ -60,9 +84,17 @@ script = ExtResource("1_txe8y")
 [node name="Collision" type="CollisionShape3D" parent="."]
 shape = SubResource("CapsuleShape3D_q0jnf")
 
-[node name="BodyMesh" type="MeshInstance3D" parent="."]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
 mesh = SubResource("CapsuleMesh_vc84k")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.4, 0, 0, 0, 0.5, 0, 0, 0, 0.25, 0, 0, 0.25)
+mesh = SubResource("BoxMesh_emr3e")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.02, 0, 0, 0, 0.6, 0, 0, 0, 0.02, -0.1, 0.3, 0.3)
+mesh = SubResource("BoxMesh_5uyur")
 
 [node name="Head" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0.000523597, 0, -0.000523597, 1, 0, 0.625, 0)
@@ -75,17 +107,17 @@ visible = false
 
 [node name="RocketLauncher" parent="Head/Inventory" instance=ExtResource("2_4ktkv")]
 
-[node name="HeadMesh" type="MeshInstance3D" parent="Head"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Head"]
 mesh = SubResource("SphereMesh_axx00")
 
-[node name="LeftEye" type="Sprite3D" parent="Head/HeadMesh"]
+[node name="LeftEye" type="Sprite3D" parent="Head/MeshInstance3D"]
 transform = Transform3D(-1, 0, -8.74228e-08, -5.89806e-17, 1, 0, 8.74229e-08, 0, -1, -0.1, 0.05, -0.3)
 material_override = SubResource("StandardMaterial3D_fbb8o")
 pixel_size = 0.1
 double_sided = false
 texture = SubResource("PlaceholderTexture2D_165mo")
 
-[node name="RightEye" type="Sprite3D" parent="Head/HeadMesh"]
+[node name="RightEye" type="Sprite3D" parent="Head/MeshInstance3D"]
 transform = Transform3D(-1, 0, -8.74228e-08, -1.04083e-17, 1, 0, 8.74228e-08, 0, -1, 0.102801, 0.0499988, -0.297629)
 material_override = SubResource("StandardMaterial3D_h784r")
 modulate = Color(0, 0, 1, 1)

@@ -12,7 +12,7 @@ func find_player_spawn() -> Node3D:
 	return $Spawns.get_children().pick_random()
 
 
-func _on_world_boundary_entered(body:PhysicsBody3D) -> void:
+func _on_world_boundary_entered(body:Node3D) -> void:
 	# teleport props to their spawn
 	if body is RigidBody3D && body.has_meta("spawn_pos"):
 		body.global_position = body.get_meta("spawn_pos")
