@@ -87,6 +87,6 @@ func _on_fullscreen_button_pressed() -> void:
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
 
 
-func _on_physics_setting_value_changed(value:float, property:String, label:String, node:Node) -> void:
+func _on_physics_setting_value_changed(value:float, property:String, label:String, node:Node) -> void:	
 	Player.set_physics_parameter.rpc(property, value)
 	node.find_child("Label").text = "%s: %f" % [label, value]

@@ -9,9 +9,11 @@ var user:Pawn = null
 func _physics_process(delta):
 	if user && "desired_move" in user:
 		var dir: = Vector3(user.desired_move.y, 0.0, user.desired_move.x)
+		dir = dir.rotated(Vector3.UP, -user.rotation.y)
+		
+		
 		apply_kinematics(delta, dir)
 		user.position = seat.global_position
-		rotation.y = user.rotation.y
 	else:
 		apply_kinematics(delta)
 

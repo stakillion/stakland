@@ -24,7 +24,6 @@ seat = NodePath("Seat")
 run_speed = 20.0
 run_accel = 1.0
 run_friction = 1.0
-air_speed = 1.0
 air_accel = 30.0
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]

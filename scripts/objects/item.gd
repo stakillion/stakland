@@ -3,7 +3,6 @@ class_name Item extends RigidBody3D
 @export var cooldown: = 500
 @onready var _collision_layer: = collision_layer
 
-var last_use:int
 var user:Pawn = null
 
 

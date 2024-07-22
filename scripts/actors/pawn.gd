@@ -21,6 +21,7 @@ var head_position: = Vector3()
 var head_offset: = Vector3()
 
 var active_item:Item
+var next_use_time:int
 var grab_object:RigidBody3D
 var grab_angle:Vector3
 
@@ -52,7 +53,7 @@ func _physics_process(delta) -> void:
 	if !vehicle:
 		var dir: = Vector3(desired_move.y, 0.0, desired_move.x)
 		if crouching:
-			dir /= 3
+			dir /= 2.5
 		apply_kinematics(delta, dir)
 	if !in_air:
 		jump_midair_count = 0
@@ -109,6 +110,10 @@ func crouch(state:bool) -> void:
 
 
 func interact() -> void:
+	var tick: = Time.get_ticks_msec()
+	if next_use_time > tick:
+		return
+
 	var target:PhysicsBody3D
 	if vehicle:
 		target = vehicle
@@ -121,16 +126,23 @@ func interact() -> void:
 			target.activate(self)
 		elif target is RigidBody3D:
 			toggle_grab(target)
+		next_use_time = tick + 200
 
 
 func action() -> void:
+	var tick: = Time.get_ticks_msec()
+	if next_use_time > tick:
+		return
+
 	if grab_object:
 		toggle_grab(grab_object)
+		next_use_time = tick + 200
 	elif active_item:
 		if active_item.has_method("action"):
 			active_item.action()
 		elif active_item.has_method("activate"):
 			active_item.activate(self)
+		next_use_time = tick + active_item.cooldown
 	else:
 		interact()
 
@@ -173,7 +185,6 @@ func set_active_item(item:Item) -> void:
 			inv_item.process_mode = Node.PROCESS_MODE_DISABLED
 			inv_item.visible = false
 	if item:
-		item.last_use = Time.get_ticks_msec()
 		item.process_mode = Node.PROCESS_MODE_INHERIT
 		item.visible = true
 
@@ -193,7 +204,7 @@ func toggle_grab(object:RigidBody3D) -> void:
 		grab_object = null
 
 	if active_item:
-		active_item.last_use = Time.get_ticks_msec()
+		next_use_time = Time.get_ticks_msec() + active_item.cooldown
 
 
 func update_grab_pos(object:RigidBody3D, delta:float) -> void:

@@ -3,8 +3,8 @@ class_name KinematicBody extends PhysicsBody3D
 @export var run_speed: = 8.0
 @export var run_accel: = 10.0
 @export var run_friction: = 8.0
-@export var air_speed: = 8.0
-@export var air_accel: = 1.0
+@export var air_speed: = 1.0
+@export var air_accel: = 15.0
 @export var air_friction: = 0.0
 @export var gravity: = 20.0
 @export var max_speed: = 200.0

@@ -583,7 +583,6 @@ bones/23/rotation = Quaternion(-7.52316e-37, 0, -3.56691e-30, 1)
 bones/23/scale = Vector3(1, 1, 1)
 
 [node name="Circle" type="MeshInstance3D" parent="RootNode/Armature/Skeleton3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("ArrayMesh_ib213")
 skin = SubResource("Skin_gqfev")
 

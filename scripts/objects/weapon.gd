@@ -5,11 +5,6 @@ extends Item
 
 
 func action() -> void:
-	var tick: = Time.get_ticks_msec()
-	if last_use + cooldown > tick:
-		return
-	last_use = tick
-
 	if is_multiplayer_authority():
 		var fire_pos: = global_position
 		var fire_ang: = global_rotation
