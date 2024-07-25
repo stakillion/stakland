@@ -18,6 +18,17 @@ func _notification(what:int) -> void:
 		visible = true
 
 
+func update_main_menu() -> void:
+	if !Player.pawn:
+		$MainMenu/PlayButton.text = "Play"
+	else:
+		$MainMenu/PlayButton.text = "Resume"
+	if Game.mp_status == 2:
+		$MainMenu/ReloadButton.disabled = true
+	else:
+		$MainMenu/ReloadButton.disabled = false
+
+
 func update_settings() -> void:
 	if Player.pawn:
 		for node in $PlayerMenu/PhysicsSettings.get_children():
@@ -56,10 +67,15 @@ func _on_visibility_changed() -> void:
 		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
 
-func _on_PlayButton_pressed() -> void:
+func _on_play_button_pressed() -> void:
 	if !Player.pawn:
 		Player.spawn.rpc()
 	visible = false
+
+
+func _on_reload_button_pressed() -> void:
+	if multiplayer.is_server():
+		Game.load_level.rpc(get_tree().current_scene.scene_file_path)
 
 
 func _on_respawn_button_pressed() -> void:
@@ -76,7 +92,7 @@ func _on_connect_button_pressed() -> void:
 		Game.leave_game()
 
 
-func _on_QuitButton_pressed() -> void:
+func _on_quit_button_pressed() -> void:
 	get_tree().quit()
 
 
@@ -90,3 +106,7 @@ func _on_fullscreen_button_pressed() -> void:
 func _on_physics_setting_value_changed(value:float, property:String, label:String, node:Node) -> void:	
 	Player.set_physics_parameter.rpc(property, value)
 	node.find_child("Label").text = "%s: %f" % [label, value]
+
+
+func _on_color_picker_button_color_changed(color):
+	Player.set_player_color.rpc(color)

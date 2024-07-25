@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://cr5r7mjrcl1qd"]
+[gd_scene load_steps=18 format=3 uid="uid://cr5r7mjrcl1qd"]
 
 [ext_resource type="Script" path="res://scripts/actors/pawn.gd" id="1_txe8y"]
 [ext_resource type="PackedScene" uid="uid://ds3wnxy8jxm8d" path="res://scenes/objects/rocket_launcher.tscn" id="2_4ktkv"]
@@ -11,7 +11,7 @@
 radius = 0.3
 height = 1.5
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_x0yhv"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_7s0i5"]
 render_priority = 0
 shader = ExtResource("2_gydwv")
 shader_parameter/albedo = Color(1, 1, 1, 1)
@@ -21,21 +21,12 @@ shader_parameter/fade_min = 1.0
 shader_parameter/fade_max = 1.5
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_vc84k"]
-material = SubResource("ShaderMaterial_x0yhv")
+material = SubResource("ShaderMaterial_7s0i5")
 radius = 0.3
 height = 1.0
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_bgw1u"]
-render_priority = 0
-shader = ExtResource("2_gydwv")
-shader_parameter/albedo = Color(1, 1, 1, 1)
-shader_parameter/uv_scale = null
-shader_parameter/uv_offset = null
-shader_parameter/fade_min = 1.0
-shader_parameter/fade_max = 1.5
-
 [sub_resource type="BoxMesh" id="BoxMesh_emr3e"]
-material = SubResource("ShaderMaterial_bgw1u")
+material = SubResource("ShaderMaterial_7s0i5")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_babvj"]
 render_priority = 0
@@ -48,15 +39,6 @@ shader_parameter/fade_max = 1.5
 
 [sub_resource type="BoxMesh" id="BoxMesh_5uyur"]
 material = SubResource("ShaderMaterial_babvj")
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_7s0i5"]
-render_priority = 0
-shader = ExtResource("2_gydwv")
-shader_parameter/albedo = Color(1, 1, 1, 1)
-shader_parameter/uv_scale = null
-shader_parameter/uv_offset = null
-shader_parameter/fade_min = 1.0
-shader_parameter/fade_max = 1.5
 
 [sub_resource type="SphereMesh" id="SphereMesh_axx00"]
 material = SubResource("ShaderMaterial_7s0i5")

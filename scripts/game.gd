@@ -66,7 +66,9 @@ func host_game() -> bool:
 	if peer.create_server(mp_port) != OK:
 		return false
 	multiplayer.multiplayer_peer = peer
-	_on_connected_to_server()
+	update_player_id()
+	mp_status = 1
+	menu.update_mp_menu()
 	# attempt UPNP port forwarding
 	upnp_thread = Thread.new()
 	upnp_thread.start(upnp_setup.bind(mp_port))
@@ -85,7 +87,15 @@ func leave_game() -> void:
 	for player in players.get_children():
 		if player != Player:
 			multiplayer.multiplayer_peer.disconnect_peer(player.name.to_int())
-	multiplayer.multiplayer_peer.host.destroy()
+	multiplayer.multiplayer_peer.host.destroy.call_deferred()
+
+
+@rpc("authority", "call_local", "reliable")
+func load_level(path: = "res://scenes/levels/test_level.tscn") -> void:
+	for player in players.get_children():
+		player.remove_pawn()
+	get_tree().change_scene_to_file(path)
+	Game.menu.update_main_menu()
 
 
 func upnp_setup(port:int) -> void:
@@ -114,26 +124,18 @@ func _on_player_disconnected(id:int) -> void:
 
 
 func _on_connected_to_server() -> void:
-	if multiplayer.is_server():
-		mp_status = 1
-	else:
-		mp_status = 2
-	# change player id to our new peer id
-	var id: = multiplayer.multiplayer_peer.get_unique_id()
 	Player.remove_pawn()
-	Player.name = str(id)
-	Player.set_multiplayer_authority(id)
+	update_player_id()
+	mp_status = 2
+	menu.update_main_menu()
 	menu.update_mp_menu()
 
 
 func _on_server_disconnected() -> void:
 	multiplayer.multiplayer_peer = OfflineMultiplayerPeer.new()
+	update_player_id()
 	mp_status = 0
-	# change player id to our new peer id
-	var id: = multiplayer.multiplayer_peer.get_unique_id()
-	Player.remove_pawn()
-	Player.name = str(id)
-	Player.set_multiplayer_authority(id)
+	menu.update_main_menu()
 	menu.update_mp_menu()
 
 
@@ -157,6 +159,12 @@ func create_player(id:int, data:Dictionary) -> Player:
 	new_player.set_multiplayer_authority(id)
 	new_player.data.merge(data, true)
 	return new_player
+
+
+func update_player_id() -> void:
+	var id: = multiplayer.multiplayer_peer.get_unique_id()
+	Player.name = str(id)
+	Player.set_multiplayer_authority(id)
 
 
 @rpc("any_peer", "call_remote", "reliable")

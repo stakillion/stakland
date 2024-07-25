@@ -14,11 +14,11 @@ var in_air: = false
 var on_ledge: = false
 
 
-func _physics_process(delta):
+func _physics_process(delta) -> void:
 	apply_kinematics(delta)
 
 
-func apply_kinematics(delta:float, dir: = Vector3.ZERO):
+func apply_kinematics(delta:float, dir: = Vector3.ZERO) -> void:
 	if !in_air || on_ledge:
 		# apply friction
 		apply_friction(run_friction, delta)

@@ -44,6 +44,13 @@ theme_override_colors/font_hover_color = Color(0, 0.878431, 0.658824, 1)
 theme_override_fonts/font = ExtResource("2_wmh1k")
 text = "Play"
 
+[node name="ReloadButton" type="Button" parent="MainMenu"]
+layout_mode = 2
+theme_override_colors/font_pressed_color = Color(0, 1, 0.74902, 1)
+theme_override_colors/font_hover_color = Color(0, 0.878431, 0.658824, 1)
+theme_override_fonts/font = ExtResource("2_wmh1k")
+text = "Reload"
+
 [node name="SettingsButton" type="Button" parent="MainMenu"]
 visible = false
 layout_mode = 2
@@ -296,10 +303,22 @@ theme_override_colors/font_hover_color = Color(0, 0.88, 0.66, 1)
 theme_override_fonts/font = ExtResource("2_wmh1k")
 text = "Toggle Fullscreen"
 
-[connection signal="pressed" from="MainMenu/PlayButton" to="." method="_on_PlayButton_pressed"]
+[node name="ColorPickerButton" type="ColorPickerButton" parent="."]
+layout_mode = 1
+offset_right = 48.0
+offset_bottom = 48.0
+theme_override_constants/h_separation = 0
+theme_override_constants/outline_size = 0
+flat = true
+color = Color(1, 1, 1, 1)
+edit_alpha = false
+
+[connection signal="pressed" from="MainMenu/PlayButton" to="." method="_on_play_button_pressed"]
+[connection signal="pressed" from="MainMenu/ReloadButton" to="." method="_on_reload_button_pressed"]
 [connection signal="pressed" from="MainMenu/SettingsButton" to="." method="_on_settings_button_pressed"]
-[connection signal="pressed" from="MainMenu/QuitButton" to="." method="_on_QuitButton_pressed"]
+[connection signal="pressed" from="MainMenu/QuitButton" to="." method="_on_quit_button_pressed"]
 [connection signal="pressed" from="PlayerMenu/RespawnButton" to="." method="_on_respawn_button_pressed"]
 [connection signal="text_changed" from="MultiplayerMenu/AddressField" to="." method="update_mp_menu"]
 [connection signal="pressed" from="MultiplayerMenu/ConnectButton" to="." method="_on_connect_button_pressed"]
 [connection signal="pressed" from="FullscreenButton" to="." method="_on_fullscreen_button_pressed"]
+[connection signal="color_changed" from="ColorPickerButton" to="." method="_on_color_picker_button_color_changed"]

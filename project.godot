@@ -19,7 +19,6 @@ boot_splash/show_image=false
 
 Game="*res://scripts/game.gd"
 Player="*res://scripts/player.gd"
-SyncManager="*res://addons/godot-rollback-netcode/SyncManager.gd"
 
 [display]
 
@@ -29,7 +28,7 @@ window/vsync/vsync_mode=0
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/zylann.hterrain/plugin.cfg")
+enabled=PackedStringArray()
 
 [importer_defaults]
 

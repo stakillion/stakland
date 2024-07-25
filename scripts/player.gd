@@ -3,6 +3,7 @@ class_name GamePlayer extends Node
 # networked player data
 var data: = {
 	pawn_scene = "res://scenes/actors/pawn.tscn",
+	color = Color(1, 1, 1)
 }
 
 # networked input
@@ -191,14 +192,18 @@ func spawn() -> void:
 	pawn.set_angle(spawn_point.rotation)
 	# have the camera follow our pawn
 	cam_activate(pawn, 5.0)
-	# update menu
 	if Player == self:
+		# update menu
+		Game.menu.update_main_menu()
 		Game.menu.update_settings()
 	# spawn effect
 	if spawn_effect && spawn_effect.can_instantiate():
 		var effect: = spawn_effect.instantiate()
 		effect.position = pawn.position
 		add_child(effect, true)
+	# color
+	for mesh in pawn.find_children("*", "MeshInstance3D"):
+		mesh.set_instance_shader_parameter("custom_color", data.color)
 
 
 func remove_pawn() -> void:
@@ -208,6 +213,13 @@ func remove_pawn() -> void:
 		pawn = null
 	if Player == self:
 		Game.menu.update_settings()
+
+
+@rpc("call_local", "reliable")
+func set_player_color(color:Color) -> void:
+	data.color = color
+	if pawn: for mesh in pawn.find_children("*", "MeshInstance3D"):
+		mesh.set_instance_shader_parameter("custom_color", color)
 
 
 @rpc("call_local", "reliable")

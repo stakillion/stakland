@@ -7,6 +7,7 @@ uniform vec3 uv_offset;
 
 instance uniform bool fade_enabled;
 instance uniform vec3 fade_position;
+instance uniform vec3 custom_color;
 uniform float fade_min;
 uniform float fade_max;
 
@@ -16,7 +17,7 @@ void vertex() {
 
 void fragment() {
 	vec4 albedo_tex = texture(texture_albedo, UV);
-	ALBEDO = albedo.rgb * albedo_tex.rgb;
+	ALBEDO = albedo.rgb * albedo_tex.rgb * custom_color;
 
 	if (fade_enabled) {
 		const vec3 magic = vec3(0.06711056f, 0.00583715f, 52.9829189f);
