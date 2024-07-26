@@ -19,7 +19,7 @@ func _notification(what:int) -> void:
 
 
 func update_main_menu() -> void:
-	if !Player.pawn:
+	if !is_instance_valid(Player.pawn):
 		$MainMenu/PlayButton.text = "Play"
 	else:
 		$MainMenu/PlayButton.text = "Resume"
@@ -30,7 +30,7 @@ func update_main_menu() -> void:
 
 
 func update_settings() -> void:
-	if Player.pawn:
+	if is_instance_valid(Player.pawn):
 		for node in $PlayerMenu/PhysicsSettings.get_children():
 			var label: = node.get_meta("label") as String
 			var property: = node.get_meta("property") as String
@@ -68,7 +68,7 @@ func _on_visibility_changed() -> void:
 
 
 func _on_play_button_pressed() -> void:
-	if !Player.pawn:
+	if !is_instance_valid(Player.pawn):
 		Player.spawn.rpc()
 	visible = false
 

@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://c4rtn830u6i3h"]
 
 [ext_resource type="Script" path="res://scripts/ui/menu.gd" id="1_x8rw8"]
-[ext_resource type="FontFile" uid="uid://cpb8liw262yah" path="res://resources/ui/fonts/PressStart2P-Regular.ttf" id="2_wmh1k"]
+[ext_resource type="Theme" uid="uid://d1s4lrrps0bue" path="res://resources/ui/menu_theme.tres" id="2_aib28"]
 
 [node name="Menu" type="Control"]
 z_index = 1
@@ -11,6 +11,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("2_aib28")
 script = ExtResource("1_x8rw8")
 
 [node name="Background" type="ColorRect" parent="."]
@@ -20,10 +21,11 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("2_aib28")
 color = Color(0, 0, 0, 0.501961)
 
 [node name="MainMenu" type="VBoxContainer" parent="."]
-custom_minimum_size = Vector2(256, 0)
+custom_minimum_size = Vector2(320, 0)
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -36,35 +38,28 @@ offset_right = 36.0
 offset_bottom = 26.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("2_aib28")
 
 [node name="PlayButton" type="Button" parent="MainMenu"]
 layout_mode = 2
-theme_override_colors/font_pressed_color = Color(0, 1, 0.74902, 1)
-theme_override_colors/font_hover_color = Color(0, 0.878431, 0.658824, 1)
-theme_override_fonts/font = ExtResource("2_wmh1k")
+theme = ExtResource("2_aib28")
 text = "Play"
-
-[node name="ReloadButton" type="Button" parent="MainMenu"]
-layout_mode = 2
-theme_override_colors/font_pressed_color = Color(0, 1, 0.74902, 1)
-theme_override_colors/font_hover_color = Color(0, 0.878431, 0.658824, 1)
-theme_override_fonts/font = ExtResource("2_wmh1k")
-text = "Reload"
 
 [node name="SettingsButton" type="Button" parent="MainMenu"]
 visible = false
 layout_mode = 2
-theme_override_colors/font_pressed_color = Color(0, 1, 0.75, 1)
-theme_override_colors/font_hover_color = Color(0, 0.88, 0.66, 1)
-theme_override_fonts/font = ExtResource("2_wmh1k")
+theme = ExtResource("2_aib28")
 text = "Settings
 "
 
+[node name="ReloadButton" type="Button" parent="MainMenu"]
+layout_mode = 2
+theme = ExtResource("2_aib28")
+text = "Reload"
+
 [node name="QuitButton" type="Button" parent="MainMenu"]
 layout_mode = 2
-theme_override_colors/font_pressed_color = Color(0, 1, 0.75, 1)
-theme_override_colors/font_hover_color = Color(0, 0.88, 0.66, 1)
-theme_override_fonts/font = ExtResource("2_wmh1k")
+theme = ExtResource("2_aib28")
 text = "Quit"
 
 [node name="PlayerMenu" type="VBoxContainer" parent="."]
@@ -78,14 +73,17 @@ offset_right = 94.9998
 offset_bottom = 453.0
 grow_horizontal = 0
 scale = Vector2(0.75, 0.75)
+theme = ExtResource("2_aib28")
 
 [node name="PhysicsSettings" type="VBoxContainer" parent="PlayerMenu"]
 custom_minimum_size = Vector2(0, 400)
 layout_mode = 2
+theme = ExtResource("2_aib28")
 
 [node name="RunSpeed" type="HSlider" parent="PlayerMenu/PhysicsSettings"]
 layout_mode = 2
 size_flags_vertical = 2
+theme = ExtResource("2_aib28")
 max_value = 40.0
 step = 0.5
 allow_greater = true
@@ -99,12 +97,13 @@ layout_mode = 2
 offset_top = -23.0
 offset_right = 420.0
 offset_bottom = -4.0
-theme_override_fonts/font = ExtResource("2_wmh1k")
+theme = ExtResource("2_aib28")
 text = "Run Speed:"
 
 [node name="RunAccel" type="HSlider" parent="PlayerMenu/PhysicsSettings"]
 layout_mode = 2
 size_flags_vertical = 2
+theme = ExtResource("2_aib28")
 max_value = 20.0
 step = 0.5
 allow_greater = true
@@ -118,12 +117,13 @@ layout_mode = 2
 offset_top = -23.0
 offset_right = 420.0
 offset_bottom = -4.0
-theme_override_fonts/font = ExtResource("2_wmh1k")
+theme = ExtResource("2_aib28")
 text = "Run Accel:"
 
 [node name="RunFriction" type="HSlider" parent="PlayerMenu/PhysicsSettings"]
 layout_mode = 2
 size_flags_vertical = 2
+theme = ExtResource("2_aib28")
 max_value = 20.0
 step = 0.1
 allow_greater = true
@@ -137,12 +137,13 @@ layout_mode = 2
 offset_top = -23.0
 offset_right = 420.0
 offset_bottom = -4.0
-theme_override_fonts/font = ExtResource("2_wmh1k")
+theme = ExtResource("2_aib28")
 text = "Run Friction:"
 
 [node name="AirSpeed" type="HSlider" parent="PlayerMenu/PhysicsSettings"]
 layout_mode = 2
 size_flags_vertical = 2
+theme = ExtResource("2_aib28")
 max_value = 20.0
 step = 0.1
 allow_greater = true
@@ -156,12 +157,13 @@ layout_mode = 2
 offset_top = -23.0
 offset_right = 420.0
 offset_bottom = -4.0
-theme_override_fonts/font = ExtResource("2_wmh1k")
+theme = ExtResource("2_aib28")
 text = "Air Speed:"
 
 [node name="AirAccel" type="HSlider" parent="PlayerMenu/PhysicsSettings"]
 layout_mode = 2
 size_flags_vertical = 2
+theme = ExtResource("2_aib28")
 max_value = 200.0
 step = 0.5
 allow_greater = true
@@ -175,12 +177,13 @@ layout_mode = 2
 offset_top = -23.0
 offset_right = 420.0
 offset_bottom = -4.0
-theme_override_fonts/font = ExtResource("2_wmh1k")
+theme = ExtResource("2_aib28")
 text = "Air Accel:"
 
 [node name="AirFriction" type="HSlider" parent="PlayerMenu/PhysicsSettings"]
 layout_mode = 2
 size_flags_vertical = 2
+theme = ExtResource("2_aib28")
 max_value = 10.0
 step = 0.1
 allow_greater = true
@@ -194,12 +197,13 @@ layout_mode = 2
 offset_top = -23.0
 offset_right = 420.0
 offset_bottom = -4.0
-theme_override_fonts/font = ExtResource("2_wmh1k")
+theme = ExtResource("2_aib28")
 text = "Air Friction:"
 
 [node name="JumpPower" type="HSlider" parent="PlayerMenu/PhysicsSettings"]
 layout_mode = 2
 size_flags_vertical = 2
+theme = ExtResource("2_aib28")
 max_value = 50.0
 allow_greater = true
 allow_lesser = true
@@ -212,12 +216,13 @@ layout_mode = 2
 offset_top = -23.0
 offset_right = 420.0
 offset_bottom = -4.0
-theme_override_fonts/font = ExtResource("2_wmh1k")
+theme = ExtResource("2_aib28")
 text = "Jump Power:"
 
 [node name="JumpMidair" type="HSlider" parent="PlayerMenu/PhysicsSettings"]
 layout_mode = 2
 size_flags_vertical = 2
+theme = ExtResource("2_aib28")
 max_value = 10.0
 allow_greater = true
 tick_count = 10
@@ -229,12 +234,13 @@ layout_mode = 2
 offset_top = -23.0
 offset_right = 420.0
 offset_bottom = -4.0
-theme_override_fonts/font = ExtResource("2_wmh1k")
+theme = ExtResource("2_aib28")
 text = "Mid Air Jumps:"
 
 [node name="Gravity" type="HSlider" parent="PlayerMenu/PhysicsSettings"]
 layout_mode = 2
 size_flags_vertical = 2
+theme = ExtResource("2_aib28")
 step = 0.5
 allow_greater = true
 allow_lesser = true
@@ -247,16 +253,14 @@ layout_mode = 2
 offset_top = -23.0
 offset_right = 420.0
 offset_bottom = -4.0
-theme_override_fonts/font = ExtResource("2_wmh1k")
+theme = ExtResource("2_aib28")
 text = "Gravity:"
 
 [node name="RespawnButton" type="Button" parent="PlayerMenu"]
 custom_minimum_size = Vector2(256, 0)
 layout_mode = 2
 size_flags_horizontal = 4
-theme_override_colors/font_pressed_color = Color(0, 1, 0.75, 1)
-theme_override_colors/font_hover_color = Color(0, 0.88, 0.66, 1)
-theme_override_fonts/font = ExtResource("2_wmh1k")
+theme = ExtResource("2_aib28")
 text = "Respawn"
 
 [node name="MultiplayerMenu" type="VBoxContainer" parent="."]
@@ -270,19 +274,18 @@ offset_top = -61.0
 offset_right = 125.0
 offset_bottom = -5.0
 grow_vertical = 0
+theme = ExtResource("2_aib28")
 
-[node name="AddressField" type="TextEdit" parent="MultiplayerMenu"]
+[node name="AddressField" type="LineEdit" parent="MultiplayerMenu"]
 layout_mode = 2
 tooltip_text = "Enter an IP to connect"
-theme_override_fonts/font = ExtResource("2_wmh1k")
+theme = ExtResource("2_aib28")
 placeholder_text = "Address"
-scroll_fit_content_height = true
+alignment = 1
 
 [node name="ConnectButton" type="Button" parent="MultiplayerMenu"]
 layout_mode = 2
-theme_override_colors/font_pressed_color = Color(0, 1, 0.75, 1)
-theme_override_colors/font_hover_color = Color(0, 0.88, 0.66, 1)
-theme_override_fonts/font = ExtResource("2_wmh1k")
+theme = ExtResource("2_aib28")
 text = "Host"
 
 [node name="FullscreenButton" type="Button" parent="."]
@@ -298,24 +301,23 @@ offset_right = 140.0
 offset_bottom = -5.0
 grow_horizontal = 2
 grow_vertical = 0
-theme_override_colors/font_pressed_color = Color(0, 1, 0.75, 1)
-theme_override_colors/font_hover_color = Color(0, 0.88, 0.66, 1)
-theme_override_fonts/font = ExtResource("2_wmh1k")
+theme = ExtResource("2_aib28")
 text = "Toggle Fullscreen"
 
 [node name="ColorPickerButton" type="ColorPickerButton" parent="."]
 layout_mode = 1
-offset_right = 48.0
-offset_bottom = 48.0
-theme_override_constants/h_separation = 0
-theme_override_constants/outline_size = 0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 72.0
+offset_bottom = 72.0
+theme = ExtResource("2_aib28")
 flat = true
 color = Color(1, 1, 1, 1)
 edit_alpha = false
 
 [connection signal="pressed" from="MainMenu/PlayButton" to="." method="_on_play_button_pressed"]
-[connection signal="pressed" from="MainMenu/ReloadButton" to="." method="_on_reload_button_pressed"]
 [connection signal="pressed" from="MainMenu/SettingsButton" to="." method="_on_settings_button_pressed"]
+[connection signal="pressed" from="MainMenu/ReloadButton" to="." method="_on_reload_button_pressed"]
 [connection signal="pressed" from="MainMenu/QuitButton" to="." method="_on_quit_button_pressed"]
 [connection signal="pressed" from="PlayerMenu/RespawnButton" to="." method="_on_respawn_button_pressed"]
 [connection signal="text_changed" from="MultiplayerMenu/AddressField" to="." method="update_mp_menu"]

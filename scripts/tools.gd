@@ -3,11 +3,13 @@ extends Node
 
 func _process(_delta:float) -> void:
 	if Input.is_action_just_pressed("tool_remove"):
-		tool_remove(Player)
+		tool_remove()
 
 
-func tool_remove(player:GamePlayer) -> void:
-	var target: = player.pawn.get_aim().collider as CollisionObject3D
+func tool_remove() -> void:
+	if !Player.pawn || Game.menu.visible:
+		return
+	var target: = Player.pawn.get_aim().collider as CollisionObject3D
 	if !target || target.get_collision_layer_value(1):
 		return
 

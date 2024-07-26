@@ -7,7 +7,7 @@ var user:Pawn = null
 
 
 func _ready() -> void:
-	if Player: for mesh in find_children("*", "MeshInstance3D"):
+	if is_instance_valid(Player): for mesh in find_children("*", "MeshInstance3D"):
 		# create a duplicate mesh with no depth for first-person perspectives
 		var no_depth_mesh: = mesh.duplicate() as MeshInstance3D
 		var no_depth_mat: = mesh.get_active_material(0).duplicate() as StandardMaterial3D
@@ -21,7 +21,7 @@ func _ready() -> void:
 
 
 func _process(_delta:float) -> void:
-	if !Player:
+	if !is_instance_valid(Player):
 		return
 	# true if the local player is holding this in first person
 	var use_no_depth:bool = (user && Player.cam_follow_node == user.get_path() && Player.cam_zoom < 0.5)
@@ -37,7 +37,7 @@ func _process(_delta:float) -> void:
 
 func activate(pawn:Pawn) -> void:
 	# do not allow other users to activate this if someone is already using it
-	if user && user != pawn:
+	if is_instance_valid(user) && user != pawn:
 		return
 
 	if pawn == user:
@@ -61,7 +61,7 @@ func pick_up(pawn:Pawn) -> void:
 
 
 func drop() -> void:
-	if !user: return
+	if !is_instance_valid(user): return
 	# remove from user's inventory
 	get_parent().remove_child(self)
 	user.owner.add_child(self, true)

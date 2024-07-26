@@ -9,7 +9,7 @@ func action() -> void:
 		var fire_pos: = global_position
 		var fire_ang: = global_rotation
 
-		if user:
+		if is_instance_valid(user):
 			fire_pos = user.inventory.global_position
 			var aim_pos:Vector3 = user.get_aim().position
 			if global_position.distance_squared_to(aim_pos) > 64:
@@ -27,4 +27,4 @@ func fire(pos:Vector3, ang:Vector3) -> void:
 	projectile.rotation = ang
 	owner.add_child(projectile, true)
 	# launch effect
-	if launch_effect: launch_effect.activate()
+	if is_instance_valid(launch_effect): launch_effect.activate()

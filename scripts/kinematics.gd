@@ -8,6 +8,7 @@ class_name KinematicBody extends PhysicsBody3D
 @export var air_friction: = 0.0
 @export var gravity: = 20.0
 @export var max_speed: = 200.0
+@export var max_step_height: = 0.5
 
 var velocity: = Vector3()
 var in_air: = false
@@ -87,10 +88,10 @@ func apply_max_speed(limit:float) -> void:
 		velocity.z *= maxf(current_speed - drop, 0.0) / current_speed
 
 
-func try_step_up(delta:float, max_height: = 0.5) -> void:
+func try_step_up(delta:float) -> void:
 	on_ledge = false
 	var forward: = Vector3(velocity.x, 0.0, velocity.z) * delta
-	var motion: = Vector3(0.0, max_height, 0.0)
+	var motion: = Vector3(0.0, max_step_height, 0.0)
 	# trace upward to the max step height and limit our motion to the ceiling
 	var collision: = KinematicCollision3D.new()
 	test_move(transform, motion, collision)

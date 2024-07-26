@@ -42,7 +42,7 @@ func set_direction(dir: = Vector3.ZERO) -> void:
 
 
 func _ready() -> void:
-	if !source:
+	if !is_instance_valid(source):
 		source = get_parent()
 		if source && "to_local" in source:
 			move_offset = source.to_local(global_position)
@@ -55,7 +55,7 @@ func _ready() -> void:
 
 
 func _physics_process(_delta) -> void:
-	if !source:
+	if !is_instance_valid(source):
 		if active:
 			await get_tree().create_timer(10).timeout
 		queue_free()

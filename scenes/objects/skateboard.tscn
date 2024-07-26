@@ -24,7 +24,7 @@ seat = NodePath("Seat")
 run_speed = 20.0
 run_accel = 1.0
 run_friction = 1.0
-air_accel = 30.0
+max_step_height = 0.1
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -1, 8.74228e-08, 0, -8.74228e-08, -1, 0, 0, 0)

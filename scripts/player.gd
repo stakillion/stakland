@@ -59,7 +59,7 @@ func _process(delta:float) -> void:
 					cam_follow = player.pawn
 					cam_activate(player.pawn)
 		if !cam_follow: cam_activate(null)
-	if cam_follow:
+	if is_instance_valid(cam_follow):
 		var follow_pos:Vector3 = cam_follow.head.global_position if "head" in cam_follow else cam_follow.global_position
 		# distance the camera from the follow position by our zoom level
 		cam_zoom = lerp(cam_zoom, input.desired_zoom, 3 * delta)
@@ -77,7 +77,7 @@ func _process(delta:float) -> void:
 			aim_position = camera.project_position(get_viewport().get_mouse_position(), 32768.0)
 
 	# have the pawn look where the camera is looking
-	if pawn && pawn.alive && "set_angle" in pawn:
+	if is_instance_valid(pawn) && pawn.alive && "set_angle" in pawn:
 		if input.alt_look:
 			var angle: = camera.global_transform.looking_at(aim_position).basis.get_euler()
 			pawn.set_angle(angle)
@@ -197,7 +197,7 @@ func spawn() -> void:
 		Game.menu.update_main_menu()
 		Game.menu.update_settings()
 	# spawn effect
-	if spawn_effect && spawn_effect.can_instantiate():
+	if is_instance_valid(spawn_effect) && spawn_effect.can_instantiate():
 		var effect: = spawn_effect.instantiate()
 		effect.position = pawn.position
 		add_child(effect, true)
@@ -207,7 +207,7 @@ func spawn() -> void:
 
 
 func remove_pawn() -> void:
-	if pawn:
+	if is_instance_valid(pawn):
 		pawn.queue_free()
 		pawn.name += "_"
 		pawn = null
@@ -218,7 +218,7 @@ func remove_pawn() -> void:
 @rpc("call_local", "reliable")
 func set_player_color(color:Color) -> void:
 	data.color = color
-	if pawn: for mesh in pawn.find_children("*", "MeshInstance3D"):
+	if is_instance_valid(pawn): for mesh in pawn.find_children("*", "MeshInstance3D"):
 		mesh.set_instance_shader_parameter("custom_color", color)
 
 
@@ -228,7 +228,7 @@ func set_physics_parameter(property, value) -> void:
 
 
 func cam_activate(follow:Node3D = null, zoom: = 0.0) -> void:
-	if follow:
+	if is_instance_valid(follow):
 		cam_follow_node = follow.get_path()
 		camera.rotation.y = follow.rotation.y
 		camera.rotation.x = follow.head.rotation.x if "head" in follow else follow.rotation.x

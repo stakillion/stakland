@@ -1,7 +1,7 @@
 class_name Pawn extends KinematicBody
 
 var is_player:
-	get: return (Player && Player.pawn == self)
+	get: return (is_instance_valid(Player) && Player.pawn == self)
 
 @export var max_health: = 200
 @export var jump_power: = 7.0
@@ -29,9 +29,9 @@ var vehicle:Node3D = null
 
 
 func _ready() -> void:
-	if !head: head = self
+	if !is_instance_valid(head): head = self
 	head_position = head.position
-	if !inventory:
+	if !is_instance_valid(inventory):
 		inventory = Node3D.new()
 		inventory.name = "Inventory"
 		head.add_child(inventory)
@@ -50,7 +50,7 @@ func _ready() -> void:
 func _physics_process(delta) -> void:
 	if !alive:
 		desired_move = Vector2.ZERO
-	if !vehicle:
+	if !is_instance_valid(vehicle):
 		var dir: = Vector3(desired_move.y, 0.0, desired_move.x)
 		if crouching:
 			dir /= 2.5
@@ -61,7 +61,7 @@ func _physics_process(delta) -> void:
 	head_offset = lerp(head_offset, Vector3.ZERO, 32 * delta)
 	head.position = head_position + head_offset
 	# update position of object we're grabbing
-	if grab_object:
+	if is_instance_valid(grab_object):
 		update_grab_pos(grab_object, delta)
 	# update shader fade position
 	if is_player: for mesh in find_children("*", "MeshInstance3D"):
@@ -84,7 +84,7 @@ func get_aim(distance: = 32768.0, exclude: = []) -> Dictionary:
 
 
 func jump(midair: = true) -> void:
-	if vehicle:
+	if is_instance_valid(vehicle):
 		if "jump" in vehicle: vehicle.jump()
 		return
 	if !in_air:
@@ -115,13 +115,13 @@ func interact() -> void:
 		return
 
 	var target:PhysicsBody3D
-	if vehicle:
+	if is_instance_valid(vehicle):
 		target = vehicle
-	elif active_item && active_item.get_parent() != inventory:
+	elif is_instance_valid(active_item) && active_item.get_parent() != inventory:
 		target = active_item
 	else:
 		target = get_aim(2).collider as PhysicsBody3D
-	if target:
+	if is_instance_valid(target):
 		if target.has_method("activate"):
 			target.activate(self)
 		elif target is RigidBody3D:
@@ -134,10 +134,10 @@ func action() -> void:
 	if next_use_time > tick:
 		return
 
-	if grab_object:
+	if is_instance_valid(grab_object):
 		toggle_grab(grab_object)
 		next_use_time = tick + 200
-	elif active_item:
+	elif is_instance_valid(active_item):
 		if active_item.has_method("action"):
 			active_item.action()
 		elif active_item.has_method("activate"):
@@ -184,7 +184,7 @@ func set_active_item(item:Item) -> void:
 		elif item != inv_item:
 			inv_item.process_mode = Node.PROCESS_MODE_DISABLED
 			inv_item.visible = false
-	if item:
+	if is_instance_valid(item):
 		item.process_mode = Node.PROCESS_MODE_INHERIT
 		item.visible = true
 
@@ -203,7 +203,7 @@ func toggle_grab(object:RigidBody3D) -> void:
 		object.angular_velocity = Vector3.ZERO
 		grab_object = null
 
-	if active_item:
+	if is_instance_valid(active_item):
 		next_use_time = Time.get_ticks_msec() + active_item.cooldown
 
 
@@ -212,6 +212,7 @@ func update_grab_pos(object:RigidBody3D, delta:float) -> void:
 	object.linear_velocity = (new_pos - object.global_position) * (4096 * delta)
 	# set rotation relative to where we're looking
 	object.global_rotation = Basis(head.global_basis * Basis.from_euler(grab_angle)).get_euler()
+	object.move_and_collide(Vector3.ZERO)
 
 
 func set_origin(pos:Vector3) -> void:

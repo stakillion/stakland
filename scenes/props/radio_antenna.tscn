@@ -1,6 +1,4 @@
-[gd_scene load_steps=40 format=3 uid="uid://ddfpm56n5j8ol"]
-
-[ext_resource type="Shader" path="res://materials/shaders/pawn.gdshader" id="1_1g5dm"]
+[gd_scene load_steps=37 format=3 uid="uid://ddfpm56n5j8ol"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_1ja4c"]
 size = Vector3(2.3, 0.9, 2.5)
@@ -699,18 +697,6 @@ _surfaces = [{
 }]
 blend_shape_mode = 0
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_x0yhv"]
-render_priority = 0
-shader = ExtResource("1_1g5dm")
-shader_parameter/albedo = Color(1, 1, 1, 1)
-shader_parameter/uv_scale = null
-shader_parameter/uv_offset = null
-shader_parameter/fade_min = 1.0
-shader_parameter/fade_max = 1.5
-
-[sub_resource type="BoxMesh" id="BoxMesh_hh2im"]
-material = SubResource("ShaderMaterial_x0yhv")
-
 [node name="RadioAntenna" type="StaticBody3D"]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
@@ -843,7 +829,3 @@ skeleton = NodePath("")
 transform = Transform3D(7.51755e-06, -17.4795, -4.37057, 18.0177, 7.51755e-06, 1.87939e-06, 0, -4.37057, 17.4795, 0, 6.39777, 0)
 mesh = SubResource("ArrayMesh_6n8kw")
 skeleton = NodePath("")
-
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.25)
-mesh = SubResource("BoxMesh_hh2im")

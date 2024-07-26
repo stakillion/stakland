@@ -169,7 +169,7 @@ func update_player_id() -> void:
 
 @rpc("any_peer", "call_remote", "reliable")
 func request_player() -> void:
-	if !Player:
+	if !is_instance_valid(Player):
 		return
 	var peer_id: = multiplayer.get_remote_sender_id()
 	# send player data and whether they have spawned

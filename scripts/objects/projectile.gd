@@ -18,8 +18,8 @@ var triggered: = false
 
 
 func _ready() -> void:
-	if weapon: add_collision_exception_with(weapon)
-	if weapon.user: add_collision_exception_with(weapon.user)
+	if is_instance_valid(weapon): add_collision_exception_with(weapon)
+	if is_instance_valid(weapon.user): add_collision_exception_with(weapon.user)
 
 	if "linear_velocity" in self:
 		self.linear_velocity += basis * launch_velocity
