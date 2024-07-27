@@ -45,7 +45,7 @@ func update_settings() -> void:
 		$PlayerMenu.visible = false
 
 
-func update_mp_menu(host_ip: = "") -> void:
+func update_mp_menu(address_display: = "") -> void:
 	if !Game.mp_status:
 		$MultiplayerMenu/AddressField.editable = true
 		if $MultiplayerMenu/AddressField.text.is_empty():
@@ -55,8 +55,10 @@ func update_mp_menu(host_ip: = "") -> void:
 	else:
 		$MultiplayerMenu/AddressField.editable = false
 		$MultiplayerMenu/ConnectButton.text = "Disconnect"
-		if !host_ip.is_empty():
-			$MultiplayerMenu/AddressField.text = host_ip
+	if !address_display.is_empty():
+		$MultiplayerMenu/AddressField.placeholder_text = address_display
+	else:
+		$MultiplayerMenu/AddressField.placeholder_text = "Address"
 
 
 func _on_visibility_changed() -> void:

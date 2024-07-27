@@ -10,7 +10,7 @@ var user:Pawn = null
 func _physics_process(delta):
 	if is_instance_valid(user):
 		var dir: = Vector3(user.desired_move.y, 0.0, user.desired_move.x)
-		if !in_air:
+		if on_ground:
 			vehicle_accelerate(dir, run_speed, run_accel, delta)
 		if !dir.is_zero_approx():
 			var angle_diff: = angle_difference(rotation.y, atan2(dir.x, dir.z))
@@ -60,10 +60,10 @@ func exit() -> void:
 
 
 func jump() -> void:
-	if !in_air:
+	if on_ground:
 		velocity.y = jump_power
-	# no longer on floor
-	in_air = true
+	# no longer on ground
+	on_ground = false
 
 
 func _on_mp_sync_frame() -> void:

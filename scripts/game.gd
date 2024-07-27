@@ -68,7 +68,7 @@ func host_game() -> bool:
 	multiplayer.multiplayer_peer = peer
 	update_player_id()
 	mp_status = 1
-	menu.update_mp_menu()
+	menu.update_mp_menu("Hosting")
 	# attempt UPNP port forwarding
 	upnp_thread = Thread.new()
 	upnp_thread.start(upnp_setup.bind(mp_port))
@@ -90,7 +90,7 @@ func leave_game() -> void:
 	multiplayer.multiplayer_peer.host.destroy.call_deferred()
 
 
-@rpc("authority", "call_local", "reliable")
+@rpc("call_local", "reliable")
 func load_level(path: = "res://scenes/levels/test_level.tscn") -> void:
 	for player in players.get_children():
 		player.remove_pawn()
@@ -102,19 +102,19 @@ func upnp_setup(port:int) -> void:
 	var upnp = UPNP.new()
 	var err = upnp.discover()
 	if err != OK:
-		push_error(str(err))
+		print("UPNP Failed: %d" % err)
 		return
 	if upnp.get_gateway() && upnp.get_gateway().is_valid_gateway():
 		upnp.add_port_mapping(port, port, ProjectSettings.get_setting("application/config/name"), "UDP")
 		upnp.add_port_mapping(port, port, ProjectSettings.get_setting("application/config/name"), "TCP")
-		print("upnp_completed ", OK)
+		print("UPNP Success!")
 		menu.update_mp_menu(upnp.query_external_address())
 
 
 func _on_player_connected(id:int) -> void:
 	request_player.rpc_id(id)
 	if is_multiplayer_authority():
-		set_mp_tick.rpc_id(id, mp_tick)
+		send_mp_tick.rpc_id(id, mp_tick, Time.get_unix_time_from_system())
 
 
 func _on_player_disconnected(id:int) -> void:
@@ -186,5 +186,7 @@ func send_player(player_data:Dictionary, spawned:bool) -> void:
 
 
 @rpc("call_remote", "reliable")
-func set_mp_tick(tick:int) -> void:
-	mp_tick = tick
+func send_mp_tick(tick:int, host_timestamp:float) -> void:
+	var current_time: = Time.get_unix_time_from_system()
+	var diff: = current_time - host_timestamp
+	mp_tick = tick + int(diff * Engine.physics_ticks_per_second)

@@ -6,13 +6,17 @@ class_name KinematicBody extends PhysicsBody3D
 @export var air_speed: = 1.0
 @export var air_accel: = 15.0
 @export var air_friction: = 0.0
+@export var water_speed: = 8.0
+@export var water_accel: = 3.0
+@export var water_friction: = 1.0
 @export var gravity: = 20.0
 @export var max_speed: = 200.0
 @export var max_step_height: = 0.5
 
 var velocity: = Vector3()
-var in_air: = false
+var on_ground: = false
 var on_ledge: = false
+var in_water: = false
 
 
 func _physics_process(delta) -> void:
@@ -20,30 +24,26 @@ func _physics_process(delta) -> void:
 
 
 func apply_kinematics(delta:float, dir: = Vector3.ZERO) -> void:
-	if !in_air || on_ledge:
-		# apply friction
+	if on_ground || on_ledge:
 		apply_friction(run_friction, delta)
-		# apply acceleration
 		accelerate(dir, run_speed, run_accel, delta, true)
-		# step up stairs/ledges
 		try_step_up(delta)
+	elif in_water:
+		apply_friction(water_friction, delta, false)
+		accelerate(dir, water_speed, water_accel, delta)
 	else:
-		# apply gravity
 		velocity.y -= gravity * delta
-		# apply friction
 		apply_friction(air_friction, delta)
-		# apply acceleration
 		accelerate(dir, air_speed, air_accel, delta)
 
 	if max_speed > 0:
-		# enforce speed limit
 		apply_max_speed(max_speed)
 
 	move(delta)
 
 
 func move(delta:float, max_slides: = 6) -> void:
-	in_air = true
+	on_ground = false
 	var motion: = (velocity / max_slides) * delta
 	for slide in max_slides:
 		# move and check for collision
@@ -52,7 +52,7 @@ func move(delta:float, max_slides: = 6) -> void:
 			continue
 		# if we hit something and it's not too steep then we consider it ground
 		if collision.get_angle() < PI/4:
-			in_air = false
+			on_ground = true
 		# slide along the normal vector of the colliding body
 		var collision_norm: = collision.get_normal()
 		motion = motion.slide(collision_norm)
@@ -70,13 +70,16 @@ func accelerate(dir:Vector3, speed:float, accel:float, delta:float, flat: = fals
 		velocity += minf(accel * speed * delta, add_speed) * dir
 
 
-func apply_friction(friction:float, delta:float) -> void:
-	var h_velocity: = Vector3(velocity.x, 0.0, velocity.z)
-	var current_speed: = h_velocity.length()
-	if current_speed > 0:
-		var drop: = maxf(current_speed, 1.0) * friction * delta
+func apply_friction(friction:float, delta:float, flat: = true) -> void:
+	var current_speed: = velocity.length()
+	if current_speed <= 0:
+		return
+	var drop: = maxf(current_speed, 1.0) * friction * delta
+	if flat:
 		velocity.x *= maxf(current_speed - drop, 0.0) / current_speed
 		velocity.z *= maxf(current_speed - drop, 0.0) / current_speed
+	else:
+		velocity *= maxf(current_speed - drop, 0.0) / current_speed
 
 
 func apply_max_speed(limit:float) -> void:

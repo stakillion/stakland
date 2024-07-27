@@ -1,7 +1,17 @@
 extends Node3D
 
+var area_env: = {}
+
 
 func _ready() -> void:
+	for area in find_children("*", "Area3D"):
+		var env = area.get_meta("environment", false)
+		if env:
+			area_env[area] = env
+		area.body_entered.connect(_on_environment_entered.bind(area))
+		area.body_exited.connect(_on_environment_exited.bind(area))
+		area.area_entered.connect(_on_environment_entered.bind(area))
+		area.area_exited.connect(_on_environment_exited.bind(area))
 	for node in find_children("*", "RigidBody3D"):
 		# save rigidbody spawn positions
 		node.set_meta("spawn_pos", node.global_position)
@@ -28,6 +38,20 @@ func _on_world_boundary_entered(body:Node3D) -> void:
 	# delete items
 	elif body is Item:
 		body.queue_free()
+
+
+func _on_environment_entered(node:Node3D, area:Area3D) -> void:
+	if area.get_meta("is_water", false) && node is KinematicBody:
+		node.in_water = true
+	if is_instance_valid(Player) && node == Player.cam_area:
+		Player.camera.environment = area_env[area]
+
+
+func _on_environment_exited(node:Node3D, area:Area3D) -> void:
+	if area.get_meta("is_water", false) && node is KinematicBody:
+		node.in_water = false
+	if is_instance_valid(Player) && node == Player.cam_area:
+		Player.camera.environment = null
 
 
 func _on_mp_sync_frame() -> void:

@@ -33,6 +33,7 @@ var pawn:Pawn = null
 
 # camera
 var camera:Camera3D
+var cam_area:Area3D
 var cam_follow_node:NodePath = ""
 var cam_zoom: = 0.0
 var aim_position:Vector3
@@ -46,6 +47,13 @@ func _init() -> void:
 	camera = Camera3D.new()
 	camera.name = "Camera"
 	add_child(camera, true)
+	# create the area containing the camera for collision detection
+	cam_area = Area3D.new()
+	camera.add_child(cam_area, true)
+	var cam_collision: = CollisionShape3D.new()
+	cam_collision.shape = SphereShape3D.new()
+	cam_collision.shape.radius = 0.01
+	cam_area.add_child(cam_collision, true)
 
 
 func _process(delta:float) -> void:
@@ -230,6 +238,8 @@ func set_physics_parameter(property, value) -> void:
 func cam_activate(follow:Node3D = null, zoom: = 0.0) -> void:
 	if is_instance_valid(follow):
 		cam_follow_node = follow.get_path()
+		if "collision_layer" in follow:
+			cam_area.collision_layer = follow.collision_layer
 		camera.rotation.y = follow.rotation.y
 		camera.rotation.x = follow.head.rotation.x if "head" in follow else follow.rotation.x
 		if Player == self:

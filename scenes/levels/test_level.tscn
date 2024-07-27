@@ -1,4 +1,4 @@
-[gd_scene load_steps=47 format=3 uid="uid://o70p27l476fn"]
+[gd_scene load_steps=51 format=3 uid="uid://o70p27l476fn"]
 
 [ext_resource type="Texture2D" uid="uid://loxh1icksh70" path="res://materials/textures/grass1.png" id="1_24n2b"]
 [ext_resource type="Script" path="res://scripts/levels/test_level.gd" id="1_nkfo3"]
@@ -18,6 +18,7 @@
 [ext_resource type="PackedScene" uid="uid://4s4qqcobw3hn" path="res://scenes/props/nature_pack/bare_tree1.tscn" id="16_2qqka"]
 [ext_resource type="PackedScene" uid="uid://b8yk2lmx78r37" path="res://scenes/props/nature_pack/bare_tree2.tscn" id="17_dgenj"]
 [ext_resource type="PackedScene" uid="uid://c8t4bqn501db6" path="res://scenes/props/nature_pack/bush.tscn" id="18_aixp8"]
+[ext_resource type="Material" uid="uid://cu46b100244nd" path="res://addons/boujie_water_shader/prefabs/deep_ocean_material.tres" id="19_l6ca4"]
 
 [sub_resource type="Gradient" id="Gradient_r4md3"]
 interpolation_mode = 2
@@ -26,14 +27,17 @@ offsets = PackedFloat32Array(0.62987, 1)
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_qpsgd"]
 noise_type = 3
-seed = 1031
-frequency = 0.002
+seed = 1050
+frequency = 0.001
 fractal_type = 3
 fractal_octaves = 10
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_kapre"]
 width = 1024
 height = 1024
+invert = true
+generate_mipmaps = false
+seamless = true
 color_ramp = SubResource("Gradient_r4md3")
 noise = SubResource("FastNoiseLite_qpsgd")
 
@@ -159,6 +163,18 @@ script = ExtResource("7_leogj")
 mode = 0
 textures = [[ExtResource("1_24n2b")], [null]]
 
+[sub_resource type="Environment" id="Environment_siyp7"]
+fog_enabled = true
+fog_light_color = Color(0.101961, 0.207843, 0.364706, 1)
+fog_density = 0.025
+
+[sub_resource type="BoxMesh" id="BoxMesh_rl3y2"]
+material = ExtResource("19_l6ca4")
+size = Vector3(128, 48, 184)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_cy7f6"]
+size = Vector3(128, 48, 184)
+
 [node name="TestLevel" type="Node3D"]
 script = ExtResource("1_nkfo3")
 
@@ -193,7 +209,7 @@ transform = Transform3D(0.707107, 0.122788, -0.696364, 0, 0.984808, 0.173648, 0.
 current = true
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(0.838671, -0.385118, 0.385118, 0, 0.707107, 0.707107, -0.544639, -0.593029, 0.59303, 0, 10, 0)
+transform = Transform3D(0.374752, -0.540659, 0.753159, -0.0100946, 0.809932, 0.586436, -0.92707, -0.227371, 0.298066, 0, 10, 0)
 light_bake_mode = 0
 shadow_enabled = true
 directional_shadow_blend_splits = true
@@ -781,7 +797,6 @@ texture = SubResource("PlaceholderTexture2D_yqspg")
 [node name="HTerrain" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -7.5, 0)
 script = ExtResource("4_4523p")
-ambient_wind = 0.1
 centered = true
 _terrain_data = ExtResource("5_83pfn")
 chunk_size = 32
@@ -836,7 +851,7 @@ transform = Transform3D(0.677873, 0, 1.559, 0, 1.7, 0, -1.559, 0, 0.677873, 26.3
 transform = Transform3D(-1.69044, 0, 0.180059, 0, 1.7, 0, -0.180059, 0, -1.69044, -90.2251, -11.9455, 22.2785)
 
 [node name="AspenTree10" parent="." instance=ExtResource("13_5d11k")]
-transform = Transform3D(-1.49156, 0, 0.158876, 0, 1.5, 0, -0.158876, 0, -1.49156, -74.2864, -20.0076, 41.3809)
+transform = Transform3D(-1.49156, 0, 0.158876, 0, 1.5, 0, -0.158876, 0, -1.49156, -74.2864, -19.8515, 41.3809)
 
 [node name="AspenTree11" parent="." instance=ExtResource("13_5d11k")]
 transform = Transform3D(-1.28478, 0, 0.198321, 0, 1.3, 0, -0.198321, 0, -1.28478, -22, 0, 22)
@@ -848,10 +863,10 @@ transform = Transform3D(0.356323, 0, 1.66224, 0, 1.7, 0, -1.66224, 0, 0.356323, 
 transform = Transform3D(1.48712, 0, -0.196153, 0, 1.5, 0, 0.196153, 0, 1.48712, -99.5218, -6.51418, -13.5506)
 
 [node name="AspenTree14" parent="." instance=ExtResource("13_5d11k")]
-transform = Transform3D(-0.148507, 0, -1.74369, 0, 1.75, 0, 1.74369, 0, -0.148507, -40.9459, -23.6647, 92.293)
+transform = Transform3D(-0.148507, 0, -1.74369, 0, 1.75, 0, 1.74369, 0, -0.148507, -40.9459, -25.2655, 92.293)
 
 [node name="TreeStump" parent="." instance=ExtResource("14_rwpk5")]
-transform = Transform3D(0.235377, 0, -2.99075, 0, 3, 0, 2.99075, 0, 0.235377, -17.2562, -17.8722, 106.707)
+transform = Transform3D(0.249624, -0.536465, -2.94107, -0.211356, 2.94075, -0.554346, 2.98211, 0.253331, 0.206899, -12.8758, -17.4857, 80.7988)
 
 [node name="RadioAntenna" parent="." instance=ExtResource("15_0uqk1")]
 transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 76.8778, 31.643, -84.4864)
@@ -873,5 +888,18 @@ transform = Transform3D(2.30898, 0, -2.21554, 0, 3.2, 0, 2.21554, 0, 2.30898, -7
 
 [node name="Bush4" parent="." instance=ExtResource("18_aixp8")]
 transform = Transform3D(1.77539, 0, 2.16517, 0, 2.8, 0, -2.16517, 0, 1.77539, -59.4281, 0.346802, -81.8277)
+
+[node name="Pond" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -200, -41.2788, -50.6436)
+collision_layer = 16
+collision_mask = 65294
+metadata/environment = SubResource("Environment_siyp7")
+metadata/is_water = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Pond"]
+mesh = SubResource("BoxMesh_rl3y2")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Pond"]
+shape = SubResource("BoxShape3D_cy7f6")
 
 [connection signal="body_entered" from="Boundary" to="." method="_on_world_boundary_entered"]

@@ -52,10 +52,12 @@ func _physics_process(delta) -> void:
 		desired_move = Vector2.ZERO
 	if !is_instance_valid(vehicle):
 		var dir: = Vector3(desired_move.y, 0.0, desired_move.x)
+		if in_water:
+			dir = dir.rotated(head.global_basis.x, head.rotation.x)
 		if crouching:
 			dir /= 2.5
 		apply_kinematics(delta, dir)
-	if !in_air:
+	if on_ground:
 		jump_midair_count = 0
 	# smooth head movement for stairs/crouching/etc.
 	head_offset = lerp(head_offset, Vector3.ZERO, 32 * delta)
@@ -87,14 +89,14 @@ func jump(midair: = true) -> void:
 	if is_instance_valid(vehicle):
 		if "jump" in vehicle: vehicle.jump()
 		return
-	if !in_air:
+	if on_ground:
 		velocity.y = jump_power
 		jump_midair_count = 0
 	elif midair && jump_midair_count < jump_midair:
 		velocity.y = jump_power
 		jump_midair_count += 1
-	# no longer on floor
-	in_air = true
+	# no longer on ground
+	on_ground = false
 
 
 func crouch(state:bool) -> void:
