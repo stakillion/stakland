@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://cr5r7mjrcl1qd"]
+[gd_scene load_steps=19 format=3 uid="uid://cr5r7mjrcl1qd"]
 
 [ext_resource type="Script" path="res://scripts/actors/pawn.gd" id="1_txe8y"]
 [ext_resource type="PackedScene" uid="uid://ds3wnxy8jxm8d" path="res://scenes/objects/rocket_launcher.tscn" id="2_4ktkv"]
@@ -9,7 +9,11 @@
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_q0jnf"]
 radius = 0.3
-height = 1.5
+height = 1.7
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_jcgdr"]
+radius = 0.3
+height = 1.2
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_7s0i5"]
 render_priority = 0
@@ -56,15 +60,25 @@ rim_enabled = true
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_ts7m7"]
 size = Vector2(3, 3)
 
-[node name="Pawn" type="AnimatableBody3D"]
+[node name="Pawn" type="AnimatableBody3D" node_paths=PackedStringArray("collision", "crouched_collision", "head", "inventory")]
 collision_layer = 256
 collision_mask = 65283
 constant_linear_velocity = Vector3(0.1, 0.1, 0.1)
 sync_to_physics = false
 script = ExtResource("1_txe8y")
+collision = NodePath("Collision")
+crouched_collision = NodePath("CrouchedCollision")
+head = NodePath("Head")
+inventory = NodePath("Head/Inventory")
 
 [node name="Collision" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)
 shape = SubResource("CapsuleShape3D_q0jnf")
+
+[node name="CrouchedCollision" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.15, 0)
+shape = SubResource("CapsuleShape3D_jcgdr")
+disabled = true
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
@@ -79,7 +93,7 @@ transform = Transform3D(0.02, 0, 0, 0, 0.6, 0, 0, 0, 0.02, -0.1, 0.3, 0.3)
 mesh = SubResource("BoxMesh_5uyur")
 
 [node name="Head" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0.000523597, 0, -0.000523597, 1, 0, 0.625, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0.000523597, 0, -0.000523597, 1, 0, 0.65, 0)
 
 [node name="Inventory" type="Node3D" parent="Head"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.42, -0.175, -0.25)

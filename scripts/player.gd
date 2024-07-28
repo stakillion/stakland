@@ -167,9 +167,9 @@ func apply_input() -> void:
 			pawn.jump()
 		elif input.jump:
 			pawn.jump(false)
-		if input.crouch && !last_input.crouch:
+		if input.crouch && !pawn.crouching:
 			pawn.crouch(true)
-		elif !input.crouch && last_input.crouch:
+		elif !input.crouch && pawn.crouching:
 			pawn.crouch(false)
 		# interaction
 		if input.action:

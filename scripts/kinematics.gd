@@ -29,6 +29,8 @@ func apply_kinematics(delta:float, dir: = Vector3.ZERO) -> void:
 		accelerate(dir, run_speed, run_accel, delta, true)
 		try_step_up(delta)
 	elif in_water:
+		if dir.is_zero_approx():
+			velocity.y -= (gravity / water_speed) * delta
 		apply_friction(water_friction, delta, false)
 		accelerate(dir, water_speed, water_accel, delta)
 	else:

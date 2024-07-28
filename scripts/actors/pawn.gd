@@ -7,41 +7,38 @@ var is_player:
 @export var jump_power: = 7.0
 @export var jump_midair: = 1
 
+@export var collision:CollisionShape3D
+@export var crouched_collision:CollisionShape3D
 var desired_move: = Vector2()
 var crouching: = false
 var jump_midair_count: = 0
+var vehicle:Node3D = null
 
 var health: = max_health
 var alive:
 	get: return health > 0
 
-@onready var head:Node3D = find_child("Head")
-@onready var inventory:Node3D = find_child("Inventory")
+@export var head:Node3D
 var head_position: = Vector3()
 var head_offset: = Vector3()
 
+@export var inventory:Node3D
 var active_item:Item
 var next_use_time:int
 var grab_object:RigidBody3D
 var grab_angle:Vector3
 
-var vehicle:Node3D = null
-
 
 func _ready() -> void:
-	if !is_instance_valid(head): head = self
+	assert(is_instance_valid(head), "Pawn requires a head node.")
+	assert(is_instance_valid(inventory), "Pawn requires an inventory node.")
+
 	head_position = head.position
-	if !is_instance_valid(inventory):
-		inventory = Node3D.new()
-		inventory.name = "Inventory"
-		head.add_child(inventory)
-		inventory.position = Vector3(0.42, -0.175, -0.25)
 	# make sure we are properly holding any items found in inventory
 	for item in inventory.get_children():
 		item.pick_up(self)
 	# aim towards the center of our view
 	inventory.look_at(head_position - head.basis.z * 12)
-
 	# enable proximity fade if we are the player
 	if is_player: for mesh in find_children("*", "MeshInstance3D"):
 		mesh.set_instance_shader_parameter("fade_enabled", true)
@@ -92,7 +89,7 @@ func jump(midair: = true) -> void:
 	if on_ground:
 		velocity.y = jump_power
 		jump_midair_count = 0
-	elif midair && jump_midair_count < jump_midair:
+	elif !in_water && midair && jump_midair_count < jump_midair:
 		velocity.y = jump_power
 		jump_midair_count += 1
 	# no longer on ground
@@ -100,11 +97,18 @@ func jump(midair: = true) -> void:
 
 
 func crouch(state:bool) -> void:
+	if is_instance_valid(crouched_collision) && is_instance_valid(collision):
+		collision.disabled = state
+		crouched_collision.disabled = !state
+		if test_move(transform, Vector3.ZERO):
+			collision.disabled = !state
+			crouched_collision.disabled = state
+			return
 	var motion: = Vector3.ZERO
-	if state == true:
+	if state == true && !crouching:
 		crouching = true
 		motion.y -= .5
-	else:
+	elif crouching:
 		crouching = false
 		motion.y += .5
 	head_position += motion
@@ -236,8 +240,8 @@ func set_health(value:int) -> void:
 		# drop items
 		while inventory.get_children():
 			item_drop()
-		head.rotation = Vector3()
-		rotation += Vector3(0.0, 0.0, deg_to_rad(90.0))
+		head.rotation = Vector3.ZERO
+		rotation.z += deg_to_rad(90)
 
 	health = value
 

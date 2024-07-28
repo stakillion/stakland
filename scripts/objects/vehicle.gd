@@ -18,7 +18,7 @@ func _physics_process(delta):
 
 		user.position = seat.global_position
 		user.move_and_collide(Vector3.ZERO)
-		if user.position.distance_to(seat.global_position) != 0:
+		if user.position.distance_to(seat.global_position) > 0.1:
 			exit()
 
 	apply_kinematics(delta)

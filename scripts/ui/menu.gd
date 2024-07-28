@@ -38,8 +38,8 @@ func update_settings() -> void:
 			if value != null:
 				node.value = value
 				node.find_child("Label").text = "%s: %f" % [label, value]
-			if !node.is_connected("value_changed", _on_physics_setting_value_changed.bind(property, label, node)):
-				node.connect("value_changed", _on_physics_setting_value_changed.bind(property, label, node))
+			if !node.value_changed.is_connected(_on_physics_setting_value_changed.bind(property, label, node)):
+				node.value_changed.connect(_on_physics_setting_value_changed.bind(property, label, node))
 		$PlayerMenu.visible = true
 	else:
 		$PlayerMenu.visible = false
