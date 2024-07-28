@@ -68,7 +68,7 @@ func _process(delta:float) -> void:
 					cam_activate(player.pawn)
 		if !cam_follow: cam_activate(null)
 	if is_instance_valid(cam_follow):
-		var follow_pos:Vector3 = cam_follow.head.global_position if "head" in cam_follow else cam_follow.global_position
+		var follow_pos:Vector3 = cam_follow.head.global_position if cam_follow is Pawn else cam_follow.global_position
 		# distance the camera from the follow position by our zoom level
 		cam_zoom = lerp(cam_zoom, input.desired_zoom, 3 * delta)
 		var zoom_vec: = camera.basis.z * cam_zoom
@@ -241,7 +241,7 @@ func cam_activate(follow:Node3D = null, zoom: = 0.0) -> void:
 		if "collision_layer" in follow:
 			cam_area.collision_layer = follow.collision_layer
 		camera.rotation.y = follow.rotation.y
-		camera.rotation.x = follow.head.rotation.x if "head" in follow else follow.rotation.x
+		camera.rotation.x = follow.head.rotation.x if follow is Pawn else follow.rotation.x
 		if Player == self:
 			camera.make_current()
 		cam_zoom = zoom

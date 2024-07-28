@@ -24,7 +24,7 @@ func _process(_delta:float) -> void:
 	if !is_instance_valid(Player):
 		return
 	# true if the local player is holding this in first person
-	var use_no_depth:bool = (user && Player.cam_follow_node == user.get_path() && Player.cam_zoom < 0.5)
+	var use_no_depth: = (is_instance_valid(user) && Player.cam_follow_node == user.get_path() && Player.cam_zoom < 0.5)
 	for mesh in find_children("*", "MeshInstance3D"):
 		var no_depth_mesh: = mesh.find_child("NoDepth") as MeshInstance3D
 		if !no_depth_mesh:

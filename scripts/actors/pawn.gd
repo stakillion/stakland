@@ -7,8 +7,8 @@ var is_player:
 @export var jump_power: = 7.0
 @export var jump_midair: = 1
 
-@export var collision:CollisionShape3D
-@export var crouched_collision:CollisionShape3D
+@export var collider:CollisionShape3D
+@export var crouched_collider:CollisionShape3D
 var desired_move: = Vector2()
 var crouching: = false
 var jump_midair_count: = 0
@@ -97,12 +97,12 @@ func jump(midair: = true) -> void:
 
 
 func crouch(state:bool) -> void:
-	if is_instance_valid(crouched_collision) && is_instance_valid(collision):
-		collision.disabled = state
-		crouched_collision.disabled = !state
+	if is_instance_valid(collider) && is_instance_valid(crouched_collider):
+		collider.disabled = state
+		crouched_collider.disabled = !state
 		if test_move(transform, Vector3.ZERO):
-			collision.disabled = !state
-			crouched_collision.disabled = state
+			collider.disabled = !state
+			crouched_collider.disabled = state
 			return
 	var motion: = Vector3.ZERO
 	if state == true && !crouching:

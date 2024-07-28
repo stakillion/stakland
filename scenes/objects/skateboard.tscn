@@ -7,13 +7,14 @@ albedo_color = Color(0.156863, 0.156863, 0.156863, 1)
 roughness = 0.5
 uv1_triplanar_sharpness = 150.0
 
-[sub_resource type="PrismMesh" id="PrismMesh_cc3nd"]
-material = SubResource("StandardMaterial3D_scdpg")
-size = Vector3(0.6, 0.1, 1.5)
-subdivide_width = 55
+[sub_resource type="BoxShape3D" id="BoxShape3D_wwfxl"]
+size = Vector3(0.55, 0.2, 1.65)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_5rvfr"]
-size = Vector3(0.6, 0.1, 1.5)
+[sub_resource type="CylinderMesh" id="CylinderMesh_7w6gk"]
+material = SubResource("StandardMaterial3D_scdpg")
+top_radius = 0.05
+bottom_radius = 0.05
+height = 0.1
 
 [node name="Skateboard" type="AnimatableBody3D" node_paths=PackedStringArray("seat")]
 collision_layer = 2
@@ -26,12 +27,31 @@ run_accel = 1.0
 run_friction = 1.0
 max_step_height = 0.1
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, -1, 8.74228e-08, 0, -8.74228e-08, -1, 0, 0, 0)
-mesh = SubResource("PrismMesh_cc3nd")
+[node name="CSGPolygon3D" type="CSGPolygon3D" parent="."]
+transform = Transform3D(-4.37114e-08, 1, -4.37114e-08, 0, -4.37114e-08, -1, -1, -4.37114e-08, 1.91069e-15, 0, 0.1, 0)
+polygon = PackedVector2Array(0.7, 0.3, 0.9, 0.15, 0.9, -0.15, 0.7, -0.3, -0.7, -0.3, -0.9, -0.15, -0.9, 0.15, -0.7, 0.3)
+depth = 0.1
+material = SubResource("StandardMaterial3D_scdpg")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-shape = SubResource("BoxShape3D_5rvfr")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)
+shape = SubResource("BoxShape3D_wwfxl")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -0.25, 0.05, 0.6)
+mesh = SubResource("CylinderMesh_7w6gk")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0.25, 0.05, 0.6)
+mesh = SubResource("CylinderMesh_7w6gk")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="."]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0.25, 0.05, -0.6)
+mesh = SubResource("CylinderMesh_7w6gk")
+
+[node name="MeshInstance3D4" type="MeshInstance3D" parent="."]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -0.24999, 0.05, -0.599991)
+mesh = SubResource("CylinderMesh_7w6gk")
 
 [node name="Seat" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.925, 0)

@@ -1,18 +1,17 @@
 extends Node3D
 
-var area_env: = {}
-
 
 func _ready() -> void:
 	for area in find_children("*", "Area3D"):
-		var env = area.get_meta("environment", false)
-		if env:
-			area_env[area] = env
 		area.body_entered.connect(_on_environment_entered.bind(area))
 		area.body_exited.connect(_on_environment_exited.bind(area))
 		area.area_entered.connect(_on_environment_entered.bind(area))
 		area.area_exited.connect(_on_environment_exited.bind(area))
 	for node in find_children("*", "RigidBody3D"):
+		# save rigidbody spawn positions
+		node.set_meta("spawn_pos", node.global_position)
+		node.set_meta("spawn_ang", node.global_rotation)
+	for node in find_children("*", "Vehicle"):
 		# save rigidbody spawn positions
 		node.set_meta("spawn_pos", node.global_position)
 		node.set_meta("spawn_ang", node.global_rotation)
@@ -29,6 +28,10 @@ func _on_world_boundary_entered(body:Node3D) -> void:
 		body.global_rotation = body.get_meta("spawn_ang")
 		body.linear_velocity = Vector3.ZERO
 		body.angular_velocity = Vector3.ZERO
+	if body is Vehicle && body.has_meta("spawn_pos"):
+		body.global_position = body.get_meta("spawn_pos")
+		body.global_rotation = body.get_meta("spawn_ang")
+		body.velocity = Vector3.ZERO
 	# teleport players to their spawn
 	elif body is Pawn && body.alive:
 		var spawn_point: = find_player_spawn()
@@ -43,14 +46,16 @@ func _on_world_boundary_entered(body:Node3D) -> void:
 func _on_environment_entered(node:Node3D, area:Area3D) -> void:
 	if area.get_meta("is_water", false) && node is KinematicBody:
 		node.in_water = true
-	if is_instance_valid(Player) && node == Player.cam_area:
-		Player.camera.environment = area_env[area]
+	elif is_instance_valid(Player) && node == Player.cam_area:
+		var env = area.get_meta("environment", false)
+		if env:
+			Player.camera.environment = env
 
 
 func _on_environment_exited(node:Node3D, area:Area3D) -> void:
 	if area.get_meta("is_water", false) && node is KinematicBody:
 		node.in_water = false
-	if is_instance_valid(Player) && node == Player.cam_area:
+	elif is_instance_valid(Player) && node == Player.cam_area:
 		Player.camera.environment = null
 
 

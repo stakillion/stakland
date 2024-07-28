@@ -757,7 +757,10 @@ shape = SubResource("SphereShape3D_8psvk")
 light_energy = 5.0
 
 [node name="Skateboard" parent="." instance=ExtResource("5_oqf6j")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30.5036, 0.130846, 7.28395)
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -30, 0, 10)
+
+[node name="Skateboard2" parent="." instance=ExtResource("5_oqf6j")]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -30, 0, 12.5)
 
 [node name="Viewport" type="SubViewport" parent="."]
 size = Vector2i(1024, 512)

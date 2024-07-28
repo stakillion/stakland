@@ -1,4 +1,4 @@
-extends KinematicBody
+class_name Vehicle extends KinematicBody
 
 @export var turn_speed: = 90.0
 @export var jump_power: = 7.0
