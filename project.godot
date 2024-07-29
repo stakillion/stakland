@@ -24,6 +24,8 @@ Player="*res://scripts/player.gd"
 
 window/size/viewport_width=1280
 window/size/viewport_height=720
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
 window/vsync/vsync_mode=0
 
 [editor_plugins]
@@ -145,8 +147,7 @@ interact={
 }
 action={
 "deadzone": 0.5,
-"events": [Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"button_mask":0,"position":Vector2(0, 0),"global_position":Vector2(0, 0),"factor":1.0,"button_index":1,"canceled":false,"pressed":false,"double_click":false,"script":null)
-, Object(InputEventJoypadMotion,"resource_local_to_scene":false,"resource_name":"","device":-1,"axis":5,"axis_value":1.0,"script":null)
+"events": [Object(InputEventJoypadMotion,"resource_local_to_scene":false,"resource_name":"","device":-1,"axis":5,"axis_value":1.0,"script":null)
 ]
 }
 next_item={
@@ -216,3 +217,13 @@ sync_debug={
 common/physics_ticks_per_second=120
 common/max_physics_steps_per_frame=16
 3d/default_gravity=20.0
+
+[rendering]
+
+textures/vram_compression/import_etc2_astc=true
+shading/overrides/force_vertex_shading=true
+shading/overrides/force_lambert_over_burley=true
+driver/depth_prepass/disable_for_vendors=""
+anti_aliasing/screen_space_roughness_limiter/enabled=false
+vrs/overrides/force_lambert_over_burley=false
+vrs/overrides/force_vertex_shading=false

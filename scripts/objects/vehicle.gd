@@ -1,7 +1,7 @@
 class_name Vehicle extends KinematicBody
 
 @export var turn_speed: = 90.0
-@export var jump_power: = 7.0
+@export var jump_power: = 10.0
 @export var seat:Node3D
 
 var user:Pawn = null
@@ -17,6 +17,7 @@ func _physics_process(delta):
 			rotation.y += angle_diff * deg_to_rad(turn_speed) * delta
 
 		user.position = seat.global_position
+		user.velocity = velocity
 		user.move_and_collide(Vector3.ZERO)
 		if user.position.distance_to(seat.global_position) > 0.1:
 			exit()

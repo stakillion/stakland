@@ -24,6 +24,7 @@ var last_input: = input
 
 # control settings
 @export var mouse_sensitivity: = Vector2(3.0, 3.0)
+@export var swipe_sensitivity: = Vector2(10.0, 7.0)
 @export var joy_sensitivity: = Vector2(5.0, 3.5)
 @export var zoom_min: = 2.0
 @export var zoom_max: = 4.5
@@ -104,12 +105,14 @@ func _unhandled_input(event:InputEvent) -> void:
 	if Player != self || Game.menu.visible:
 		return
 
-	if event is InputEventMouseMotion && Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
-		# rotate view based on mouse coordinates
-		camera.rotation.y -= deg_to_rad(event.relative.x * mouse_sensitivity.x * 0.022)
-		camera.rotation.x -= deg_to_rad(event.relative.y * mouse_sensitivity.y * 0.022)
-		# clamp vertical rotation
-		camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-89), deg_to_rad(89))
+	if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
+		if event is InputEventMouseButton && event.button_index == MouseButton.MOUSE_BUTTON_LEFT:
+			Input.action_press("action") if event.is_pressed() else Input.action_release("action")
+		elif event is InputEventMouseMotion:
+			# rotate view based on mouse coordinates
+			camera.rotation.y -= deg_to_rad(event.relative.x * mouse_sensitivity.x * 0.022)
+			camera.rotation.x -= deg_to_rad(event.relative.y * mouse_sensitivity.y * 0.022)
+			camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-89), deg_to_rad(89))
 
 
 func read_input(delta:float) -> void:
@@ -124,6 +127,7 @@ func read_input(delta:float) -> void:
 		# clamp vertical rotation
 		camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-89), deg_to_rad(89))
 
+	input.alt_look = Input.is_action_pressed("alt_look")
 	# directional movement
 	input.movement = Input.get_vector("move_forward", "move_back", "move_left", "move_right")
 	# jumping, crouching
@@ -142,8 +146,6 @@ func read_input(delta:float) -> void:
 		input.desired_zoom = clamp(input.desired_zoom - 0.5, 0.0, zoom_max) if input.desired_zoom - 0.5 >= zoom_min else 0.0
 	if Input.is_action_just_pressed("zoom_out"):
 		input.desired_zoom = zoom_min if input.desired_zoom + 0.5 <= zoom_min else clamp(input.desired_zoom + 0.5, 0.0, zoom_max)
-
-	input.alt_look = Input.is_action_pressed("alt_look")
 
 	input.in_menu = Game.menu.visible
 

@@ -173,7 +173,6 @@ LineEdit/fonts/font = ExtResource("1_0wqa3")
 LineEdit/styles/focus = SubResource("StyleBoxFlat_g68jn")
 LineEdit/styles/normal = SubResource("StyleBoxFlat_4qvxb")
 LineEdit/styles/read_only = SubResource("StyleBoxFlat_igwvx")
-OptionButton/constants/arrow_margin = 10
 PopupMenu/colors/font_color = Color(1, 1, 1, 1)
 PopupMenu/colors/font_hover_color = Color(0.670588, 0.67451, 1, 1)
 PopupMenu/fonts/font = ExtResource("1_0wqa3")

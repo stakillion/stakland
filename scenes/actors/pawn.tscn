@@ -32,17 +32,17 @@ height = 1.0
 [sub_resource type="BoxMesh" id="BoxMesh_emr3e"]
 material = SubResource("ShaderMaterial_7s0i5")
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_babvj"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ob6ng"]
 render_priority = 0
 shader = ExtResource("2_gydwv")
-shader_parameter/albedo = Color(0.156863, 0.156863, 0.156863, 1)
+shader_parameter/albedo = Color(0, 0, 0, 1)
 shader_parameter/uv_scale = null
 shader_parameter/uv_offset = null
 shader_parameter/fade_min = 1.0
 shader_parameter/fade_max = 1.5
 
 [sub_resource type="BoxMesh" id="BoxMesh_5uyur"]
-material = SubResource("ShaderMaterial_babvj")
+material = SubResource("ShaderMaterial_ob6ng")
 
 [sub_resource type="SphereMesh" id="SphereMesh_axx00"]
 material = SubResource("ShaderMaterial_7s0i5")
@@ -141,6 +141,7 @@ offset_right = 64.0
 grow_vertical = 0
 theme_override_fonts/font = ExtResource("3_oh47t")
 theme_override_font_sizes/font_size = 32
+text = "+100"
 
 [node name="Info" type="Label" parent="Hud"]
 layout_mode = 1

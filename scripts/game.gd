@@ -12,6 +12,10 @@ var tools: = Node.new()
 @export var menu_scene: = preload("res://scenes/ui/menu.tscn")
 var menu:Control
 
+# mobile controls
+@export var mobile_controls_scene: = preload("res://scenes/ui/mobile_controls.tscn")
+var mobile_controls:Node2D
+
 # multiplayer
 const mp_port: = 26262
 const mp_sync_rate: = 30
@@ -47,6 +51,11 @@ func _ready() -> void:
 		# load the menu
 		menu = menu_scene.instantiate() as Control
 		add_child.call_deferred(menu)
+		# load touch-screen controls on mobile
+		if OS.has_feature("mobile"):
+			mobile_controls = mobile_controls_scene.instantiate() as Node2D
+			mobile_controls.visible = false
+			add_child.call_deferred(mobile_controls)
 
 	multiplayer.peer_connected.connect(_on_player_connected)
 	multiplayer.peer_disconnected.connect(_on_player_disconnected)

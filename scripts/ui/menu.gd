@@ -68,6 +68,9 @@ func _on_visibility_changed() -> void:
 	else:
 		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
+	if is_instance_valid(Game.mobile_controls):
+		Game.mobile_controls.visible = !visible
+
 
 func _on_play_button_pressed() -> void:
 	if !is_instance_valid(Player.pawn):

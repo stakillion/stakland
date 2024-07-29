@@ -42,24 +42,28 @@ theme = ExtResource("2_aib28")
 
 [node name="PlayButton" type="Button" parent="MainMenu"]
 layout_mode = 2
+mouse_default_cursor_shape = 2
 theme = ExtResource("2_aib28")
 text = "Play"
 
 [node name="SettingsButton" type="Button" parent="MainMenu"]
 visible = false
 layout_mode = 2
+mouse_default_cursor_shape = 2
 theme = ExtResource("2_aib28")
 text = "Settings
 "
 
 [node name="ReloadButton" type="Button" parent="MainMenu"]
 layout_mode = 2
+mouse_default_cursor_shape = 2
 theme = ExtResource("2_aib28")
 text = "Reload"
 
 [node name="QuitButton" type="Button" parent="MainMenu"]
 layout_mode = 2
 focus_neighbor_bottom = NodePath("../../FullscreenButton")
+mouse_default_cursor_shape = 2
 theme = ExtResource("2_aib28")
 text = "Quit"
 
@@ -84,6 +88,7 @@ theme = ExtResource("2_aib28")
 [node name="RunSpeed" type="HSlider" parent="PlayerMenu/PhysicsSettings"]
 layout_mode = 2
 size_flags_vertical = 2
+mouse_default_cursor_shape = 2
 theme = ExtResource("2_aib28")
 max_value = 40.0
 step = 0.5
@@ -104,6 +109,7 @@ text = "Run Speed:"
 [node name="RunAccel" type="HSlider" parent="PlayerMenu/PhysicsSettings"]
 layout_mode = 2
 size_flags_vertical = 2
+mouse_default_cursor_shape = 2
 theme = ExtResource("2_aib28")
 max_value = 20.0
 step = 0.5
@@ -124,6 +130,7 @@ text = "Run Accel:"
 [node name="RunFriction" type="HSlider" parent="PlayerMenu/PhysicsSettings"]
 layout_mode = 2
 size_flags_vertical = 2
+mouse_default_cursor_shape = 2
 theme = ExtResource("2_aib28")
 max_value = 20.0
 step = 0.1
@@ -144,6 +151,7 @@ text = "Run Friction:"
 [node name="AirSpeed" type="HSlider" parent="PlayerMenu/PhysicsSettings"]
 layout_mode = 2
 size_flags_vertical = 2
+mouse_default_cursor_shape = 2
 theme = ExtResource("2_aib28")
 max_value = 20.0
 step = 0.1
@@ -164,6 +172,7 @@ text = "Air Speed:"
 [node name="AirAccel" type="HSlider" parent="PlayerMenu/PhysicsSettings"]
 layout_mode = 2
 size_flags_vertical = 2
+mouse_default_cursor_shape = 2
 theme = ExtResource("2_aib28")
 max_value = 200.0
 step = 0.5
@@ -184,6 +193,7 @@ text = "Air Accel:"
 [node name="AirFriction" type="HSlider" parent="PlayerMenu/PhysicsSettings"]
 layout_mode = 2
 size_flags_vertical = 2
+mouse_default_cursor_shape = 2
 theme = ExtResource("2_aib28")
 max_value = 10.0
 step = 0.1
@@ -204,6 +214,7 @@ text = "Air Friction:"
 [node name="JumpPower" type="HSlider" parent="PlayerMenu/PhysicsSettings"]
 layout_mode = 2
 size_flags_vertical = 2
+mouse_default_cursor_shape = 2
 theme = ExtResource("2_aib28")
 max_value = 50.0
 allow_greater = true
@@ -223,6 +234,7 @@ text = "Jump Power:"
 [node name="JumpMidair" type="HSlider" parent="PlayerMenu/PhysicsSettings"]
 layout_mode = 2
 size_flags_vertical = 2
+mouse_default_cursor_shape = 2
 theme = ExtResource("2_aib28")
 max_value = 10.0
 allow_greater = true
@@ -241,6 +253,7 @@ text = "Mid Air Jumps:"
 [node name="Gravity" type="HSlider" parent="PlayerMenu/PhysicsSettings"]
 layout_mode = 2
 size_flags_vertical = 2
+mouse_default_cursor_shape = 2
 theme = ExtResource("2_aib28")
 step = 0.5
 allow_greater = true
@@ -261,6 +274,7 @@ text = "Gravity:"
 custom_minimum_size = Vector2(256, 0)
 layout_mode = 2
 size_flags_horizontal = 4
+mouse_default_cursor_shape = 2
 theme = ExtResource("2_aib28")
 text = "Respawn"
 
@@ -286,6 +300,7 @@ alignment = 1
 
 [node name="ConnectButton" type="Button" parent="MultiplayerMenu"]
 layout_mode = 2
+mouse_default_cursor_shape = 2
 theme = ExtResource("2_aib28")
 text = "Host"
 
@@ -303,6 +318,7 @@ offset_bottom = -5.0
 grow_horizontal = 2
 grow_vertical = 0
 focus_neighbor_top = NodePath("../MainMenu/QuitButton")
+mouse_default_cursor_shape = 2
 theme = ExtResource("2_aib28")
 text = "Toggle Fullscreen"
 
@@ -317,6 +333,7 @@ scale = Vector2(0.5, 0.5)
 layout_mode = 2
 offset_right = 298.0
 offset_bottom = 588.0
+mouse_default_cursor_shape = 3
 edit_alpha = false
 picker_shape = 2
 can_add_swatches = false

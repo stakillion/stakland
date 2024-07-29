@@ -4,15 +4,16 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://ccndsdcahqjvq"
 path.s3tc="res://.godot/imported/AspenBark.png-cbab03afe3f60ba7facef89361d6732b.s3tc.ctex"
+path.etc2="res://.godot/imported/AspenBark.png-cbab03afe3f60ba7facef89361d6732b.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://materials/textures/nature_pack/trees/AspenBark.png"
-dest_files=["res://.godot/imported/AspenBark.png-cbab03afe3f60ba7facef89361d6732b.s3tc.ctex"]
+dest_files=["res://.godot/imported/AspenBark.png-cbab03afe3f60ba7facef89361d6732b.s3tc.ctex", "res://.godot/imported/AspenBark.png-cbab03afe3f60ba7facef89361d6732b.etc2.ctex"]
 
 [params]
 

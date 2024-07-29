@@ -4,15 +4,16 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://bria58m323mnu"
 path.s3tc="res://.godot/imported/Stump.png-3d5635aacd1be36786626c4ca1f167d1.s3tc.ctex"
+path.etc2="res://.godot/imported/Stump.png-3d5635aacd1be36786626c4ca1f167d1.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://materials/textures/nature_pack/trees/Stump.png"
-dest_files=["res://.godot/imported/Stump.png-3d5635aacd1be36786626c4ca1f167d1.s3tc.ctex"]
+dest_files=["res://.godot/imported/Stump.png-3d5635aacd1be36786626c4ca1f167d1.s3tc.ctex", "res://.godot/imported/Stump.png-3d5635aacd1be36786626c4ca1f167d1.etc2.ctex"]
 
 [params]
 

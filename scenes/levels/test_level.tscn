@@ -56,9 +56,7 @@ sky_material = SubResource("PhysicalSkyMaterial_41g3y")
 [sub_resource type="Environment" id="Environment_ifkfe"]
 background_mode = 2
 sky = SubResource("Sky_yfuus")
-ssao_enabled = true
-glow_intensity = 8.0
-glow_strength = 0.5
+fog_light_energy = 3.0
 
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_2e1en"]
 
@@ -211,9 +209,9 @@ current = true
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.374752, -0.540659, 0.753159, -0.0100946, 0.809932, 0.586436, -0.92707, -0.227371, 0.298066, 0, 10, 0)
-light_bake_mode = 0
 shadow_enabled = true
 directional_shadow_blend_splits = true
+directional_shadow_max_distance = 300.0
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_ifkfe")
