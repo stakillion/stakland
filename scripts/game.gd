@@ -40,22 +40,23 @@ func _init() -> void:
 func _ready() -> void:
 	get_tree().connect("node_added", _on_node_added)
 
-	if OS.has_feature("dedicated_server"):
-		# start the game without the player if we are a server
-		Player.queue_free()
-		host_game()
-	else:
+	if !OS.has_feature("dedicated_server"):
 		# add player to the player list
 		Player.set_name.call_deferred(1)
 		Player.reparent.call_deferred(players)
 		# load the menu
 		menu = menu_scene.instantiate() as Control
 		add_child.call_deferred(menu)
-		# load touch-screen controls on mobile
+
 		if OS.has_feature("mobile"):
+			# load touch-screen controls on mobile
 			mobile_controls = mobile_controls_scene.instantiate() as Node2D
 			mobile_controls.visible = false
 			add_child.call_deferred(mobile_controls)
+	else:
+		# start the game without the player if we are a server
+		Player.queue_free()
+		host_game()
 
 	multiplayer.peer_connected.connect(_on_player_connected)
 	multiplayer.peer_disconnected.connect(_on_player_disconnected)

@@ -14,14 +14,14 @@ content_margin_left = 10.0
 content_margin_top = 10.0
 content_margin_right = 10.0
 content_margin_bottom = 10.0
-bg_color = Color(0.4288, 0.43232, 0.64, 0.752941)
+bg_color = Color(0.2304, 0.3328, 0.64, 0.752941)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4hiwh"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_eqsjg"]
 content_margin_left = 10.0
 content_margin_top = 10.0
 content_margin_right = 10.0
 content_margin_bottom = 10.0
-bg_color = Color(0.4288, 0.43232, 0.64, 0.752941)
+bg_color = Color(0.2304, 0.3328, 0.64, 0.752941)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_d271p"]
 content_margin_left = 10.0
@@ -30,12 +30,12 @@ content_margin_right = 10.0
 content_margin_bottom = 10.0
 bg_color = Color(0.501961, 0.501961, 0.501961, 0.376471)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2l042"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kffi5"]
 content_margin_left = 10.0
 content_margin_top = 10.0
 content_margin_right = 10.0
 content_margin_bottom = 10.0
-bg_color = Color(0.4288, 0.43232, 0.64, 0.752941)
+bg_color = Color(0.2304, 0.3328, 0.64, 0.752941)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_g68jn"]
 bg_color = Color(0, 0, 0, 0.376471)
@@ -86,7 +86,7 @@ bg_color = Color(0, 0, 0, 0.25098)
 content_margin_left = 10.0
 content_margin_top = 10.0
 content_margin_right = 10.0
-bg_color = Color(0.427451, 0.431373, 0.639216, 0.752941)
+bg_color = Color(0.2304, 0.3328, 0.64, 0.752941)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4apqv"]
 content_margin_left = 10.0
@@ -162,19 +162,19 @@ Button/colors/font_pressed_color = Color(1, 1, 1, 1)
 Button/fonts/font = ExtResource("1_0wqa3")
 Button/styles/disabled = SubResource("StyleBoxFlat_uqas8")
 Button/styles/focus = SubResource("StyleBoxFlat_xb3ky")
-Button/styles/hover = SubResource("StyleBoxFlat_4hiwh")
+Button/styles/hover = SubResource("StyleBoxFlat_eqsjg")
 Button/styles/normal = SubResource("StyleBoxFlat_d271p")
-Button/styles/pressed = SubResource("StyleBoxFlat_2l042")
+Button/styles/pressed = SubResource("StyleBoxFlat_kffi5")
 CheckBox/constants/h_separation = 10
 Label/fonts/font = ExtResource("1_0wqa3")
 LineEdit/colors/font_color = Color(1, 1, 1, 1)
-LineEdit/colors/selection_color = Color(0.427451, 0.431373, 0.639216, 0.752941)
+LineEdit/colors/selection_color = Color(0.2304, 0.3328, 0.64, 0.752941)
 LineEdit/fonts/font = ExtResource("1_0wqa3")
 LineEdit/styles/focus = SubResource("StyleBoxFlat_g68jn")
 LineEdit/styles/normal = SubResource("StyleBoxFlat_4qvxb")
 LineEdit/styles/read_only = SubResource("StyleBoxFlat_igwvx")
 PopupMenu/colors/font_color = Color(1, 1, 1, 1)
-PopupMenu/colors/font_hover_color = Color(0.670588, 0.67451, 1, 1)
+PopupMenu/colors/font_hover_color = Color(0.68, 0.76, 1, 1)
 PopupMenu/fonts/font = ExtResource("1_0wqa3")
 PopupMenu/styles/hover = SubResource("StyleBoxFlat_6cl6q")
 PopupMenu/styles/panel = SubResource("StyleBoxFlat_ppuh3")
@@ -190,7 +190,7 @@ TabContainer/styles/tab_hovered = SubResource("StyleBoxFlat_27hl4")
 TabContainer/styles/tab_selected = SubResource("StyleBoxFlat_4apqv")
 TabContainer/styles/tab_unselected = SubResource("StyleBoxFlat_kabai")
 TextEdit/colors/font_color = Color(1, 1, 1, 1)
-TextEdit/colors/selection_color = Color(0.427451, 0.431373, 0.639216, 0.752941)
+TextEdit/colors/selection_color = Color(0.2304, 0.3328, 0.64, 0.752941)
 TextEdit/fonts/font = ExtResource("1_0wqa3")
 TextEdit/styles/focus = SubResource("StyleBoxFlat_gqer4")
 TextEdit/styles/normal = SubResource("StyleBoxFlat_3s28i")

@@ -11,6 +11,10 @@ func _ready() -> void:
 	$BottomRightAnchor.position.x = bounds.x
 	$BottomRightAnchor.position.y = bounds.y
 
+	for button in find_children("*", "TouchScreenButton"):
+		button.pressed.connect(_on_button_pressed.bind(button))
+		button.released.connect(_on_button_released.bind(button))
+
 
 func _unhandled_input(event) -> void:
 	if event is InputEventScreenTouch:
@@ -37,5 +41,8 @@ func _unhandled_input(event) -> void:
 			Input.action_press("move_right", swipe_vector.dot(Vector2.RIGHT))
 
 
-func _on_menu_button_down():
-	Game.menu.visible = true
+func _on_button_pressed(button:TouchScreenButton):
+	button.self_modulate = Color(2, 2, 2)
+
+func _on_button_released(button:TouchScreenButton):
+	button.self_modulate = Color(1, 1, 1)

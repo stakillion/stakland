@@ -221,9 +221,6 @@ common/max_physics_steps_per_frame=16
 [rendering]
 
 textures/vram_compression/import_etc2_astc=true
-shading/overrides/force_vertex_shading=true
-shading/overrides/force_lambert_over_burley=true
-driver/depth_prepass/disable_for_vendors=""
+shading/overrides/force_vertex_shading.mobile=false
 anti_aliasing/screen_space_roughness_limiter/enabled=false
-vrs/overrides/force_lambert_over_burley=false
-vrs/overrides/force_vertex_shading=false
+occlusion_culling/mode=0

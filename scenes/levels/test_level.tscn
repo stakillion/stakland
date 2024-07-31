@@ -1,4 +1,4 @@
-[gd_scene load_steps=51 format=3 uid="uid://o70p27l476fn"]
+[gd_scene load_steps=56 format=3 uid="uid://o70p27l476fn"]
 
 [ext_resource type="Texture2D" uid="uid://loxh1icksh70" path="res://materials/textures/grass1.png" id="1_24n2b"]
 [ext_resource type="Script" path="res://scripts/levels/test_level.gd" id="1_nkfo3"]
@@ -7,7 +7,9 @@
 [ext_resource type="Texture2D" uid="uid://ct28pk5mh4tcx" path="res://addons/kenney_prototype_textures/dark/texture_03.png" id="4_g08os"]
 [ext_resource type="Resource" path="res://resources/levels/test_level/terrain/data.hterrain" id="5_83pfn"]
 [ext_resource type="PackedScene" uid="uid://brhlexkymlrda" path="res://scenes/objects/skateboard.tscn" id="5_oqf6j"]
+[ext_resource type="Script" path="res://scripts/kinematics/surface.gd" id="6_2yxfm"]
 [ext_resource type="Shader" path="res://materials/shaders/grass.gdshader" id="6_airvd"]
+[ext_resource type="PackedScene" uid="uid://bapgd722fyaht" path="res://scenes/effects/player_spawn.tscn" id="7_5it40"]
 [ext_resource type="Script" path="res://addons/zylann.hterrain/hterrain_texture_set.gd" id="7_leogj"]
 [ext_resource type="PackedScene" uid="uid://da2u54tp3s50n" path="res://scenes/props/nature_pack/tree1.tscn" id="10_dtkmb"]
 [ext_resource type="PackedScene" uid="uid://cid0734twy2j4" path="res://scenes/props/nature_pack/tree2.tscn" id="10_gmrkv"]
@@ -18,7 +20,7 @@
 [ext_resource type="PackedScene" uid="uid://4s4qqcobw3hn" path="res://scenes/props/nature_pack/bare_tree1.tscn" id="16_2qqka"]
 [ext_resource type="PackedScene" uid="uid://b8yk2lmx78r37" path="res://scenes/props/nature_pack/bare_tree2.tscn" id="17_dgenj"]
 [ext_resource type="PackedScene" uid="uid://c8t4bqn501db6" path="res://scenes/props/nature_pack/bush.tscn" id="18_aixp8"]
-[ext_resource type="Material" uid="uid://cu46b100244nd" path="res://addons/boujie_water_shader/prefabs/deep_ocean_material.tres" id="19_l6ca4"]
+[ext_resource type="Material" uid="uid://ronopa6o3awe" path="res://materials/water.tres" id="21_vn2aw"]
 
 [sub_resource type="Gradient" id="Gradient_r4md3"]
 interpolation_mode = 2
@@ -46,7 +48,6 @@ noise = SubResource("FastNoiseLite_qpsgd")
 rayleigh_coefficient = 1.0
 mie_eccentricity = 0.95
 mie_color = Color(1, 0.729412, 0.466667, 1)
-turbidity = 20.0
 ground_color = Color(1, 1, 1, 1)
 night_sky = SubResource("NoiseTexture2D_kapre")
 
@@ -57,6 +58,8 @@ sky_material = SubResource("PhysicalSkyMaterial_41g3y")
 background_mode = 2
 sky = SubResource("Sky_yfuus")
 fog_light_energy = 3.0
+
+[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_6e5sk"]
 
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_2e1en"]
 
@@ -104,11 +107,15 @@ uv1_triplanar = true
 uv1_triplanar_sharpness = 150.0
 texture_filter = 5
 
+[sub_resource type="Resource" id="Resource_lmr0t"]
+script = ExtResource("6_2yxfm")
+friction = 10
+step_effect = ExtResource("7_5it40")
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lns3j"]
 transparency = 1
 albedo_color = Color(0, 0, 1, 0.607843)
 rim_enabled = true
-rim = 0.1
 
 [sub_resource type="SphereMesh" id="SphereMesh_xhmdm"]
 material = SubResource("StandardMaterial3D_lns3j")
@@ -119,22 +126,25 @@ material = SubResource("StandardMaterial3D_lns3j")
 transparency = 1
 albedo_color = Color(1, 0, 0, 0.607843)
 rim_enabled = true
-rim = 0.1
 
 [sub_resource type="SphereMesh" id="SphereMesh_sqmsl"]
 material = SubResource("StandardMaterial3D_rqnt2")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5n0si"]
 transparency = 1
-albedo_color = Color(1, 1, 1, 0.25098)
+albedo_color = Color(0, 1, 0, 0.25098)
 rim_enabled = true
-rim = 0.1
 
 [sub_resource type="SphereMesh" id="SphereMesh_xdasw"]
 material = SubResource("StandardMaterial3D_5n0si")
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ieqqs"]
+transparency = 1
+albedo_color = Color(1, 1, 1, 0.25098)
+rim_enabled = true
+
 [sub_resource type="SphereMesh" id="SphereMesh_fmfip"]
-material = SubResource("StandardMaterial3D_5n0si")
+material = SubResource("StandardMaterial3D_ieqqs")
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_1136q"]
 viewport_path = NodePath("Viewport")
@@ -168,7 +178,8 @@ fog_light_color = Color(0.101961, 0.207843, 0.364706, 1)
 fog_density = 0.025
 
 [sub_resource type="BoxMesh" id="BoxMesh_rl3y2"]
-material = ExtResource("19_l6ca4")
+lightmap_size_hint = Vector2i(1564, 1406)
+material = ExtResource("21_vn2aw")
 size = Vector3(128, 48, 184)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_cy7f6"]
@@ -176,6 +187,20 @@ size = Vector3(128, 48, 184)
 
 [node name="TestLevel" type="Node3D"]
 script = ExtResource("1_nkfo3")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_ifkfe")
+camera_attributes = SubResource("CameraAttributesPractical_6e5sk")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.374752, -0.540659, 0.753159, -0.0100946, 0.809932, 0.586436, -0.92707, -0.227371, 0.298066, 0, 10, 0)
+shadow_enabled = true
+directional_shadow_blend_splits = true
+directional_shadow_max_distance = 192.0
+
+[node name="MainCamera" type="Camera3D" parent="."]
+transform = Transform3D(0.707107, 0.122788, -0.696364, 0, 0.984808, 0.173648, 0.707107, -0.122788, 0.696364, -22, 11, 22)
+current = true
 
 [node name="Spawns" type="Node3D" parent="."]
 
@@ -202,19 +227,6 @@ transform = Transform3D(-0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, -0.707107
 
 [node name="8" type="Node3D" parent="Spawns"]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, -8.5, 10, -21.5)
-
-[node name="MainCamera" type="Camera3D" parent="."]
-transform = Transform3D(0.707107, 0.122788, -0.696364, 0, 0.984808, 0.173648, 0.707107, -0.122788, 0.696364, -22, 11, 22)
-current = true
-
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(0.374752, -0.540659, 0.753159, -0.0100946, 0.809932, 0.586436, -0.92707, -0.227371, 0.298066, 0, 10, 0)
-shadow_enabled = true
-directional_shadow_blend_splits = true
-directional_shadow_max_distance = 300.0
-
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource("Environment_ifkfe")
 
 [node name="Boundary" type="Area3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -256, 0)
@@ -409,6 +421,7 @@ use_collision = true
 polygon = PackedVector2Array(0, 0, 0, 0, 10, 0, 10, 6.666)
 depth = 2.0
 material = SubResource("StandardMaterial3D_nlhrf")
+metadata/surface = SubResource("Resource_lmr0t")
 
 [node name="Slope3" type="CSGPolygon3D" parent="Obstacles"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.5, 0, -3)
@@ -756,9 +769,11 @@ light_energy = 5.0
 
 [node name="Skateboard" parent="." instance=ExtResource("5_oqf6j")]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -30, 0, 10)
+turn_speed = 180.0
 
 [node name="Skateboard2" parent="." instance=ExtResource("5_oqf6j")]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -30, 0, 12.5)
+turn_speed = 180.0
 
 [node name="Viewport" type="SubViewport" parent="."]
 size = Vector2i(1024, 512)
