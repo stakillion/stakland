@@ -7,7 +7,7 @@ uniform vec3 uv_offset;
 
 instance uniform bool fade_enabled;
 instance uniform vec3 fade_position;
-instance uniform vec3 custom_color;
+instance uniform vec3 custom_color = vec3(1, 1, 1);
 uniform float fade_min;
 uniform float fade_max;
 

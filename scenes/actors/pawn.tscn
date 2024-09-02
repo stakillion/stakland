@@ -63,7 +63,6 @@ size = Vector2(3, 3)
 [node name="Pawn" type="AnimatableBody3D" node_paths=PackedStringArray("collider", "crouched_collider", "head", "inventory")]
 collision_layer = 256
 collision_mask = 65283
-constant_linear_velocity = Vector3(0.1, 0.1, 0.1)
 sync_to_physics = false
 script = ExtResource("1_txe8y")
 collider = NodePath("Collision")

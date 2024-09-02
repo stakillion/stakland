@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="KinematicVolume" load_steps=2 format=3 uid="uid://ctk6onxpnvc25"]
+
+[ext_resource type="Script" path="res://scripts/resources/volume.gd" id="1_quciv"]
+
+[resource]
+resource_local_to_scene = true
+script = ExtResource("1_quciv")
+friction = 0.0
+effect_path = ""

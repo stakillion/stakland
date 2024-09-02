@@ -5,15 +5,15 @@ class_name Vehicle extends KinematicBody
 @export var seat:Node3D
 
 var user:Pawn = null
- 
+
 
 func _physics_process(delta):
 	if is_instance_valid(user):
 		var dir: = Vector3(user.desired_move.y, 0.0, user.desired_move.x)
 		if on_ground:
-			vehicle_accelerate(dir, run_speed, run_accel, delta)
+			accelerate_vehicle(dir, run_speed, run_accel, delta)
 		if !dir.is_zero_approx():
-			var angle_diff: = angle_difference(rotation.y, atan2(dir.x, dir.z))
+			var angle_diff: = angle_difference(rotation.y, atan2(-dir.x, -dir.z))
 			rotation.y += angle_diff * deg_to_rad(turn_speed) * delta
 
 		user.position = seat.global_position
@@ -23,17 +23,6 @@ func _physics_process(delta):
 			exit()
 
 	apply_kinematics(delta)
-
-
-func vehicle_accelerate(dir:Vector3, speed:float, accel:float, delta:float) -> void:
-	# get current speed towards desired direction
-	var current_speed: = velocity.dot(basis.z)
-	speed *= dir.dot(basis.z)
-	# calculate speed we need to make up to reach our desired speed
-	var add_speed: = speed - current_speed
-	if add_speed > 0:
-		# cap acceleration to our desired speed and apply towards our desired direction
-		velocity += minf(accel * speed * delta, add_speed) * basis.z
 
 
 func activate(pawn:Pawn) -> void:

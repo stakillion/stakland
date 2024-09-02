@@ -1,9 +1,9 @@
 [gd_scene load_steps=28 format=3 uid="uid://bpno38eekusja"]
 
 [ext_resource type="Script" path="res://scripts/levels/test_level.gd" id="1_g1djm"]
-[ext_resource type="Texture2D" uid="uid://cbyftbmoksg3p" path="res://addons/kenney_prototype_textures/light/texture_02.png" id="3_aop5o"]
-[ext_resource type="Texture2D" uid="uid://cg3i8qoa6wue8" path="res://addons/kenney_prototype_textures/orange/texture_10.png" id="4_7hdri"]
-[ext_resource type="Texture2D" uid="uid://cyekuk5ux8d44" path="res://addons/kenney_prototype_textures/dark/texture_03.png" id="4_ilwyj"]
+[ext_resource type="Texture2D" uid="uid://b7tum1ti5ynbf" path="res://addons/kenney_prototype_textures/light/texture_02.png" id="3_aop5o"]
+[ext_resource type="Texture2D" uid="uid://bl8c3v6cf70dx" path="res://addons/kenney_prototype_textures/orange/texture_10.png" id="4_7hdri"]
+[ext_resource type="Texture2D" uid="uid://ct28pk5mh4tcx" path="res://addons/kenney_prototype_textures/dark/texture_03.png" id="4_ilwyj"]
 
 [sub_resource type="Gradient" id="Gradient_r4md3"]
 interpolation_mode = 2

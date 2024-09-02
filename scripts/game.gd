@@ -40,9 +40,13 @@ func _init() -> void:
 func _ready() -> void:
 	get_tree().connect("node_added", _on_node_added)
 
-	if !OS.has_feature("dedicated_server"):
+	if DisplayServer.get_name() == "headless":
+		# start the game without the player if we are a server
+		Player.queue_free()
+		host_game()
+	else:
 		# add player to the player list
-		Player.set_name.call_deferred(1)
+		Player.set_name.call_deferred("1")
 		Player.reparent.call_deferred(players)
 		# load the menu
 		menu = menu_scene.instantiate() as Control
@@ -53,10 +57,6 @@ func _ready() -> void:
 			mobile_controls = mobile_controls_scene.instantiate() as Node2D
 			mobile_controls.visible = false
 			add_child.call_deferred(mobile_controls)
-	else:
-		# start the game without the player if we are a server
-		Player.queue_free()
-		host_game()
 
 	multiplayer.peer_connected.connect(_on_player_connected)
 	multiplayer.peer_disconnected.connect(_on_player_disconnected)
@@ -68,7 +68,7 @@ func _physics_process(delta:float) -> void:
 	mp_tick += 1
 	# sync physics at our desired sync rate
 	if mp_tick % int(1 / (delta * mp_sync_rate)) == 0:
-		get_tree().root.propagate_call.call_deferred("_on_mp_sync_frame", mp_tick, true)
+		get_tree().root.propagate_call.call_deferred("_on_mp_sync_frame")
 
 
 func host_game() -> bool:

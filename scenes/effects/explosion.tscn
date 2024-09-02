@@ -24,6 +24,7 @@ colors = PackedColorArray(0.666667, 0.666667, 0.666667, 0.666667, 0, 0, 0, 0)
 [node name="ExplosionEffect" type="Node3D"]
 script = ExtResource("1_7uk5l")
 timeout = 2.0
+destroy_on_timeout = true
 pitch_range = 0.1
 
 [node name="CPUParticles3D" type="CPUParticles3D" parent="."]

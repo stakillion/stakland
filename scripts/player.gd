@@ -85,14 +85,6 @@ func _process(delta:float) -> void:
 		if input.alt_look && !input.in_menu:
 			aim_position = camera.project_position(get_viewport().get_mouse_position(), 32768.0)
 
-	# have the pawn look where the camera is looking
-	if is_instance_valid(pawn) && pawn.alive && "set_angle" in pawn:
-		if input.alt_look:
-			var angle: = camera.global_transform.looking_at(aim_position).basis.get_euler()
-			pawn.set_angle(angle)
-		else:
-			pawn.set_angle(camera.rotation)
-
 
 func _physics_process(delta:float) -> void:
 	# inputs
@@ -105,14 +97,17 @@ func _unhandled_input(event:InputEvent) -> void:
 	if Player != self || Game.menu.visible:
 		return
 
-	if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
-		if event is InputEventMouseButton && event.button_index == MouseButton.MOUSE_BUTTON_LEFT:
-			Input.action_press("action") if event.is_pressed() else Input.action_release("action")
-		elif event is InputEventMouseMotion:
-			# rotate view based on mouse coordinates
-			camera.rotation.y -= deg_to_rad(event.relative.x * mouse_sensitivity.x * 0.022)
-			camera.rotation.x -= deg_to_rad(event.relative.y * mouse_sensitivity.y * 0.022)
-			camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-89), deg_to_rad(89))
+	if event is InputEventMouseButton && event.button_index == MouseButton.MOUSE_BUTTON_LEFT:
+		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED || input.alt_look:
+			if event.is_pressed():
+				Input.action_press("action")
+			else:
+				Input.action_release("action")
+	elif event is InputEventMouseMotion && Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
+		# rotate view based on mouse coordinates
+		camera.rotation.y -= deg_to_rad(event.relative.x * mouse_sensitivity.x * 0.022)
+		camera.rotation.x -= deg_to_rad(event.relative.y * mouse_sensitivity.y * 0.022)
+		camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-89), deg_to_rad(89))
 
 
 func read_input(delta:float) -> void:

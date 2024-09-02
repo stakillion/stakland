@@ -41,8 +41,8 @@ func _unhandled_input(event) -> void:
 			Input.action_press("move_right", swipe_vector.dot(Vector2.RIGHT))
 
 
-func _on_button_pressed(button:TouchScreenButton):
+func _on_button_pressed(button:TouchScreenButton) -> void:
 	button.self_modulate = Color(2, 2, 2)
 
-func _on_button_released(button:TouchScreenButton):
+func _on_button_released(button:TouchScreenButton) -> void:
 	button.self_modulate = Color(1, 1, 1)

@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="KinematicSurface" load_steps=2 format=3 uid="uid://chm0s4xkf38xc"]
+
+[ext_resource type="Script" path="res://scripts/resources/surface.gd" id="1_fu8ta"]
+
+[resource]
+resource_local_to_scene = true
+script = ExtResource("1_fu8ta")
+friction = 8.0
+effect_path = "res://scenes/effects/explosion.tscn"

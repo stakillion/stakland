@@ -44,6 +44,17 @@ func _ready() -> void:
 		mesh.set_instance_shader_parameter("fade_enabled", true)
 
 
+func _process(_delta) -> void:
+	if !alive:
+		return
+	# have the pawn look where the camera is looking
+	if owner.input.alt_look:
+		var angle:Vector3 = owner.camera.global_transform.looking_at(owner.aim_position).basis.get_euler()
+		set_angle(angle)
+	else:
+		set_angle(owner.camera.rotation)
+
+
 func _physics_process(delta) -> void:
 	if !alive:
 		desired_move = Vector2.ZERO
