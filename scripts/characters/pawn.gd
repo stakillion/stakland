@@ -74,8 +74,7 @@ func _physics_process(delta) -> void:
 	if is_instance_valid(grab_object):
 		update_grab_pos(grab_object, delta)
 	# update shader fade position
-	if is_player: for mesh in find_children("*", "MeshInstance3D"):
-		mesh.set_instance_shader_parameter("fade_position", position)
+	
 
 
 func get_aim(distance: = 32768.0, exclude: = []) -> Dictionary:
@@ -146,7 +145,7 @@ func interact() -> void:
 		next_use_time = tick + 200
 
 
-func action() -> void:
+func primary() -> void:
 	var tick: = Time.get_ticks_msec()
 	if next_use_time > tick:
 		return

@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://dadc0eetv61kp"]
 
-[ext_resource type="PackedScene" uid="uid://cr5r7mjrcl1qd" path="res://scenes/actors/pawn.tscn" id="1_hgo80"]
-[ext_resource type="Script" path="res://scripts/actors/platformer.gd" id="1_uonsf"]
+[ext_resource type="PackedScene" uid="uid://cr5r7mjrcl1qd" path="res://scenes/characters/pawn.tscn" id="1_hgo80"]
+[ext_resource type="Script" path="res://scripts/characters/platformer.gd" id="1_uonsf"]
 
 [node name="Platformer" instance=ExtResource("1_hgo80")]
 script = ExtResource("1_uonsf")

@@ -19,4 +19,4 @@ func _process(_delta:float) -> void:
 func _on_timer_timeout() -> void:
 	# info display
 	var fps: = Performance.get_monitor(Performance.TIME_FPS)
-	$Info.text = "FPS:%d\nPOS:%v\nANG:%v\nVEL:%v\nSpeed:%f\nOn Ground:%s\nOn Ledge:%s\nIn Water:%s\nColliding:%s" % [fps, pawn.global_position, pawn.head.global_rotation, pawn.velocity, pawn.velocity.length(), pawn.on_ground, pawn.on_ledge, pawn.in_water, pawn.colliding]
+	$Info.text = "FPS:%d\nPOS:%v\nANG:%v\nVEL:%v\nSpeed:%f\nOn Ground:%s\nOn Step:%s\nIn Water:%s" % [fps, pawn.global_position, pawn.head.global_rotation, pawn.velocity, pawn.velocity.length(), pawn.on_ground, pawn.on_step, pawn.in_water, pawn.colliding]

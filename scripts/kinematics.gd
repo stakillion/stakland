@@ -15,9 +15,8 @@ class_name KinematicBody extends PhysicsBody3D
 
 var velocity: = Vector3()
 var on_ground: = false
-var on_ledge: = false
+var on_step: = false
 var in_water: = false
-var colliding:Node3D = null
 
 
 func _physics_process(delta) -> void:
@@ -25,7 +24,7 @@ func _physics_process(delta) -> void:
 
 
 func apply_kinematics(delta:float, dir: = Vector3.ZERO) -> void:
-	if on_ground || on_ledge:
+	if on_ground || on_step:
 		apply_friction(run_friction, delta)
 		accelerate(dir, run_speed, run_accel, delta, true)
 		try_step_up(delta)
@@ -47,21 +46,19 @@ func apply_kinematics(delta:float, dir: = Vector3.ZERO) -> void:
 
 func move(delta:float, max_slides: = 6):
 	on_ground = false
-	colliding = null
 	var motion: = (velocity / max_slides) * delta
 	for slide in max_slides:
 		# move and check for collision
 		var collision: = move_and_collide(motion, false, 0.001, true)
 		if !collision:
 			continue
-		colliding = collision.get_collider()
 		# if we hit something and it's not too steep then we consider it ground
 		if collision.get_angle() < PI/4:
 			on_ground = true
 		# slide along the normal vector of the colliding body
 		var collision_norm: = collision.get_normal()
 		motion = motion.slide(collision_norm)
-		if !on_ledge:
+		if !on_step:
 			velocity = velocity.slide(collision_norm)
 
 
@@ -119,7 +116,7 @@ func apply_max_speed(limit:float) -> void:
 
 
 func try_step_up(delta:float) -> void:
-	on_ledge = false
+	on_step = false
 	var forward: = Vector3(velocity.x, 0.0, velocity.z) * delta
 	var motion: = Vector3.UP * max_step_height
 	# trace upward to the max step height and limit our motion to the ceiling
@@ -137,12 +134,9 @@ func try_step_up(delta:float) -> void:
 	var ledge_angle: = collision.get_angle()
 	new_transform = transform.translated(motion + forward)
 	if !test_move(new_transform, forward, collision) || ledge_angle > collision.get_angle():
-		on_ledge = true
+		on_step = true
 		# move up to the height of the ledge
 		position += motion
 		# snap to the ground
 		if velocity.y > 0:
 			velocity.y = 0
-		# smooth head movement
-		if "head_offset" in self:
-			self.head_offset -= motion

@@ -1,23 +1,23 @@
 [gd_scene load_steps=19 format=3 uid="uid://cr5r7mjrcl1qd"]
 
-[ext_resource type="Script" path="res://scripts/actors/pawn.gd" id="1_txe8y"]
-[ext_resource type="PackedScene" uid="uid://ds3wnxy8jxm8d" path="res://scenes/objects/rocket_launcher.tscn" id="2_4ktkv"]
-[ext_resource type="Script" path="res://scripts/ui/hud.gd" id="2_ebipa"]
-[ext_resource type="Shader" path="res://materials/shaders/pawn.gdshader" id="2_gydwv"]
-[ext_resource type="FontFile" uid="uid://cpb8liw262yah" path="res://resources/ui/fonts/PressStart2P-Regular.ttf" id="3_oh47t"]
-[ext_resource type="PackedScene" uid="uid://bkctgmbv0wouu" path="res://scenes/objects/grenade_launcher.tscn" id="4_hleln"]
+[ext_resource type="Script" path="res://scripts/characters/pawn.gd" id="1_5628k"]
+[ext_resource type="Shader" path="res://materials/shaders/pawn.gdshader" id="2_pm1kf"]
+[ext_resource type="PackedScene" uid="uid://bkctgmbv0wouu" path="res://scenes/objects/grenade_launcher.tscn" id="3_7gtiy"]
+[ext_resource type="PackedScene" uid="uid://ds3wnxy8jxm8d" path="res://scenes/objects/rocket_launcher.tscn" id="4_26bv6"]
+[ext_resource type="Script" path="res://scripts/ui/hud.gd" id="5_l1utq"]
+[ext_resource type="FontFile" uid="uid://cpb8liw262yah" path="res://resources/ui/fonts/PressStart2P-Regular.ttf" id="6_ruqbk"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_q0jnf"]
-radius = 0.3
+radius = 0.45
 height = 1.65
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_jcgdr"]
-radius = 0.3
+radius = 0.45
 height = 1.15
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_7s0i5"]
 render_priority = 0
-shader = ExtResource("2_gydwv")
+shader = ExtResource("2_pm1kf")
 shader_parameter/albedo = Color(1, 1, 1, 1)
 shader_parameter/uv_scale = null
 shader_parameter/uv_offset = null
@@ -34,7 +34,7 @@ material = SubResource("ShaderMaterial_7s0i5")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ob6ng"]
 render_priority = 0
-shader = ExtResource("2_gydwv")
+shader = ExtResource("2_pm1kf")
 shader_parameter/albedo = Color(0, 0, 0, 1)
 shader_parameter/uv_scale = null
 shader_parameter/uv_offset = null
@@ -64,7 +64,7 @@ size = Vector2(3, 3)
 collision_layer = 256
 collision_mask = 65283
 sync_to_physics = false
-script = ExtResource("1_txe8y")
+script = ExtResource("1_5628k")
 collider = NodePath("Collision")
 crouched_collider = NodePath("CrouchedCollision")
 head = NodePath("Head")
@@ -97,10 +97,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0.000523597, 0, -0.000523597, 1, 0, 0.6, 
 [node name="Inventory" type="Node3D" parent="Head"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.42, -0.175, -0.25)
 
-[node name="GrenadeLauncher" parent="Head/Inventory" instance=ExtResource("4_hleln")]
+[node name="GrenadeLauncher" parent="Head/Inventory" instance=ExtResource("3_7gtiy")]
 visible = false
 
-[node name="RocketLauncher" parent="Head/Inventory" instance=ExtResource("2_4ktkv")]
+[node name="RocketLauncher" parent="Head/Inventory" instance=ExtResource("4_26bv6")]
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Head"]
 mesh = SubResource("SphereMesh_axx00")
@@ -113,7 +113,7 @@ double_sided = false
 texture = SubResource("PlaceholderTexture2D_165mo")
 
 [node name="RightEye" type="Sprite3D" parent="Head/MeshInstance3D"]
-transform = Transform3D(-1, 0, -8.74228e-08, -1.04083e-17, 1, 0, 8.74228e-08, 0, -1, 0.102801, 0.0499988, -0.297629)
+transform = Transform3D(-1, 0, -8.74228e-08, -1.04083e-17, 1, 0, 8.74228e-08, 0, -1, 0.1, 0.05, -0.3)
 material_override = SubResource("StandardMaterial3D_h784r")
 modulate = Color(0, 0, 1, 1)
 pixel_size = 0.1
@@ -128,7 +128,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-script = ExtResource("2_ebipa")
+script = ExtResource("5_l1utq")
 
 [node name="Health" type="Label" parent="Hud"]
 layout_mode = 1
@@ -138,7 +138,7 @@ anchor_bottom = 1.0
 offset_top = -12.0
 offset_right = 64.0
 grow_vertical = 0
-theme_override_fonts/font = ExtResource("3_oh47t")
+theme_override_fonts/font = ExtResource("6_ruqbk")
 theme_override_font_sizes/font_size = 32
 text = "+100"
 
@@ -146,7 +146,7 @@ text = "+100"
 layout_mode = 1
 offset_right = 64.0
 offset_bottom = 12.0
-theme_override_fonts/font = ExtResource("3_oh47t")
+theme_override_fonts/font = ExtResource("6_ruqbk")
 theme_override_font_sizes/font_size = 12
 
 [node name="Crosshair" type="Sprite2D" parent="Hud"]
